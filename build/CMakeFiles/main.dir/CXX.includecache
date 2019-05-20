@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/gagendro/Documents/Stage/Robot/Project/Communication/src/main.cpp
+string
+-
+iostream
+-
+cstdio
+-
+unistd.h
+-
+iterator
+-
+vector
+-
+serial/serial.h
+-
+
