@@ -15,8 +15,14 @@ option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 # specify link directory
 link_directories("/usr/local/lib/")
 
+# add headers
+include_directories(include)
+
+#add source code
+file(GLOB SOURCES "src/*.cpp")
+
 # add the executable
-add_executable(main src/main.cpp)
+add_executable(main ${SOURCES})
 
 # add the binary tree to the search path for include files
 target_include_directories(main PUBLIC

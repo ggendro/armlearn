@@ -6,6 +6,18 @@
 
 #IncludeRegexTransform: 
 
+../include/widowx.h
+serial/serial.h
+-
+algorithm
+-
+iostream
+-
+chrono
+-
+thread
+-
+
 /home/gagendro/Documents/Stage/Robot/Project/Communication/src/main.cpp
 string
 -
@@ -21,4 +33,10 @@ vector
 -
 serial/serial.h
 -
+widowx.h
+/home/gagendro/Documents/Stage/Robot/Project/Communication/src/widowx.h
+
+/home/gagendro/Documents/Stage/Robot/Project/Communication/src/widowx.cpp
+widowx.h
+/home/gagendro/Documents/Stage/Robot/Project/Communication/src/widowx.h
 

@@ -196,6 +196,33 @@ src/main.cpp.s:
 	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
+src/widowx.o: src/widowx.cpp.o
+
+.PHONY : src/widowx.o
+
+# target to build an object file
+src/widowx.cpp.o:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/widowx.cpp.o
+.PHONY : src/widowx.cpp.o
+
+src/widowx.i: src/widowx.cpp.i
+
+.PHONY : src/widowx.i
+
+# target to preprocess a source file
+src/widowx.cpp.i:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/widowx.cpp.i
+.PHONY : src/widowx.cpp.i
+
+src/widowx.s: src/widowx.cpp.s
+
+.PHONY : src/widowx.s
+
+# target to generate assembly for a file
+src/widowx.cpp.s:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/widowx.cpp.s
+.PHONY : src/widowx.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -212,6 +239,9 @@ help:
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... src/widowx.o"
+	@echo "... src/widowx.i"
+	@echo "... src/widowx.s"
 .PHONY : help
 
 
