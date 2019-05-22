@@ -14,11 +14,13 @@
  */
 WidowX::WidowX(const std::string port):mode(sleeping), delta(DEFAULT_SPEED){
 
+    ranges = new std::vector<Range*>();
+
     serialPort = new serial::Serial(port, 38400); // Default values are defined in the Arm Link Reference
     this->open();
 
     if(!this->connect()) {
-        throw std::runtime_error("Unable to connect to the device - timeout"); // TODO: create a specific exception
+        throw ConnectionError("Unable to connect to the device - timeout");
     }
         
     
@@ -34,6 +36,11 @@ WidowX::~WidowX(){
     serialPort->close();
 
     delete serialPort;
+
+    for(auto ptr = ranges->begin(); ptr < ranges->end(); ptr++){
+        delete *ptr;
+    }
+    delete ranges;
 }
 
 
@@ -57,7 +64,7 @@ void WidowX::setPositions(const std::vector<uint16_t>& values){
  * 
  * Method non accessible for user, called by move() or a goTo() mehod
  */
-void WidowX::setDelta(const uint8_t value) {
+void WidowX::setDelta(const uint8_t value) { // TODO: add range test
     this->delta = value;
 }
 
@@ -147,16 +154,6 @@ bool WidowX::checkValidity(const std::vector<uint8_t>& data){
 }
 
 /**
- * @brief Check if it is possible to execute a move
- * 
- * @return true 
- * @return false 
- */
-bool WidowX::isMoveEnabled(){
-    return this->mode != sleeping;
-}
-
-/**
  * @brief Send a packet to the connected serial port
  * 
  * @param buffer the content of the packet
@@ -203,7 +200,11 @@ int WidowX::receive(std::vector<uint8_t>& buffer){
     return res;
 }
 
-
+/**
+ * @brief Move directly the device without prior checks
+ * 
+ * @param positions 
+ */
 void WidowX::forceMove(const std::vector<uint16_t>& positions){
     //Set the new position
     this->setPositions(positions);
@@ -236,10 +237,10 @@ void WidowX::forceMove(const std::vector<uint16_t>& positions){
  */
 void WidowX::move(const std::vector<int>& positions){
     // Verify if moving the robot is currently possible
-    if (!this->isMoveEnabled()) throw std::runtime_error("Move not possible");
+    if (!this->isMoveEnabled()) throw MovementError("Device movement not enabled : sleeping mode - change mode to call method");
 
     // Verify that input is valid
-    // TODO:
+    if (!this->isMoveValid(positions)) throw MovementError("Movement not allowed : value out of range");//TODO: better throw a OutOfRangeError exception
 
     // Format the input
     std::vector<uint16_t> formattedPos(positions.cbegin(), positions.cend());
@@ -256,64 +257,43 @@ void WidowX::changeSpeed(int newSpeed){
     this->setDelta(newSpeed);
 }
 
-/*
-
-void WidowX::goToBackhoe(){
-    //Set the new position
-    uint16_t arr[] = BACKHOE_POSITION;
-    this->setPositions(arr);
-    this->changeSpeed(DEFAULT_SPEED);
-
-    //Send the new position to the board
-    std::vector<uint8_t> posCodes(NB_BIG_VALUE_MOTORS * 2 + NB_SMALL_VALUE_MOTORS, 0);
-
-    posCodes.push_back(ENABLE_OUTPUT);
-    posCodes.push_back(BACKHOE_MODE);
-
-    this->send(posCodes);
-
-    std::vector<uint8_t> response;
-    this->receive(response);
+/**
+ * @brief Check if it is possible to execute a move
+ * 
+ * @return true 
+ * @return false 
+ */
+bool WidowX::isMoveEnabled() const{
+    return this->mode != sleeping;
 }
 
+/**
+ * @brief Check if the move in parameter is possible
+ * 
+ * @param positions the positions to move the device to
+ * @return true if all positions are valid
+ * @return false if at least one position is not correct
+ * 
+ * Only backhoe mode is implemented, will return false if current mode is not backhoe
+ * TODO: implement verification for other modes as well
+ */
+bool WidowX::isMoveValid(const std::vector<int>& positions) const{
 
-void WidowX::goToCartesian(){
-    //Set the new position
-    uint16_t arr[] = CARTESIAN_POSITION;
-    this->setPositions(arr);
-    this->changeSpeed(DEFAULT_SPEED);
+    //*
+    if(this->mode != backhoe) {
+        std::cerr << std::endl  << "/!\\ ---------------------------------------------------------/!\\ " << std::endl 
+                                << "/!\\ Safety not implemented : Movement disabled for this mode /!\\ " << std::endl
+                                << "/!\\ ---------------------------------------------------------/!\\ " << std::endl;
+    
+        return false;
+    }    
+    //*/
 
-    //Send the new position to the board
-    std::vector<uint8_t> posCodes(NB_BIG_VALUE_MOTORS * 2 + NB_SMALL_VALUE_MOTORS, 0);
+    // TODO: complete
 
-    posCodes.push_back(ENABLE_OUTPUT);
-    posCodes.push_back(CARTESIAN_MODE);
-
-    this->send(posCodes);
-
-    std::vector<uint8_t> response;
-    this->receive(response);
+    return true;
 }
 
-
-void WidowX::goToSleep(){
-    //Set the new position
-    uint16_t arr[] = SLEEP_POSITION;
-    this->setPositions(arr);
-    this->changeSpeed(DEFAULT_SPEED);
-
-    //Send the new position to the board
-    std::vector<uint8_t> posCodes(NB_BIG_VALUE_MOTORS * 2 + NB_SMALL_VALUE_MOTORS, 0);
-
-    posCodes.push_back(ENABLE_OUTPUT);
-    posCodes.push_back(SLEEP_MODE);
-
-    this->send(posCodes);
-
-    std::vector<uint8_t> response;
-    this->receive(response);
-}
-*/
 
 /**
  * @brief Change the current working mode
@@ -357,12 +337,13 @@ void WidowX::goToSleep(){
  */
 void WidowX::changeMode(Mode newMode){
     //*
-    std::cout << "Changing from " << this->mode << " to " << newMode << std::endl;
+    std::cout << "Changing from " << modeToString(this->mode) << " to " << modeToString(newMode) << std::endl;
     this->mode = newMode;
     //*/
 
     std::vector<uint16_t> pos;
     int code;
+    bool disable = false;
     
     // Select the right mode values
     switch(newMode){
@@ -395,6 +376,7 @@ void WidowX::changeMode(Mode newMode){
         default:
             pos = SLEEP_POSITION;
             code = SLEEP_MODE;
+            disable = true;
     }
 
     // Send the new position to the board
@@ -410,5 +392,64 @@ void WidowX::changeMode(Mode newMode){
 
 
     // Set the new position
-    this->forceMove(pos);
+    if(!disable)
+        this->forceMove(pos);
 }
+
+
+
+/**
+ * @brief Convert a string into a mode
+ * 
+ * @param mode the string to convert
+ * @return Mode the corresponding mode
+ * 
+ * If the string does not match a mode, returns sleeping mode by default
+ */
+Mode WidowX::stringToMode(const std::string& mode){
+    if(mode == "cartesianStraight") return cartesianStraight;
+    else if(mode == "cartesian90degrees") return cartesian90degrees;
+    else if(mode == "cartesian90degrees") return cartesian90degrees;
+    else if(mode == "cylindricalStraight") return cylindricalStraight;
+    else if(mode == "cylindrical90degrees") return cylindrical90degrees;
+    else if(mode == "backhoe") return backhoe;
+    else return sleeping;
+}
+
+/**
+ * @brief Convert a mode into a string
+ * 
+ * @param mode the mode to convert
+ * @return std::string the corresponding string
+ */
+std::string WidowX::modeToString(const Mode mode){
+    switch(mode){
+        case cartesianStraight:
+            return "cartesianStraight";
+            break;
+        
+        case cartesian90degrees:
+            return "cartesian90degrees";
+            break;
+        
+        case cylindricalStraight:
+            return "cylindricalStraight";
+            break;
+        
+        case cylindrical90degrees:
+            return "cylindrical90degrees";
+            break;
+        
+        case backhoe:
+            return "backhoe";
+            break;
+        
+        case sleeping:
+        default:
+            return "sleeping";
+            
+    }
+}
+    
+    
+    

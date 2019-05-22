@@ -6,5 +6,5 @@ CXX_FLAGS =   -std=gnu++11
 
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/gagendro/Documents/Stage/Robot/Project/Communication/include -I/home/gagendro/Documents/Stage/Robot/Project/Communication/build 
+CXX_INCLUDES = -I/home/gagendro/Documents/Stage/Robot/Project/Communication/build -I/home/gagendro/Documents/Stage/Robot/Project/Communication/include/connection -I/home/gagendro/Documents/Stage/Robot/Project/Communication/include/exception 
 

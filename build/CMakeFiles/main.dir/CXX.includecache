@@ -6,12 +6,18 @@
 
 #IncludeRegexTransform: 
 
-../include/definitions.h
+../include/connection/definitions.h
 
-../include/widowx.h
-serial/serial.h
+../include/connection/range.h
+string
 -
-algorithm
+vector
+-
+definitions.h
+../include/connection/definitions.h
+
+../include/connection/widowx.h
+serial/serial.h
 -
 iostream
 -
@@ -20,7 +26,33 @@ chrono
 thread
 -
 definitions.h
-../include/definitions.h
+../include/connection/definitions.h
+connectionerror.h
+../include/connection/connectionerror.h
+movementerror.h
+../include/connection/movementerror.h
+range.h
+../include/connection/range.h
+
+../include/exception/connectionerror.h
+stdexcept
+-
+
+../include/exception/movementerror.h
+stdexcept
+-
+
+/home/gagendro/Documents/Stage/Robot/Project/Communication/src/connection/widowx.cpp
+widowx.h
+/home/gagendro/Documents/Stage/Robot/Project/Communication/src/connection/widowx.h
+
+/home/gagendro/Documents/Stage/Robot/Project/Communication/src/exception/connectionerror.cpp
+connectionerror.h
+/home/gagendro/Documents/Stage/Robot/Project/Communication/src/exception/connectionerror.h
+
+/home/gagendro/Documents/Stage/Robot/Project/Communication/src/exception/movementerror.cpp
+movementerror.h
+/home/gagendro/Documents/Stage/Robot/Project/Communication/src/exception/movementerror.h
 
 /home/gagendro/Documents/Stage/Robot/Project/Communication/src/main.cpp
 string
@@ -37,10 +69,6 @@ vector
 -
 serial/serial.h
 -
-widowx.h
-/home/gagendro/Documents/Stage/Robot/Project/Communication/src/widowx.h
-
-/home/gagendro/Documents/Stage/Robot/Project/Communication/src/widowx.cpp
 widowx.h
 /home/gagendro/Documents/Stage/Robot/Project/Communication/src/widowx.h
 

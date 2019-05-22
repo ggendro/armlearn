@@ -169,6 +169,87 @@ main/fast:
 	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
 .PHONY : main/fast
 
+src/connection/widowx.o: src/connection/widowx.cpp.o
+
+.PHONY : src/connection/widowx.o
+
+# target to build an object file
+src/connection/widowx.cpp.o:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/connection/widowx.cpp.o
+.PHONY : src/connection/widowx.cpp.o
+
+src/connection/widowx.i: src/connection/widowx.cpp.i
+
+.PHONY : src/connection/widowx.i
+
+# target to preprocess a source file
+src/connection/widowx.cpp.i:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/connection/widowx.cpp.i
+.PHONY : src/connection/widowx.cpp.i
+
+src/connection/widowx.s: src/connection/widowx.cpp.s
+
+.PHONY : src/connection/widowx.s
+
+# target to generate assembly for a file
+src/connection/widowx.cpp.s:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/connection/widowx.cpp.s
+.PHONY : src/connection/widowx.cpp.s
+
+src/exception/connectionerror.o: src/exception/connectionerror.cpp.o
+
+.PHONY : src/exception/connectionerror.o
+
+# target to build an object file
+src/exception/connectionerror.cpp.o:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/exception/connectionerror.cpp.o
+.PHONY : src/exception/connectionerror.cpp.o
+
+src/exception/connectionerror.i: src/exception/connectionerror.cpp.i
+
+.PHONY : src/exception/connectionerror.i
+
+# target to preprocess a source file
+src/exception/connectionerror.cpp.i:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/exception/connectionerror.cpp.i
+.PHONY : src/exception/connectionerror.cpp.i
+
+src/exception/connectionerror.s: src/exception/connectionerror.cpp.s
+
+.PHONY : src/exception/connectionerror.s
+
+# target to generate assembly for a file
+src/exception/connectionerror.cpp.s:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/exception/connectionerror.cpp.s
+.PHONY : src/exception/connectionerror.cpp.s
+
+src/exception/movementerror.o: src/exception/movementerror.cpp.o
+
+.PHONY : src/exception/movementerror.o
+
+# target to build an object file
+src/exception/movementerror.cpp.o:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/exception/movementerror.cpp.o
+.PHONY : src/exception/movementerror.cpp.o
+
+src/exception/movementerror.i: src/exception/movementerror.cpp.i
+
+.PHONY : src/exception/movementerror.i
+
+# target to preprocess a source file
+src/exception/movementerror.cpp.i:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/exception/movementerror.cpp.i
+.PHONY : src/exception/movementerror.cpp.i
+
+src/exception/movementerror.s: src/exception/movementerror.cpp.s
+
+.PHONY : src/exception/movementerror.s
+
+# target to generate assembly for a file
+src/exception/movementerror.cpp.s:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/exception/movementerror.cpp.s
+.PHONY : src/exception/movementerror.cpp.s
+
 src/main.o: src/main.cpp.o
 
 .PHONY : src/main.o
@@ -196,33 +277,6 @@ src/main.cpp.s:
 	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
-src/widowx.o: src/widowx.cpp.o
-
-.PHONY : src/widowx.o
-
-# target to build an object file
-src/widowx.cpp.o:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/widowx.cpp.o
-.PHONY : src/widowx.cpp.o
-
-src/widowx.i: src/widowx.cpp.i
-
-.PHONY : src/widowx.i
-
-# target to preprocess a source file
-src/widowx.cpp.i:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/widowx.cpp.i
-.PHONY : src/widowx.cpp.i
-
-src/widowx.s: src/widowx.cpp.s
-
-.PHONY : src/widowx.s
-
-# target to generate assembly for a file
-src/widowx.cpp.s:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/widowx.cpp.s
-.PHONY : src/widowx.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -236,12 +290,18 @@ help:
 	@echo "... list_install_components"
 	@echo "... install/local"
 	@echo "... install"
+	@echo "... src/connection/widowx.o"
+	@echo "... src/connection/widowx.i"
+	@echo "... src/connection/widowx.s"
+	@echo "... src/exception/connectionerror.o"
+	@echo "... src/exception/connectionerror.i"
+	@echo "... src/exception/connectionerror.s"
+	@echo "... src/exception/movementerror.o"
+	@echo "... src/exception/movementerror.i"
+	@echo "... src/exception/movementerror.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
-	@echo "... src/widowx.o"
-	@echo "... src/widowx.i"
-	@echo "... src/widowx.s"
 .PHONY : help
 
 

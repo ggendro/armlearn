@@ -9,14 +9,18 @@
  * 
  */
 
+#ifndef WIDOWX_H
+#define WIDOWX_H
 
 #include <serial/serial.h>
-#include <algorithm>
 #include <iostream>
 #include <chrono>
 #include <thread>
 
 #include "definitions.h"
+#include "connectionerror.h"
+#include "movementerror.h"
+#include "range.h"
 
 /**
  * @brief WidowX class
@@ -25,6 +29,7 @@
 class WidowX{
 
     private:
+        std::vector<Range*>* ranges;
         serial::Serial* serialPort;
         Mode mode;
 
@@ -46,7 +51,6 @@ class WidowX{
         bool connect();
         uint8_t computeChecksum(const std::vector<uint8_t>& data);
         bool checkValidity(const std::vector<uint8_t>& data);
-        bool isMoveEnabled();
 
         int send(const std::vector<uint8_t>& buffer);
         int receive(std::vector<uint8_t>& buffer);
@@ -58,10 +62,15 @@ class WidowX{
         virtual ~WidowX();
 
         void move(const std::vector<int>& positions); // 6 positions to fill, one for each servomotor
+        bool isMoveEnabled() const;
+        bool isMoveValid(const std::vector<int>& positions) const;
+
         void changeSpeed(int newSpeed);
         void changeMode(Mode newMode);
 
+        static Mode stringToMode(const std::string& mode);
+        static std::string modeToString(const Mode mode);
+
 };
 
-
-
+#endif

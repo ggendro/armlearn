@@ -57,9 +57,81 @@ include CMakeFiles/main.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/main.dir/flags.make
 
+CMakeFiles/main.dir/src/connection/widowx.cpp.o: CMakeFiles/main.dir/flags.make
+CMakeFiles/main.dir/src/connection/widowx.cpp.o: ../src/connection/widowx.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/gagendro/Documents/Stage/Robot/Project/Communication/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/main.dir/src/connection/widowx.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/main.dir/src/connection/widowx.cpp.o -c /home/gagendro/Documents/Stage/Robot/Project/Communication/src/connection/widowx.cpp
+
+CMakeFiles/main.dir/src/connection/widowx.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/main.dir/src/connection/widowx.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/gagendro/Documents/Stage/Robot/Project/Communication/src/connection/widowx.cpp > CMakeFiles/main.dir/src/connection/widowx.cpp.i
+
+CMakeFiles/main.dir/src/connection/widowx.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/main.dir/src/connection/widowx.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/gagendro/Documents/Stage/Robot/Project/Communication/src/connection/widowx.cpp -o CMakeFiles/main.dir/src/connection/widowx.cpp.s
+
+CMakeFiles/main.dir/src/connection/widowx.cpp.o.requires:
+
+.PHONY : CMakeFiles/main.dir/src/connection/widowx.cpp.o.requires
+
+CMakeFiles/main.dir/src/connection/widowx.cpp.o.provides: CMakeFiles/main.dir/src/connection/widowx.cpp.o.requires
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/connection/widowx.cpp.o.provides.build
+.PHONY : CMakeFiles/main.dir/src/connection/widowx.cpp.o.provides
+
+CMakeFiles/main.dir/src/connection/widowx.cpp.o.provides.build: CMakeFiles/main.dir/src/connection/widowx.cpp.o
+
+
+CMakeFiles/main.dir/src/exception/connectionerror.cpp.o: CMakeFiles/main.dir/flags.make
+CMakeFiles/main.dir/src/exception/connectionerror.cpp.o: ../src/exception/connectionerror.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/gagendro/Documents/Stage/Robot/Project/Communication/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/main.dir/src/exception/connectionerror.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/main.dir/src/exception/connectionerror.cpp.o -c /home/gagendro/Documents/Stage/Robot/Project/Communication/src/exception/connectionerror.cpp
+
+CMakeFiles/main.dir/src/exception/connectionerror.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/main.dir/src/exception/connectionerror.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/gagendro/Documents/Stage/Robot/Project/Communication/src/exception/connectionerror.cpp > CMakeFiles/main.dir/src/exception/connectionerror.cpp.i
+
+CMakeFiles/main.dir/src/exception/connectionerror.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/main.dir/src/exception/connectionerror.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/gagendro/Documents/Stage/Robot/Project/Communication/src/exception/connectionerror.cpp -o CMakeFiles/main.dir/src/exception/connectionerror.cpp.s
+
+CMakeFiles/main.dir/src/exception/connectionerror.cpp.o.requires:
+
+.PHONY : CMakeFiles/main.dir/src/exception/connectionerror.cpp.o.requires
+
+CMakeFiles/main.dir/src/exception/connectionerror.cpp.o.provides: CMakeFiles/main.dir/src/exception/connectionerror.cpp.o.requires
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/exception/connectionerror.cpp.o.provides.build
+.PHONY : CMakeFiles/main.dir/src/exception/connectionerror.cpp.o.provides
+
+CMakeFiles/main.dir/src/exception/connectionerror.cpp.o.provides.build: CMakeFiles/main.dir/src/exception/connectionerror.cpp.o
+
+
+CMakeFiles/main.dir/src/exception/movementerror.cpp.o: CMakeFiles/main.dir/flags.make
+CMakeFiles/main.dir/src/exception/movementerror.cpp.o: ../src/exception/movementerror.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/gagendro/Documents/Stage/Robot/Project/Communication/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/main.dir/src/exception/movementerror.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/main.dir/src/exception/movementerror.cpp.o -c /home/gagendro/Documents/Stage/Robot/Project/Communication/src/exception/movementerror.cpp
+
+CMakeFiles/main.dir/src/exception/movementerror.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/main.dir/src/exception/movementerror.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/gagendro/Documents/Stage/Robot/Project/Communication/src/exception/movementerror.cpp > CMakeFiles/main.dir/src/exception/movementerror.cpp.i
+
+CMakeFiles/main.dir/src/exception/movementerror.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/main.dir/src/exception/movementerror.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/gagendro/Documents/Stage/Robot/Project/Communication/src/exception/movementerror.cpp -o CMakeFiles/main.dir/src/exception/movementerror.cpp.s
+
+CMakeFiles/main.dir/src/exception/movementerror.cpp.o.requires:
+
+.PHONY : CMakeFiles/main.dir/src/exception/movementerror.cpp.o.requires
+
+CMakeFiles/main.dir/src/exception/movementerror.cpp.o.provides: CMakeFiles/main.dir/src/exception/movementerror.cpp.o.requires
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/exception/movementerror.cpp.o.provides.build
+.PHONY : CMakeFiles/main.dir/src/exception/movementerror.cpp.o.provides
+
+CMakeFiles/main.dir/src/exception/movementerror.cpp.o.provides.build: CMakeFiles/main.dir/src/exception/movementerror.cpp.o
+
+
 CMakeFiles/main.dir/src/main.cpp.o: CMakeFiles/main.dir/flags.make
 CMakeFiles/main.dir/src/main.cpp.o: ../src/main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/gagendro/Documents/Stage/Robot/Project/Communication/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/main.dir/src/main.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/gagendro/Documents/Stage/Robot/Project/Communication/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/main.dir/src/main.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/main.dir/src/main.cpp.o -c /home/gagendro/Documents/Stage/Robot/Project/Communication/src/main.cpp
 
 CMakeFiles/main.dir/src/main.cpp.i: cmake_force
@@ -81,43 +153,23 @@ CMakeFiles/main.dir/src/main.cpp.o.provides: CMakeFiles/main.dir/src/main.cpp.o.
 CMakeFiles/main.dir/src/main.cpp.o.provides.build: CMakeFiles/main.dir/src/main.cpp.o
 
 
-CMakeFiles/main.dir/src/widowx.cpp.o: CMakeFiles/main.dir/flags.make
-CMakeFiles/main.dir/src/widowx.cpp.o: ../src/widowx.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/gagendro/Documents/Stage/Robot/Project/Communication/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/main.dir/src/widowx.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/main.dir/src/widowx.cpp.o -c /home/gagendro/Documents/Stage/Robot/Project/Communication/src/widowx.cpp
-
-CMakeFiles/main.dir/src/widowx.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/main.dir/src/widowx.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/gagendro/Documents/Stage/Robot/Project/Communication/src/widowx.cpp > CMakeFiles/main.dir/src/widowx.cpp.i
-
-CMakeFiles/main.dir/src/widowx.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/main.dir/src/widowx.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/gagendro/Documents/Stage/Robot/Project/Communication/src/widowx.cpp -o CMakeFiles/main.dir/src/widowx.cpp.s
-
-CMakeFiles/main.dir/src/widowx.cpp.o.requires:
-
-.PHONY : CMakeFiles/main.dir/src/widowx.cpp.o.requires
-
-CMakeFiles/main.dir/src/widowx.cpp.o.provides: CMakeFiles/main.dir/src/widowx.cpp.o.requires
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/widowx.cpp.o.provides.build
-.PHONY : CMakeFiles/main.dir/src/widowx.cpp.o.provides
-
-CMakeFiles/main.dir/src/widowx.cpp.o.provides.build: CMakeFiles/main.dir/src/widowx.cpp.o
-
-
 # Object files for target main
 main_OBJECTS = \
-"CMakeFiles/main.dir/src/main.cpp.o" \
-"CMakeFiles/main.dir/src/widowx.cpp.o"
+"CMakeFiles/main.dir/src/connection/widowx.cpp.o" \
+"CMakeFiles/main.dir/src/exception/connectionerror.cpp.o" \
+"CMakeFiles/main.dir/src/exception/movementerror.cpp.o" \
+"CMakeFiles/main.dir/src/main.cpp.o"
 
 # External object files for target main
 main_EXTERNAL_OBJECTS =
 
+main: CMakeFiles/main.dir/src/connection/widowx.cpp.o
+main: CMakeFiles/main.dir/src/exception/connectionerror.cpp.o
+main: CMakeFiles/main.dir/src/exception/movementerror.cpp.o
 main: CMakeFiles/main.dir/src/main.cpp.o
-main: CMakeFiles/main.dir/src/widowx.cpp.o
 main: CMakeFiles/main.dir/build.make
 main: CMakeFiles/main.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/gagendro/Documents/Stage/Robot/Project/Communication/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable main"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/gagendro/Documents/Stage/Robot/Project/Communication/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable main"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/main.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -125,8 +177,10 @@ CMakeFiles/main.dir/build: main
 
 .PHONY : CMakeFiles/main.dir/build
 
+CMakeFiles/main.dir/requires: CMakeFiles/main.dir/src/connection/widowx.cpp.o.requires
+CMakeFiles/main.dir/requires: CMakeFiles/main.dir/src/exception/connectionerror.cpp.o.requires
+CMakeFiles/main.dir/requires: CMakeFiles/main.dir/src/exception/movementerror.cpp.o.requires
 CMakeFiles/main.dir/requires: CMakeFiles/main.dir/src/main.cpp.o.requires
-CMakeFiles/main.dir/requires: CMakeFiles/main.dir/src/widowx.cpp.o.requires
 
 .PHONY : CMakeFiles/main.dir/requires
 
