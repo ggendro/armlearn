@@ -6,6 +6,8 @@
 
 #IncludeRegexTransform: 
 
+../include/definitions.h
+
 ../include/widowx.h
 serial/serial.h
 -
@@ -17,6 +19,8 @@ chrono
 -
 thread
 -
+definitions.h
+../include/definitions.h
 
 /home/gagendro/Documents/Stage/Robot/Project/Communication/src/main.cpp
 string

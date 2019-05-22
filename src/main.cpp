@@ -14,24 +14,19 @@ int main(int argc, char *argv[]) {
 
 	WidowX rob("/dev/ttyUSB0");
 
-	bool stay = true;
+	int stay = 1;
 	while(stay){
-		std::cout << "what's next?" <<std::endl;
+		std::cout << "what's next? \n0. quit \n1. move \n2. change mode" <<std::endl;
 		std::cin >> stay;
 
-		if(stay == 32){
-			std::cout << "Cartesian mode" <<std::endl;
-			//rob.goToCartesian();
+		if(stay == 2){
+			std::cout << "mode: \n0. Straight cartesian \n1. 90 degrees cartesian \n2. Straight cylindrical \n3. 90 degrees cylindrical \n4. Backhoe \n5. Sleeping" <<std::endl;
 
-		}else if(stay == 64){
-			std::cout << "Backhoe mode" <<std::endl;
-			//rob.goToBackhoe();
+			int newMode;
+			std::cin >> newMode;
+			rob.changeMode((Mode) newMode);
 
-		}else if(stay == 96){
-			std::cout << "Sleep mode" <<std::endl;
-			//rob.goToSleep();
-
-		}else if (stay > 0){
+		}else if (stay == 1){
 			std::cout << "values:" <<std::endl;
 
 			std::vector<int> values;

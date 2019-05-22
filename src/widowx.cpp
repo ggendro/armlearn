@@ -1,9 +1,18 @@
+/**
+ * @copyright Copyright (c) 2019
+ */
+
 
 #include "widowx.h"
 
-WidowX::WidowX(const std::string port):id(0), delta(DEFAULT_SPEED){
-    uint16_t arr[] = SLEEP_POSITION;
-    this->setPositions(arr);
+/**
+ * @brief Construct a new Widow X:: Widow X object
+ * 
+ * @param port string format, path to the used port
+ * 
+ * Creates a new WidowX object and connects to the physical WidowXdevice. Sets it to backhoe mode.
+ */
+WidowX::WidowX(const std::string port):mode(sleeping), delta(DEFAULT_SPEED){
 
     serialPort = new serial::Serial(port, 38400); // Default values are defined in the Arm Link Reference
     this->open();
@@ -13,32 +22,62 @@ WidowX::WidowX(const std::string port):id(0), delta(DEFAULT_SPEED){
     }
         
     
-    this->goToBackhoe();
+    this->changeMode(backhoe);
 }
 
+/**
+ * @brief Destroy the Widow X:: Widow X object
+ * 
+ */
 WidowX::~WidowX(){
-    this->goToSleep();
+    this->changeMode(sleeping);
     serialPort->close();
 
     delete serialPort;
 }
 
 
-void WidowX::setPositions(uint16_t* values){
+/**
+ * @brief Set the position of the motors
+ * 
+ * @param values the new positions of the motors
+ * 
+ * Method non accessible for user, called by move() or a goTo() mehod
+ */
+void WidowX::setPositions(const std::vector<uint16_t>& values){
     for(int i=0; i< NB_BIG_VALUE_MOTORS; i++){
         this->positions[i] = values[i];
     }
 }
 
-void WidowX::setDelta(uint8_t value) {
+/**
+ * @brief Set the delta of the motors
+ * 
+ * @param value the new delta value
+ * 
+ * Method non accessible for user, called by move() or a goTo() mehod
+ */
+void WidowX::setDelta(const uint8_t value) {
     this->delta = value;
 }
 
 
+/**
+ * @brief Open the serial port if not already done
+ * 
+ */
 void WidowX::open(){
     if(!serialPort->isOpen()) serialPort->open();    
 }
 
+/**
+ * @brief Attempt to connect to the device
+ * 
+ * @return true if connection succeeded
+ * @return false if connection failed
+ * 
+ * The method will send successively connection requests to the device for CONNECT_TIMEOUT ms, when receiving  response, will call a method to check the validity of the device
+ */
 bool WidowX::connect(){
     std::chrono::time_point<std::chrono::system_clock> startTime = std::chrono::system_clock::now();
     std::chrono::time_point<std::chrono::system_clock> currentTime = std::chrono::system_clock::now();
@@ -52,9 +91,12 @@ bool WidowX::connect(){
         std::vector<uint8_t> messageReceived;
         int nbRead = this->receive(messageReceived);
 
-        if(nbRead > 0 && this->checkValidity(messageReceived)){
-            //todo: complete verification, collect id
-            return true;
+        if(nbRead > 0 && this->checkValidity(messageReceived)){ // Generic packet verification
+
+            if(messageReceived.size() == 5 && messageReceived[3] == 0 && messageReceived[1] == VALID_ID){ // Verification for id type packet: error code equals 0 and id code equals VAILD_ID
+                std::cout << "Connection established at " << std::chrono::duration<double, std::ratio<1, 1>>(currentTime - startTime).count() << " s" << std::endl;
+                return true;
+            }
         }
 
         std::this_thread::sleep_for(wait);
@@ -65,6 +107,12 @@ bool WidowX::connect(){
     return false;
 }
 
+/**
+ * @brief Computes the checksum of a packet
+ * 
+ * @param data the data containedin the packet
+ * @return uint8_t the according checksum
+ */
 uint8_t WidowX::computeChecksum(const std::vector<uint8_t>& data){
     int sum = 0;
     for(std::vector<uint8_t>::const_iterator ptr = data.cbegin(); ptr < data.cend(); ptr++){
@@ -81,7 +129,7 @@ uint8_t WidowX::computeChecksum(const std::vector<uint8_t>& data){
  * @return true if the packet is valid
  * @return false if not
  * 
- * TODO: be able to do specific packets check, such as id verification
+ * Verifies that the header and the checksum are correct
  */
 bool WidowX::checkValidity(const std::vector<uint8_t>& data){
 
@@ -92,13 +140,20 @@ bool WidowX::checkValidity(const std::vector<uint8_t>& data){
     }
 
     //Verify that the checksum is correct
-    int val = 0;
-    for(std::vector<uint8_t>::const_iterator ptr = data.cbegin()+1; ptr < data.cend()-1; ptr++){
-        val += *ptr;
-    }
-    if (255 - (val % 256) != data.back()) return false;
+    std::vector<uint8_t> reducedData((data.cbegin()+1), (data.cend()-1)); // removes the header and the actual checksum from data
+    if (this->computeChecksum(reducedData) != data.back()) return false;
 
     return true;
+}
+
+/**
+ * @brief Check if it is possible to execute a move
+ * 
+ * @return true 
+ * @return false 
+ */
+bool WidowX::isMoveEnabled(){
+    return this->mode != sleeping;
 }
 
 /**
@@ -110,7 +165,6 @@ bool WidowX::checkValidity(const std::vector<uint8_t>& data){
  * buffer size has to be 15 to be valid
  */
 int WidowX::send(const std::vector<uint8_t>& buffer){
-    //this->open();
 
     std::vector<uint8_t> fullBuf(buffer);
 
@@ -118,6 +172,7 @@ int WidowX::send(const std::vector<uint8_t>& buffer){
     fullBuf.push_back(this->computeChecksum(buffer));
 
     int res = this->serialPort->write(fullBuf);
+
     //*
     std::cout << "Packet sent : ";
     for (auto&& x : fullBuf) std::cout << std::hex << (int) x << " ";
@@ -127,9 +182,13 @@ int WidowX::send(const std::vector<uint8_t>& buffer){
     return res;
 }
 
-
+/**
+ * @brief Fills a buffer with the input from the device
+ * 
+ * @param buffer the buffer to fill data with
+ * @return int the number of bytes read
+ */
 int WidowX::receive(std::vector<uint8_t>& buffer){
-    //this->open();
     int nbChar = serialPort->available();
     
     int res = this->serialPort->read(buffer, nbChar);
@@ -145,19 +204,13 @@ int WidowX::receive(std::vector<uint8_t>& buffer){
 }
 
 
-void WidowX::move(const std::vector<int>& positions){
+void WidowX::forceMove(const std::vector<uint16_t>& positions){
     //Set the new position
-    uint16_t formattedPos[NB_BIG_VALUE_MOTORS];
-
-    for(int i=0; i < NB_BIG_VALUE_MOTORS; i++){
-        formattedPos[i] = (uint16_t) positions[i];
-    }
-
-    this->setPositions(formattedPos);
+    this->setPositions(positions);
 
     //Send the new position to the board
     std::vector<uint8_t> posCodes;
-    for(std::vector<int>::const_iterator ptr = positions.begin(); ptr < positions.end(); ptr++){
+    for(std::vector<uint16_t>::const_iterator ptr = positions.begin(); ptr < positions.end(); ptr++){
         posCodes.push_back(static_cast<uint8_t>((*ptr >> 8)));
         posCodes.push_back(static_cast<uint8_t>(*ptr));
     }
@@ -172,9 +225,38 @@ void WidowX::move(const std::vector<int>& positions){
     this->receive(response);
 }
 
+
+
+/**
+ * @brief Moves the device to the positions set in parameter
+ * 
+ * @param positions the positions to move the servomotors to
+ * 
+ * TODO : add limits to the positions to make impossible to go to undesired positions such as ones that overlaps on other board elements
+ */
+void WidowX::move(const std::vector<int>& positions){
+    // Verify if moving the robot is currently possible
+    if (!this->isMoveEnabled()) throw std::runtime_error("Move not possible");
+
+    // Verify that input is valid
+    // TODO:
+
+    // Format the input
+    std::vector<uint16_t> formattedPos(positions.cbegin(), positions.cend());
+
+    /*for(int i=0; i < NB_BIG_VALUE_MOTORS; i++){
+        formattedPos[i] = (uint16_t) positions[i];
+    }*/
+
+    // Execute the move
+    this->forceMove(formattedPos);
+}
+
 void WidowX::changeSpeed(int newSpeed){
     this->setDelta(newSpeed);
 }
+
+/*
 
 void WidowX::goToBackhoe(){
     //Set the new position
@@ -194,6 +276,7 @@ void WidowX::goToBackhoe(){
     this->receive(response);
 }
 
+
 void WidowX::goToCartesian(){
     //Set the new position
     uint16_t arr[] = CARTESIAN_POSITION;
@@ -212,6 +295,7 @@ void WidowX::goToCartesian(){
     this->receive(response);
 }
 
+
 void WidowX::goToSleep(){
     //Set the new position
     uint16_t arr[] = SLEEP_POSITION;
@@ -228,4 +312,103 @@ void WidowX::goToSleep(){
 
     std::vector<uint8_t> response;
     this->receive(response);
+}
+*/
+
+/**
+ * @brief Change the current working mode
+ * 
+ * @param newMode the new mode of the device
+ * 
+ * Possible modes:
+ * 
+ *  - cartesianStraight : moves the arm according to a cartesian coordonate system, straight positionning at initialization
+ *       }--\
+ *          |
+ *       __/
+ *      |__|
+ * 
+ *  - cartesian90degrees : moves the arm according to a cartesian coordonate system, 90 degrees positionning at initialization
+ *    /----\
+ *   |-| __/
+ *      |__|
+ * 
+ *  - cylindricStraight : moves the arm according to a cylindric coordonate system, straight positionning at initialization
+ *       }--\
+ *          |
+ *       __/
+ *      |__|
+ * 
+ *  - cylindric90degrees : moves the arm according to a cylindric coordonate system, 90 degrees positionning at initialization
+ *    /----\
+ *   |-| __/
+ *      |__|
+ * 
+ *  - backhoe : commands directly the arm's servomotors, right angle at positionning
+ *    }-----
+ *         |
+ *       __|
+ *      |__|
+ * 
+ *  - sleeping : disables the arm's servomotors, tidy position
+ *       }----\
+ *       __/--/
+ *      |__|
+ */
+void WidowX::changeMode(Mode newMode){
+    //*
+    std::cout << "Changing from " << this->mode << " to " << newMode << std::endl;
+    this->mode = newMode;
+    //*/
+
+    std::vector<uint16_t> pos;
+    int code;
+    
+    // Select the right mode values
+    switch(newMode){
+        case cartesianStraight:
+            pos = CARTESIAN_STRAIGHT_POSITION;
+            code = CARTESIAN_STRAIGHT_MODE;
+            break;
+
+        case cartesian90degrees:
+            pos = CARTESIAN_90DEGREES_POSITION;
+            code = CARTESIAN_90DEGREES_MODE;
+            break;
+
+        case cylindricalStraight:
+            pos = CYLINDRICAL_STRAIGHT_POSITION;
+            code = CYLINDRICAL_STRAIGHT_MODE;
+            break;
+
+        case cylindrical90degrees:
+            pos = CYLINDRICAL_90DEGREES_POSITION;
+            code = CYLINDRICAL_90DEGREES_MODE;
+            break;
+
+        case backhoe:
+            pos = BACKHOE_POSITION;
+            code = BACKHOE_MODE;
+            break;
+
+        case sleeping:
+        default:
+            pos = SLEEP_POSITION;
+            code = SLEEP_MODE;
+    }
+
+    // Send the new position to the board
+    std::vector<uint8_t> posCodes(NB_BIG_VALUE_MOTORS * 2 + NB_SMALL_VALUE_MOTORS, 0);
+
+    posCodes.push_back(ENABLE_OUTPUT);
+    posCodes.push_back(code);
+
+    this->send(posCodes);
+
+    std::vector<uint8_t> response;
+    this->receive(response);
+
+
+    // Set the new position
+    this->forceMove(pos);
 }
