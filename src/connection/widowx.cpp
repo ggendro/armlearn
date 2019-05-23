@@ -14,7 +14,7 @@
  */
 WidowX::WidowX(const std::string port):mode(sleeping), delta(DEFAULT_SPEED){
 
-    ranges = new std::vector<Range*>();
+    ranges = Range::buildWidowXSetup();
 
     serialPort = new serial::Serial(port, 38400); // Default values are defined in the Arm Link Reference
     this->open();
@@ -49,7 +49,7 @@ WidowX::~WidowX(){
  * 
  * @param values the new positions of the motors
  * 
- * Method non accessible for user, called by move() or a goTo() mehod
+ * Method non accessible for user, called by move() or changeMode() mehod
  */
 void WidowX::setPositions(const std::vector<uint16_t>& values){
     for(int i=0; i< NB_BIG_VALUE_MOTORS; i++){
@@ -62,9 +62,9 @@ void WidowX::setPositions(const std::vector<uint16_t>& values){
  * 
  * @param value the new delta value
  * 
- * Method non accessible for user, called by move() or a goTo() mehod
+ * Method non accessible for user, called by changeSpeed() mehod
  */
-void WidowX::setDelta(const uint8_t value) { // TODO: add range test
+void WidowX::setDelta(const uint8_t value) {
     this->delta = value;
 }
 
@@ -229,7 +229,7 @@ void WidowX::forceMove(const std::vector<uint16_t>& positions){
 
 
 /**
- * @brief Moves the device to the positions set in parameter
+ * @brief Move the device to the positions set in parameter
  * 
  * @param positions the positions to move the servomotors to
  * 
@@ -240,7 +240,7 @@ void WidowX::move(const std::vector<int>& positions){
     if (!this->isMoveEnabled()) throw MovementError("Device movement not enabled : sleeping mode - change mode to call method");
 
     // Verify that input is valid
-    if (!this->isMoveValid(positions)) throw MovementError("Movement not allowed : value out of range");//TODO: better throw a OutOfRangeError exception
+    if (!this->isMoveValid(positions)) throw OutOfRangeError("Movement not allowed : value out of range");
 
     // Format the input
     std::vector<uint16_t> formattedPos(positions.cbegin(), positions.cend());
@@ -253,7 +253,14 @@ void WidowX::move(const std::vector<int>& positions){
     this->forceMove(formattedPos);
 }
 
+/**
+ * @brief  Changes the servomotors' speed to the new value if this vaue is correct
+ * 
+ * @param newSpeed 
+ */
 void WidowX::changeSpeed(int newSpeed){
+    if(!(*this->ranges).back()->isValid(newSpeed)) throw OutOfRangeError("New speed not allowed - value out of range");
+
     this->setDelta(newSpeed);
 }
 
@@ -275,21 +282,24 @@ bool WidowX::isMoveEnabled() const{
  * @return false if at least one position is not correct
  * 
  * Only backhoe mode is implemented, will return false if current mode is not backhoe
- * TODO: implement verification for other modes as well
  */
 bool WidowX::isMoveValid(const std::vector<int>& positions) const{
 
     //*
-    if(this->mode != backhoe) {
+    if(this->mode != backhoe) { // TODO: (mode management) implement verification for other modes as well
         std::cerr << std::endl  << "/!\\ ---------------------------------------------------------/!\\ " << std::endl 
                                 << "/!\\ Safety not implemented : Movement disabled for this mode /!\\ " << std::endl
                                 << "/!\\ ---------------------------------------------------------/!\\ " << std::endl;
-    
-        return false;
+                                
+        throw MovementError("Movement not enabled for this mode : - change mode to call method");
     }    
     //*/
 
-    // TODO: complete
+    for(int i=0; i < positions.size(); i++){
+        if(!(*this->ranges)[i]->isValid(positions[i])) {
+            return false;
+        }
+    }
 
     return true;
 }

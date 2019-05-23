@@ -1,1 +1,0 @@
-/usr/bin/c++    -rdynamic CMakeFiles/main.dir/src/connection/widowx.cpp.o CMakeFiles/main.dir/src/exception/connectionerror.cpp.o CMakeFiles/main.dir/src/exception/movementerror.cpp.o CMakeFiles/main.dir/src/main.cpp.o  -o main  -L/usr/local/lib -Wl,-rpath,/usr/local/lib: -lserial 

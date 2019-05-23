@@ -20,6 +20,7 @@
 #include "definitions.h"
 #include "connectionerror.h"
 #include "movementerror.h"
+#include "outofrangeerror.h"
 #include "range.h"
 
 /**
@@ -29,7 +30,7 @@
 class WidowX{
 
     private:
-        std::vector<Range*>* ranges;
+        std::vector<Range*>* ranges; //TODO: (mode management) modify data structure to be able to check other modes as well
         serial::Serial* serialPort;
         Mode mode;
 

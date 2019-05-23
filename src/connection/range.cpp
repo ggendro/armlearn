@@ -92,3 +92,59 @@ bool Range::hasDomain(Mode domain) const{
 std::string Range::getName() const{
     return this->motorName;
 }
+
+std::vector<Range*>* Range::buildWidowXSetup() {
+    std::vector<Range*>* resp = new std::vector<Range*>();
+
+    std::string baseName = "base";
+    std::string shoulderName = "shoulder";
+    std::string elbowName = "elbow";
+    std::string wristAngleName = "wrist angle";
+    std::string wristRotateName = "wrist rotate";
+    std::string gripperName = "gripper";
+    std::string deltaName = "delta";
+
+    // Base
+    Range* base = new Range(BASE_MIN_VALUE_BACKHOE, BASE_MAX_VALUE_BACKHOE, backhoe, baseName);
+    base->addDomain(cylindricalStraight);
+    base->addDomain(cylindrical90degrees);
+    resp->push_back(base);
+
+    // Shoulder
+    Range* shoulder = new Range(SHOULDER_MIN_VALUE_BACKHOE, SHOULDER_MAX_VALUE_BACKHOE, backhoe, shoulderName);
+    resp->push_back(shoulder);
+
+    // Elbow
+    Range* elbow = new Range(ELBOW_MIN_VALUE_BACKHOE,ELBOW_MAX_VALUE_BACKHOE, backhoe, elbowName);
+    resp->push_back(elbow);
+
+    // Wrist angle
+    Range* wristAngle = new Range(ELBOW_MIN_VALUE_BACKHOE,ELBOW_MAX_VALUE_BACKHOE, backhoe, wristAngleName);
+    resp->push_back(wristAngle);
+
+    // Wrist rotate
+    Range* wristRotate = new Range(BASE_MIN_VALUE_BACKHOE, BASE_MAX_VALUE_BACKHOE, backhoe, wristRotateName);
+    base->addDomain(cylindricalStraight);
+    base->addDomain(cylindrical90degrees);
+    base->addDomain(cartesianStraight);
+    base->addDomain(cartesian90degrees);
+    resp->push_back(wristRotate);
+
+    // Gripper
+    Range* gripper = new Range(BASE_MIN_VALUE_BACKHOE, BASE_MAX_VALUE_BACKHOE, backhoe, gripperName);
+    base->addDomain(cylindricalStraight);
+    base->addDomain(cylindrical90degrees);
+    base->addDomain(cartesianStraight);
+    base->addDomain(cartesian90degrees);
+    resp->push_back(wristRotate);
+
+    // Delta
+    Range* delta = new Range(BASE_MIN_VALUE_BACKHOE, BASE_MAX_VALUE_BACKHOE, backhoe, deltaName);
+    base->addDomain(cylindricalStraight);
+    base->addDomain(cylindrical90degrees);
+    base->addDomain(cartesianStraight);
+    base->addDomain(cartesian90degrees);
+    resp->push_back(delta);
+
+    return resp;
+}

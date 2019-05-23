@@ -9,6 +9,7 @@
  * 
  */
 
+// TODO: (mode management) add values for other modes, change setUp function
 
 #ifndef RANGE_H
 #define RANGE_H
@@ -72,6 +73,8 @@ class Range{
         bool isValid(int value) const;
         bool hasDomain(Mode domain) const;
         std::string getName() const;
+
+        static std::vector<Range*>* buildWidowXSetup();
 
 };
 
