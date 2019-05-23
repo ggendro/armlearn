@@ -136,7 +136,7 @@ std::vector<Range*>* Range::buildWidowXSetup() {
     base->addDomain(cylindrical90degrees);
     base->addDomain(cartesianStraight);
     base->addDomain(cartesian90degrees);
-    resp->push_back(wristRotate);
+    resp->push_back(gripper);
 
     // Delta
     Range* delta = new Range(BASE_MIN_VALUE_BACKHOE, BASE_MAX_VALUE_BACKHOE, backhoe, deltaName);

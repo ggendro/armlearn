@@ -40,6 +40,10 @@ int main(int argc, char *argv[]) {
 			rob.move(values);
 		}
 		
+		std::vector<uint8_t> resp;
+
+		std::cout << "Waiting for a response..." << std::endl;
+		rob.read(resp, true);
 	}
 
 }

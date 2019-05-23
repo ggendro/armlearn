@@ -59,15 +59,17 @@ class WidowX{
 
 
     public:
-        WidowX(const std::string port);
+        WidowX(const std::string port); // Can throw exceptions if unable to connect
         virtual ~WidowX();
 
-        void move(const std::vector<int>& positions); // 6 positions to fill, one for each servomotor
+        void move(const std::vector<int>& positions); // 6 positions to fill, one for each servomotor, can throw exceptions if incorrect values
         bool isMoveEnabled() const;
         bool isMoveValid(const std::vector<int>& positions) const;
 
-        void changeSpeed(int newSpeed);
+        void changeSpeed(int newSpeed); // Can throw exceptions if incorrect value
         void changeMode(Mode newMode);
+
+        void read(std::vector<uint8_t>& buffer, bool wait=false, int timeout = 10000);
 
         static Mode stringToMode(const std::string& mode);
         static std::string modeToString(const Mode mode);

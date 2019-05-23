@@ -9,6 +9,7 @@
  * @brief Construct a new Widow X:: Widow X object
  * 
  * @param port string format, path to the used port
+ * @throw ConnectionError if cannot connect to device
  * 
  * Creates a new WidowX object and connects to the physical WidowXdevice. Sets it to backhoe mode.
  */
@@ -36,7 +37,7 @@ WidowX::~WidowX(){
     serialPort->close();
 
     delete serialPort;
-
+    
     for(auto ptr = ranges->begin(); ptr < ranges->end(); ptr++){
         delete *ptr;
     }
@@ -88,7 +89,7 @@ void WidowX::open(){
 bool WidowX::connect(){
     std::chrono::time_point<std::chrono::system_clock> startTime = std::chrono::system_clock::now();
     std::chrono::time_point<std::chrono::system_clock> currentTime = std::chrono::system_clock::now();
-    std::chrono::milliseconds wait(100);
+    std::chrono::milliseconds wait(500);
 
     std::vector<uint8_t> messageSent{0x00, 0x00, 0x00, 0xC8, 0x00, 0xC8, 0x00, 0x00, 0x02, 0x00, 0x01, 0x00, 0x80, 0x00, CONNECT_REQUEST}; // first bytes are unconsequential, only the last byte is important
     
@@ -96,9 +97,9 @@ bool WidowX::connect(){
         this->send(messageSent);
 
         std::vector<uint8_t> messageReceived;
-        int nbRead = this->receive(messageReceived);
+        this->receive(messageReceived);
 
-        if(nbRead > 0 && this->checkValidity(messageReceived)){ // Generic packet verification
+        if(this->checkValidity(messageReceived)){ // Generic packet verification
 
             if(messageReceived.size() == 5 && messageReceived[3] == 0 && messageReceived[1] == VALID_ID){ // Verification for id type packet: error code equals 0 and id code equals VAILD_ID
                 std::cout << "Connection established at " << std::chrono::duration<double, std::ratio<1, 1>>(currentTime - startTime).count() << " s" << std::endl;
@@ -139,6 +140,7 @@ uint8_t WidowX::computeChecksum(const std::vector<uint8_t>& data){
  * Verifies that the header and the checksum are correct
  */
 bool WidowX::checkValidity(const std::vector<uint8_t>& data){
+    if(data.size() < 3) return false;
 
     //Verify that the first byte matches with the header
     if((int) data.front() != HEADER) {
@@ -172,7 +174,7 @@ int WidowX::send(const std::vector<uint8_t>& buffer){
 
     //*
     std::cout << "Packet sent : ";
-    for (auto&& x : fullBuf) std::cout << std::hex << (int) x << " ";
+    for (auto&& x : fullBuf) std::cout << (int) x << " ";
     std::cout << "(" << res << ")" << std::endl;
     //*/
 
@@ -192,10 +194,11 @@ int WidowX::receive(std::vector<uint8_t>& buffer){
 
     //*
     std::cout << "Message received : ";
-    for(auto v : buffer) std::cout << v << " ";
+    for(auto&& v : buffer) {
+        if(isprint(v)) std::cout << v << " ";
+        else std::cout << (int) v << " ";
+    }
     std::cout << "(" << res << ")" << std::endl;
-    for(auto v : buffer) std::cout << (int) v << " ";
-    std::cout << "(converted into integers)" << std::endl;
     //*/
     return res;
 }
@@ -222,8 +225,8 @@ void WidowX::forceMove(const std::vector<uint16_t>& positions){
 
     this->send(posCodes);
 
-    std::vector<uint8_t> response;
-    this->receive(response);
+    //std::vector<uint8_t> response;
+    //this->receive(response);
 }
 
 
@@ -232,8 +235,8 @@ void WidowX::forceMove(const std::vector<uint16_t>& positions){
  * @brief Move the device to the positions set in parameter
  * 
  * @param positions the positions to move the servomotors to
- * 
- * TODO : add limits to the positions to make impossible to go to undesired positions such as ones that overlaps on other board elements
+ * @throw MovementError if the movement is not enabled
+ * @throw OutOfRangeError if the asked values are out of the servomotors' ranges
  */
 void WidowX::move(const std::vector<int>& positions){
     // Verify if moving the robot is currently possible
@@ -257,6 +260,7 @@ void WidowX::move(const std::vector<int>& positions){
  * @brief  Changes the servomotors' speed to the new value if this vaue is correct
  * 
  * @param newSpeed 
+ * @throw OutOfRangeError if the value is out of the speed range
  */
 void WidowX::changeSpeed(int newSpeed){
     if(!(*this->ranges).back()->isValid(newSpeed)) throw OutOfRangeError("New speed not allowed - value out of range");
@@ -290,7 +294,7 @@ bool WidowX::isMoveValid(const std::vector<int>& positions) const{
         std::cerr << std::endl  << "/!\\ ---------------------------------------------------------/!\\ " << std::endl 
                                 << "/!\\ Safety not implemented : Movement disabled for this mode /!\\ " << std::endl
                                 << "/!\\ ---------------------------------------------------------/!\\ " << std::endl;
-                                
+
         throw MovementError("Movement not enabled for this mode : - change mode to call method");
     }    
     //*/
@@ -397,13 +401,30 @@ void WidowX::changeMode(Mode newMode){
 
     this->send(posCodes);
 
-    std::vector<uint8_t> response;
-    this->receive(response);
+    //std::vector<uint8_t> response;
+    //this->receive(response);
 
 
     // Set the new position
     if(!disable)
         this->forceMove(pos);
+}
+
+
+/**
+ * @brief Read data in the device's buffer
+ * 
+ * @param buffer the buffer to fill
+ * @param wait wait if true, the method is blocking: will wait until data is available or timeout elapsed, otherwise read immediately the data available even if the buffer is empty
+ * @param timeout the maximum time to wait, in milliseconds
+ */
+void WidowX::read(std::vector<uint8_t>& buffer, bool wait, int timeout){
+    if(wait){
+        std::chrono::time_point<std::chrono::system_clock> startTime = std::chrono::system_clock::now();
+        while(this->serialPort->available() == 0 && std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime).count() < timeout); // TODO: Implement without active waiting
+    }
+
+    this->receive(buffer);
 }
 
 
