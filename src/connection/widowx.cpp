@@ -8,7 +8,7 @@
 /**
  * @brief Construct a new Widow X:: Widow X object
  * 
- * @param port string format, path to the used port
+ * @param port string format, path to the used port - Windows: "COM1"   Linux: "/dev/ttyUSB0"
  * @throw ConnectionError if cannot connect to device
  * 
  * Creates a new WidowX object and connects to the physical WidowXdevice. Sets it to backhoe mode.

@@ -8,9 +8,49 @@
 #include <serial/serial.h>
 
 #include "widowx.h"
+#include "trajectory.h"
+
+
+
+
+
+/*
+#include <dynamixel_sdk/dynamixel_sdk.h>
+#include <fcntl.h>
+#include <termios.h>
+
+// Control table address
+#define ADDR_PRO_TORQUE_ENABLE          562                 // Control table address is different in Dynamixel model
+#define ADDR_PRO_GOAL_POSITION          596
+#define ADDR_PRO_PRESENT_POSITION       611
+
+// Protocol version
+#define PROTOCOL_VERSION                1.0                 // See which protocol version is used in the Dynamixel
+
+// Default setting
+#define DXL_ID                          1                   // Dynamixel ID: 1
+#define BAUDRATE                        1000000
+#define DEVICENAME                      "/dev/ttyUSB0"      // Check which port is being used on your controller
+                                                            // ex) Windows: "COM1"   Linux: "/dev/ttyUSB0"
+
+#define TORQUE_ENABLE                   1                   // Value for enabling the torque
+#define TORQUE_DISABLE                  0                   // Value for disabling the torque
+#define DXL_MINIMUM_POSITION_VALUE      -150000             // Dynamixel will rotate between this value
+#define DXL_MAXIMUM_POSITION_VALUE      150000              // and this value (note that the Dynamixel would not move when the position value is out of movable range. Check e-manual about the range of the Dynamixel you use.)
+#define DXL_MOVING_STATUS_THRESHOLD     20                  // Dynamixel moving status threshold
+
+#define ESC_ASCII_VALUE                 0x1b
+//*/
+
+
+
 
 
 int main(int argc, char *argv[]) {
+
+
+	// Communication API code tests
+	/*
 
 	WidowX rob("/dev/ttyUSB0");
 
@@ -39,11 +79,189 @@ int main(int argc, char *argv[]) {
 
 			rob.move(values);
 		}
-		
-		std::vector<uint8_t> resp;
 
-		std::cout << "Waiting for a response..." << std::endl;
-		rob.read(resp, true);
 	}
+	//*/
+
+
+	//Communication API tests of dynamixel_sdk library
+	/*
+	
+	dynamixel::PortHandler *portHandler = dynamixel::PortHandler::getPortHandler(DEVICENAME);
+  	dynamixel::PacketHandler *packetHandler = dynamixel::PacketHandler::getPacketHandler(PROTOCOL_VERSION);
+
+	if (!portHandler->openPort()){
+		std::cout << "Error while opening the port - exit" << std::endl;
+		return 0;
+	}
+
+	if(!portHandler->setBaudRate(1000000)){
+		std::cout << "Error while setting baudrate - exit" << std::endl;
+		return 0;
+	}
+
+	int index = 0;
+	int dxl_comm_result = COMM_TX_FAIL;             // Communication result
+	int dxl_goal_position[2] = {DXL_MINIMUM_POSITION_VALUE, DXL_MAXIMUM_POSITION_VALUE};         // Goal position
+
+	uint8_t dxl_error = 0;                          // Dynamixel error
+	int32_t dxl_present_position = 0;               // Present position
+
+	// Enable Dynamixel Torque
+	dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, DXL_ID, ADDR_PRO_TORQUE_ENABLE, TORQUE_ENABLE, &dxl_error);
+	if (dxl_comm_result != COMM_SUCCESS)
+	{
+		const char* res = packetHandler->getTxRxResult(dxl_comm_result);
+		printf("%s\n", res);
+	}
+	else if (dxl_error != 0)
+	{
+		const char* res = packetHandler->getRxPacketError(dxl_error);
+		printf("%s\n", res);
+	}
+	else
+	{
+		printf("Dynamixel has been successfully connected \n");
+	}
+
+	//*/
+
+
+	//Communication API send and receive message tests
+	/*
+	WidowX rob("/dev/ttyUSB0");
+	std::chrono::time_point<std::chrono::system_clock> startTime = std::chrono::system_clock::now();
+	std::chrono::time_point<std::chrono::system_clock> currentTime = std::chrono::system_clock::now();
+	int timeout = 10000;
+
+	while(std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startTime).count() < timeout){
+		std::vector<uint8_t> sendBuf{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 112};
+		rob.send(sendBuf);
+	
+		std::this_thread::sleep_for((std::chrono::milliseconds) 1000);
+		std::vector<uint8_t> receiveBuf;
+		rob.receive(receiveBuf);
+
+		currentTime = std::chrono::system_clock::now();
+	}
+
+	//*/
+	
+
+	//Serial API communication with servomotors
+	/*
+
+	serial::Serial serialPort("/dev/ttyUSB0", 38400);
+
+	uint8_t id = 1;
+	uint8_t instruction = 2;
+	std::vector<uint8_t> parameters = {0, 10};
+	uint8_t length = 2 + parameters.size();
+
+	uint8_t checksum = 0;
+    for(std::vector<uint8_t>::const_iterator ptr = parameters.cbegin(); ptr < parameters.cend(); ptr++){
+		checksum += *ptr;
+	}
+
+	checksum = 255 - ((id + length + instruction + checksum) % 256);
+
+	std::vector<uint8_t> sendBuf = {HEADER, HEADER, id, length, instruction};
+    sendBuf.insert(sendBuf.end(), parameters.begin(), parameters.end());
+	sendBuf.push_back(checksum);
+
+    int sent = serialPort.write(sendBuf);
+
+	std::cout << "Message sent : ";
+    for(auto&& v : sendBuf) {
+        if(isprint(v)) std::cout << v << " ";
+        else std::cout << (int) v << " ";
+    }
+    std::cout << "(" << sent << ")" << std::endl;
+
+	std::this_thread::sleep_for((std::chrono::milliseconds) 5000);
+
+	std::vector<uint8_t> receiveBuf;
+
+    int nbChar = serialPort.available();
+    int receive = serialPort.read(receiveBuf, nbChar);
+
+	std::cout << "Message received : ";
+    for(auto&& v : receiveBuf) {
+        if(isprint(v)) std::cout << v << " ";
+        else std::cout << (int) v << " ";
+    }
+    std::cout << "(" << receive << ")" << std::endl;
+	
+
+	//*/
+
+
+	//Trajectory API receive message tests
+	/*
+	WidowX* rob = new WidowX("/dev/ttyUSB0");
+
+	Trajectory path(rob);
+
+	path.addPoint({2048, 2048, 2048, 2048, 512, 159});
+
+	path.printTrajectory();
+
+	int i = fork();
+	if(i){
+
+		path.init();
+		path.executeTrajectory();
+
+		std::this_thread::sleep_for((std::chrono::milliseconds) 15000);
+
+		delete rob;
+
+	}else{
+
+		int nbRead = 50;
+		int realRead = 0;
+        std::chrono::time_point<std::chrono::system_clock> startTime = std::chrono::system_clock::now();
+        std::chrono::time_point<std::chrono::system_clock> currentTime = std::chrono::system_clock::now();
+		int timeout = 10000;
+
+		while(realRead < nbRead && std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startTime).count() < timeout){
+			std::this_thread::sleep_for((std::chrono::milliseconds) 1000);
+			std::vector<uint8_t> receiveBuf;
+			rob->receive(receiveBuf);
+
+			if(receiveBuf.size() > 0){
+				for(auto v : receiveBuf) std::cout << (int) v << "\t";
+				std::cout << std::endl;
+			}
+			currentTime = std::chrono::system_clock::now();
+		}
+
+		delete rob;
+
+	}
+
+	//*/
+
+
+	//Trajectory API code tests
+	//*
+	WidowX* rob = new WidowX("/dev/ttyUSB0");
+
+	Trajectory path(rob);
+
+	path.addPoint({2048, 2048, 2048, 2048, 512, 159});
+	path.addPoint({2048, 1900, 2800, 1400, 512, 256});
+	path.addPoint({2048, 2400, 1900, 2400, 256, 10});
+	path.addPoint({2825, 2048, 2048, 2048, 768, 159});
+
+	path.printTrajectory();
+
+
+	path.init();
+	path.executeTrajectory();
+
+	delete rob;
+
+	//*/
 
 }

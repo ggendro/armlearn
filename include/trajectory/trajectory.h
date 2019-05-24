@@ -20,7 +20,7 @@
 #include "trajectoryerror.h"
 
 
-#define WAITING_TIME 1000
+#define WAITING_TIME 5000
 
 
 /**
