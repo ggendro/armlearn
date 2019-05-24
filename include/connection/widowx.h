@@ -55,7 +55,9 @@ class WidowX{
 
         int send(const std::vector<uint8_t>& buffer);
         int receive(std::vector<uint8_t>& buffer);
+        
         void forceMove(const std::vector<uint16_t>& positions); // Move without verifications
+        void read(std::vector<uint8_t>& buffer, bool wait=false, int timeout = CONNECT_TIMEOUT);
 
 
     public:
@@ -68,9 +70,8 @@ class WidowX{
 
         void changeSpeed(int newSpeed); // Can throw exceptions if incorrect value
         void changeMode(Mode newMode);
-
-        void read(std::vector<uint8_t>& buffer, bool wait=false, int timeout = 10000);
-
+        
+        Mode getMode() const;
         static Mode stringToMode(const std::string& mode);
         static std::string modeToString(const Mode mode);
 

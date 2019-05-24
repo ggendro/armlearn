@@ -40,6 +40,7 @@ target_include_directories(main PUBLIC
 
 target_include_directories(main PRIVATE ${INCLUDE_DIRS})
 target_link_libraries(main serial)
+target_link_libraries(main dxl_x64_cpp)
 
 # add the install targets
 install(TARGETS main DESTINATION bin)

@@ -8,6 +8,7 @@ ConnectionError::ConnectionError():ConnectionError("Unable to establish connecti
 ConnectionError::ConnectionError(const std::string& what_arg):std::runtime_error(what_arg){
 
 }
+
 ConnectionError::ConnectionError(const char* what_arg):std::runtime_error(what_arg){
 
 }

@@ -20,6 +20,8 @@
 
 // Code for an ID request
 #define CONNECT_REQUEST 112
+// Minimum size of a packet
+#define MIN_PACKET_SIZE 5
 // ID corresponding to the WidowX arm
 #define VALID_ID 3
 

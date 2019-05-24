@@ -89,25 +89,26 @@ void WidowX::open(){
 bool WidowX::connect(){
     std::chrono::time_point<std::chrono::system_clock> startTime = std::chrono::system_clock::now();
     std::chrono::time_point<std::chrono::system_clock> currentTime = std::chrono::system_clock::now();
-    std::chrono::milliseconds wait(500);
+    std::chrono::milliseconds wait(1000);
 
     std::vector<uint8_t> messageSent{0x00, 0x00, 0x00, 0xC8, 0x00, 0xC8, 0x00, 0x00, 0x02, 0x00, 0x01, 0x00, 0x80, 0x00, CONNECT_REQUEST}; // first bytes are unconsequential, only the last byte is important
     
     while(std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startTime).count() < CONNECT_TIMEOUT){
         this->send(messageSent);
+        std::this_thread::sleep_for(wait);
 
         std::vector<uint8_t> messageReceived;
         this->receive(messageReceived);
 
-        if(this->checkValidity(messageReceived)){ // Generic packet verification
+        if(this->checkValidity(messageReceived)){ // Packet verification
 
-            if(messageReceived.size() == 5 && messageReceived[3] == 0 && messageReceived[1] == VALID_ID){ // Verification for id type packet: error code equals 0 and id code equals VAILD_ID
-                std::cout << "Connection established at " << std::chrono::duration<double, std::ratio<1, 1>>(currentTime - startTime).count() << " s" << std::endl;
-                return true;
-            }
+            std::this_thread::sleep_for(wait); // Wait for all answers to come and flush to prevent issues afterwards
+            this->serialPort->flush();
+
+            std::cout << "Connection established at " << std::chrono::duration<double, std::ratio<1, 1>>(currentTime - startTime).count() << " s" << std::endl;
+            return true;
         }
 
-        std::this_thread::sleep_for(wait);
         currentTime = std::chrono::system_clock::now();
         std::cout << "Failed to connect after " <<  std::chrono::duration<double, std::ratio<1, 1>>(currentTime - startTime).count() << " s" << std::endl;
     }
@@ -140,16 +141,20 @@ uint8_t WidowX::computeChecksum(const std::vector<uint8_t>& data){
  * Verifies that the header and the checksum are correct
  */
 bool WidowX::checkValidity(const std::vector<uint8_t>& data){
-    if(data.size() < 3) return false;
+    //Verify that packet size is 5 minimum
+    if(data.size() < MIN_PACKET_SIZE) return false;
 
-    //Verify that the first byte matches with the header
-    if((int) data.front() != HEADER) {
-        std::cout << "Wrong header : " << (int) data.front() << " - required : " << HEADER << std::endl;
-        return false;
-    }
+    // Verify that first byte matches with the header 
+    if((int) data.front() != HEADER) return false;
+
+    // Verify that error code is equal to 0
+    if(data[3] != 0) return false;
+    
+    // Verify that id code equals VALID_ID
+    if(data[1] != VALID_ID) return false;
 
     //Verify that the checksum is correct
-    std::vector<uint8_t> reducedData((data.cbegin()+1), (data.cend()-1)); // removes the header and the actual checksum from data
+    std::vector<uint8_t> reducedData((data.cbegin()+1), (data.cend()-1)); // Removes the header and the actual checksum from data
     if (this->computeChecksum(reducedData) != data.back()) return false;
 
     return true;
@@ -224,9 +229,7 @@ void WidowX::forceMove(const std::vector<uint16_t>& positions){
     posCodes.push_back(MOVE_MODE);
 
     this->send(posCodes);
-
-    //std::vector<uint8_t> response;
-    //this->receive(response);
+    
 }
 
 
@@ -248,9 +251,6 @@ void WidowX::move(const std::vector<int>& positions){
     // Format the input
     std::vector<uint16_t> formattedPos(positions.cbegin(), positions.cend());
 
-    /*for(int i=0; i < NB_BIG_VALUE_MOTORS; i++){
-        formattedPos[i] = (uint16_t) positions[i];
-    }*/
 
     // Execute the move
     this->forceMove(formattedPos);
@@ -352,8 +352,13 @@ bool WidowX::isMoveValid(const std::vector<int>& positions) const{
 void WidowX::changeMode(Mode newMode){
     //*
     std::cout << "Changing from " << modeToString(this->mode) << " to " << modeToString(newMode) << std::endl;
-    this->mode = newMode;
     //*/
+    if(this->mode == newMode){
+        std::cout << "Mode changed" << std::endl;
+        return;
+    }
+
+    this->mode = newMode;
 
     std::vector<uint16_t> pos;
     int code;
@@ -401,18 +406,21 @@ void WidowX::changeMode(Mode newMode){
 
     this->send(posCodes);
 
-    //std::vector<uint8_t> response;
-    //this->receive(response);
-
+    std::vector<uint8_t> modeResponse;
+    this->read(modeResponse, true);
+    if(!checkValidity(modeResponse)) throw MovementError("Error changing mode : invalid response from board");
 
     // Set the new position
-    if(!disable)
-        this->forceMove(pos);
+    if(!disable) this->forceMove(pos);
+
+    //*
+    std::cout << "Mode changed" << std::endl;
+    //*/
 }
 
 
 /**
- * @brief Read data in the device's buffer
+ * @brief Read data in the device's buffer and add it to the buffer in parameter
  * 
  * @param buffer the buffer to fill
  * @param wait wait if true, the method is blocking: will wait until data is available or timeout elapsed, otherwise read immediately the data available even if the buffer is empty
@@ -421,13 +429,30 @@ void WidowX::changeMode(Mode newMode){
 void WidowX::read(std::vector<uint8_t>& buffer, bool wait, int timeout){
     if(wait){
         std::chrono::time_point<std::chrono::system_clock> startTime = std::chrono::system_clock::now();
-        while(this->serialPort->available() == 0 && std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime).count() < timeout); // TODO: Implement without active waiting
-    }
+        std::chrono::time_point<std::chrono::system_clock> currentTime = std::chrono::system_clock::now();
 
-    this->receive(buffer);
+        while(this->serialPort->available() < MIN_PACKET_SIZE && std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startTime).count() < timeout){ // TODO: Implement without active waiting
+            currentTime = std::chrono::system_clock::now();
+            std::this_thread::sleep_for((std::chrono::milliseconds) 100); // Will check every 100 milliseconds
+        }
+    }
+    
+    std::vector<uint8_t> tempBuf;
+    this->receive(tempBuf);
+
+    for(auto ptr = tempBuf.cbegin(); ptr < tempBuf.cend(); ptr++) buffer.push_back(*ptr);
 }
 
 
+
+/**
+ * @brief Return the current mode of the board
+ * 
+ * @return Mode the mode of the board
+ */
+Mode WidowX::getMode() const{
+    return mode;
+}
 
 /**
  * @brief Convert a string into a mode
