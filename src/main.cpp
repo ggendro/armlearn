@@ -13,7 +13,7 @@
 
 
 
-
+// To remove when dynamixel_sdk tests are over
 /*
 #include <dynamixel_sdk/dynamixel_sdk.h>
 #include <fcntl.h>
@@ -95,11 +95,12 @@ int main(int argc, char *argv[]) {
 		return 0;
 	}
 
-	if(!portHandler->setBaudRate(1000000)){
+	if(!portHandler->setBaudRate(BAUDRATE)){
 		std::cout << "Error while setting baudrate - exit" << std::endl;
 		return 0;
 	}
 
+	portHandler->setPacketTimeout(100000.0);
 	int index = 0;
 	int dxl_comm_result = COMM_TX_FAIL;             // Communication result
 	int dxl_goal_position[2] = {DXL_MINIMUM_POSITION_VALUE, DXL_MAXIMUM_POSITION_VALUE};         // Goal position
@@ -127,7 +128,7 @@ int main(int argc, char *argv[]) {
 	//*/
 
 
-	//Communication API send and receive message tests
+	//Communication API send and receive message tests (in widowx.h, put send and receive methods in public)
 	/*
 	WidowX rob("/dev/ttyUSB0");
 	std::chrono::time_point<std::chrono::system_clock> startTime = std::chrono::system_clock::now();
@@ -135,7 +136,7 @@ int main(int argc, char *argv[]) {
 	int timeout = 10000;
 
 	while(std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startTime).count() < timeout){
-		std::vector<uint8_t> sendBuf{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 112};
+		std::vector<uint8_t> sendBuf{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x81};
 		rob.send(sendBuf);
 	
 		std::this_thread::sleep_for((std::chrono::milliseconds) 1000);
@@ -150,12 +151,34 @@ int main(int argc, char *argv[]) {
 
 	//Serial API communication with servomotors
 	/*
+	*			byte id: id of the servo to send data to
+ 	*           byte instruction: kind of instruction to send to servo
+ 	*                              1-Ping
+ 	*                              2-READ_DATA
+	*                              3-WRITE_DATA
+	*                              4-REG_WRITE
+	*                              5-ACTION
+	*                              6-RESET
+	*                              83-SYNC WRITE
+	*                              more info at  http://support.robotis.com/en/product/dynamixel/communication/dxl_packet.htm
+	*           byte parameters: parameters for the packet.
+	*                            Writes : [0] ->starting register
+	*                                     [1] -> first value (at register [0])
+	*                                     [2] -> first value (at register [0]+1)(optional)
+	*                                     etc(optional)
+	*                             Reads : [0] ->starting register
+	*                                     [1] -> length (how many registers to read)
+	*/
+	/*
 
-	serial::Serial serialPort("/dev/ttyUSB0", 38400);
+	serial::Serial serialPort("/dev/ttyUSB0", 34800); // For arbotix : 34800 (that's the good one) ; for servomotor MX-64 : 57600 or 1000000 according to dynamixel_SDK and dynaManager
+	
+	
+	
 
-	uint8_t id = 1;
+	uint8_t id = 1; // Put the ID of the servo to send the packet to, OxFE for broadcast
 	uint8_t instruction = 2;
-	std::vector<uint8_t> parameters = {0, 10};
+	std::vector<uint8_t> parameters = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x81};
 	uint8_t length = 2 + parameters.size();
 
 	uint8_t checksum = 0;
@@ -172,13 +195,22 @@ int main(int argc, char *argv[]) {
     int sent = serialPort.write(sendBuf);
 
 	std::cout << "Message sent : ";
-    for(auto&& v : sendBuf) {
-        if(isprint(v)) std::cout << v << " ";
-        else std::cout << (int) v << " ";
-    }
+    for(auto&& v : sendBuf) std::cout << (int) v << " ";
     std::cout << "(" << sent << ")" << std::endl;
 
-	std::this_thread::sleep_for((std::chrono::milliseconds) 5000);
+	
+
+	std::chrono::time_point<std::chrono::system_clock> startTime = std::chrono::system_clock::now();
+	std::chrono::time_point<std::chrono::system_clock> currentTime = std::chrono::system_clock::now();
+
+	while(serialPort.available() < MIN_PACKET_SIZE && std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startTime).count() < 10000){
+		currentTime = std::chrono::system_clock::now();
+		std::cout << "No answer at " <<  std::chrono::duration<double, std::ratio<1, 1>>(currentTime - startTime).count() << " s" << std::endl;
+
+		std::this_thread::sleep_for((std::chrono::milliseconds) 100); // Will check every x milliseconds
+	}
+	std::cout << "Answer at " <<  std::chrono::duration<double, std::ratio<1, 1>>(currentTime - startTime).count() << " s" << std::endl;
+	std::this_thread::sleep_for((std::chrono::milliseconds) 250); // Leave time for the buffer to complete filling
 
 	std::vector<uint8_t> receiveBuf;
 
@@ -186,10 +218,7 @@ int main(int argc, char *argv[]) {
     int receive = serialPort.read(receiveBuf, nbChar);
 
 	std::cout << "Message received : ";
-    for(auto&& v : receiveBuf) {
-        if(isprint(v)) std::cout << v << " ";
-        else std::cout << (int) v << " ";
-    }
+    for(auto&& v : receiveBuf) std::cout << v << " ";
     std::cout << "(" << receive << ")" << std::endl;
 	
 
