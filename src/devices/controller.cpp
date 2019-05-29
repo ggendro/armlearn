@@ -219,7 +219,7 @@ void Controller::connect(){
             auto servo = motors->find(buf[8])->second;
 
             servo->setStatus(connected);
-            servo->setModel(buf[5] + (buf[6] << 8));
+            servo->setModel(buf[5] + (buf[6] << BYTE_SIZE));
             servo->setFirmware(buf[7]);
         }
     }
@@ -303,20 +303,114 @@ bool Controller::changeId(uint8_t oldId, uint8_t newId){
     return false;
 }
 
+/**
+ * @brief Turn the LED of the servomotor ON / OFF
+ * 
+ * @param id the id of the servomotor the LED must be changed
+ * @param on if true, will turn LED on, if false will turn off
+ * @return true if successfully changed
+ * @return false otherwise
+ */
 bool Controller::turnLED(uint8_t id, bool on){
-    
-}
-bool Controller::turnLED(bool on){
-    auto f = [on, *this](uint8_t id){return turnLED(id, on);};
-    FOR_ALL_SERVOS( f, "LED not updated.")
+    auto ptr = motors->find(id);
+    if(ptr == motors->end() && motors->find(id)->second->getLED() == on) return true;
+
+    int repSize = writeIns(id, LED_REGISTER, {(uint8_t) on});
+    std::vector<uint8_t> rep;
+    int res = receive(rep, false, true, repSize);
+
+    if(res == repSize && validPacket(rep)){
+        ptr->second->setLED(on);
+        
+        return true;
+    }
+    return false;
 }
 
-bool changeSpeed(uint8_t id, uint16_t newSpeed);
-bool changeSpeed(uint16_t newSpeed);
-bool setPosition(uint8_t id, uint16_t newPosition);
-bool setPosition(uint16_t newPosition);
-bool addPosition(uint8_t id, uint16_t dx);
-bool addPosition(uint16_t dx);
+/**
+ * @brief Turn the LED of the servomotor ON if it is currently OFF and OFF if it is currently ON
+ * 
+ * @param id the id of the servomotor the LED must be changed
+ * @return true if successfully changed
+ * @return false otherwise
+ */
+bool Controller::turnLED(uint8_t id){
+    auto ptr = motors->find(id);
+    if(ptr == motors->end()) return false;
+
+    uint8_t on = !ptr->second->getLED();
+
+    int repSize = writeIns(id, LED_REGISTER, {on});
+    std::vector<uint8_t> rep;
+    int res = receive(rep, false, true, repSize);
+
+    if(res == repSize && validPacket(rep)){
+        ptr->second->setLED(on);
+        
+        return true;
+    }
+    return false;
+}
+
+/**
+ * @brief Change speed of the specified servomotor
+ * 
+ * @param id the id of the servomotor whose speed has to change
+ * @param newSpeed the value of the new speed
+ * @return true if successfully changed
+ * @return false otherwise
+ */
+bool Controller::changeSpeed(uint8_t id, uint16_t newSpeed){ //TODO: add range tests
+    int repSize = writeIns(id, SPEED_REGISTER, {(uint8_t) newSpeed, (uint8_t)(newSpeed >> BYTE_SIZE)});
+
+    std::vector<uint8_t> rep;
+    int res = receive(rep, false, true, repSize);
+
+    if(res == repSize && validPacket(rep)) return true;
+    return false;
+}
+
+/**
+ * @brief Change speed for all servomotors in the list
+ * 
+ * @param newSpeed the value of the new speed
+ */
+void Controller::changeSpeed(uint16_t newSpeed){
+    for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){ 
+        if(!changeSpeed(ptr->first, newSpeed)) std::cerr << "Unable to change speed of device" << (int) ptr->first << "." << std::endl; 
+    }
+}
+
+/**
+ * @brief Set the position of the servomotor
+ * 
+ * @param id the id of the servomotor whose position has to be changed
+ * @param newPosition the new position of the servo
+ * @return true if successfully changed
+ * @return false otherwise
+ */
+bool Controller::setPosition(uint8_t id, uint16_t newPosition){ // TODO: add range tests
+    int repSize = writeIns(id, POSITION_REGISTER, {(uint8_t) newPosition, (uint8_t)(newPosition >> BYTE_SIZE)});
+
+    std::vector<uint8_t> rep;
+    int res = receive(rep, false, true, repSize);
+
+    if(res == repSize && validPacket(rep)) return true;
+    return false;
+}
+
+/**
+ * @brief Set the position of all servomotors
+ * 
+ * @param newPosition the new position of the servo
+ */
+void Controller::setPosition(const std::vector<uint16_t>& newPosition){
+    auto ptrPos = newPosition.cbegin();
+    for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){ 
+        if(!setPosition(ptr->first, *ptrPos)) std::cerr << "Unable to set position of device" << (int) ptr->first << "." << std::endl; 
+        ptrPos++;
+    }
+}
 
 
 /**
@@ -343,7 +437,9 @@ bool Controller::updateInfos(uint8_t id){
  * 
  */
 void Controller::updateInfos(){
-    FOR_ALL_SERVOS(updateInfos, "Unable to update information from device.")
+    for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){ 
+        if(!updateInfos(ptr->first)) std::cerr << "Unable to update information from device" << (int) ptr->first << "." << std::endl; 
+    }
 }
 
 

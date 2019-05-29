@@ -33,6 +33,17 @@
 
 // Address of the register containing the ID of the servomotor
 #define ID_REGISTER 0x03
+// Address of the register containing the status of the LED
+#define LED_REGISTER 0x19
+
+// Address of the starting register containing the target speed value (Speed value is registered on 2 bytes)
+#define SPEED_REGISTER 0x20
+
+// Address of the starting register containing the target position value (Position value is registered on 2 bytes)
+#define POSITION_REGISTER 0x1E
+
+// Size of a byte in servomotor register
+#define BYTE_SIZE 8
 
 
 enum Status{
@@ -56,6 +67,9 @@ class Servomotor{
         uint16_t modelNum;
         uint8_t firmware;
 
+        uint16_t targetSpeed; // TODO: to use
+        uint16_t targetPosition;
+
         uint16_t position;
         uint16_t speed;
         uint16_t load;
@@ -78,12 +92,15 @@ class Servomotor{
         uint8_t getId() const;
         std::string getName() const;
         Status getStatus() const;
+        bool getLED() const;
+
         std::string toString() const;
 
         void setStatus(Status stat);
         void setModel(uint16_t mod);
         void setFirmware(uint8_t firm);
         void setId(uint8_t id);
+        void setLED(bool on);
         void setInfos(const std::vector<uint8_t>& infos);
 
 };

@@ -47,10 +47,7 @@
 // Action command, execute instructions sent with WRITE_WAIT_INSTRUCTION
 #define ACTION_INSTRUCTION 0x05
 
-// Macro executing a function for all servomotors and displaying an error message if it did not succeeded
-// func has to take an uint8_t as parameter and return a boolean
-// message is an error message under string format
-#define FOR_ALL_SERVOS(func, message) for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){ if(!func(ptr->first)) std::cerr << "Error for ID " << (int) ptr->first << " : " << message << std::endl; }
+
 
 /**
  * @class Controller
@@ -86,15 +83,16 @@ class Controller{
 
         bool changeId(uint8_t oldId, uint8_t newId);
         bool turnLED(uint8_t id, bool on);
-        bool turnLED(bool on);
-        bool changeSpeed(uint8_t id, uint16_t newSpeed);
-        bool changeSpeed(uint16_t newSpeed);
-        bool setPosition(uint8_t id, uint16_t newPosition);
-        bool setPosition(uint16_t newPosition);
-        bool addPosition(uint8_t id, uint16_t dx);
-        bool addPosition(uint16_t dx);
+        bool turnLED(uint8_t id);
 
-        bool updateInfos(uint8_t);
+        bool changeSpeed(uint8_t id, uint16_t newSpeed);
+        void changeSpeed(uint16_t newSpeed);
+        bool setPosition(uint8_t id, uint16_t newPosition);
+        void setPosition(const std::vector<uint16_t>& newPosition);
+        bool addPosition(uint8_t id, uint16_t dx); // TODO: implement addPosition methods
+        void addPosition(const std::vector<uint16_t> dx);
+
+        bool updateInfos(uint8_t id);
         void updateInfos();
 
         std::string servosToString() const;
