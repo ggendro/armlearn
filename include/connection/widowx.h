@@ -30,10 +30,11 @@
 class WidowX{
 
     private:
-        std::vector<Range*>* ranges; //TODO: (mode management) modify data structure to be able to check other modes as well
+        std::string portName;
         serial::Serial* serialPort;
         Mode mode;
 
+        std::vector<Range*>* ranges; //TODO: (mode management) modify data structure to be able to check other modes as well
         uint16_t positions[NB_BIG_VALUE_MOTORS];
         // positions[0] - base
         // positions[1] - shoulder;
@@ -53,11 +54,11 @@ class WidowX{
         uint8_t computeChecksum(const std::vector<uint8_t>& data);
         bool checkValidity(const std::vector<uint8_t>& data);
 
-        int send(const std::vector<uint8_t>& buffer);
+        int send(const std::vector<uint8_t>& buffer, bool doubleHead = false);
         int receive(std::vector<uint8_t>& buffer);
         
         void forceMove(const std::vector<uint16_t>& positions); // Move without verifications
-        void read(std::vector<uint8_t>& buffer, bool wait=false, int timeout = CONNECT_TIMEOUT);
+        void read(std::vector<uint8_t>& buffer, bool wait=false, int timeout = CONNECT_TIMEOUT, int bytesExpected = MIN_PACKET_SIZE);
 
 
     public:
@@ -74,6 +75,9 @@ class WidowX{
         Mode getMode() const;
         static Mode stringToMode(const std::string& mode);
         static std::string modeToString(const Mode mode);
+
+
+        void getRegisters(std::vector<uint8_t>& buffer); // TODO: UPDATE
 
 };
 

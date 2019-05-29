@@ -17,7 +17,8 @@ WidowX::WidowX(const std::string port):mode(sleeping), delta(DEFAULT_SPEED){
 
     ranges = Range::buildWidowXSetup();
 
-    serialPort = new serial::Serial(port, 38400); // Default values are defined in the Arm Link Reference
+    portName = port;
+    serialPort = new serial::Serial(port, STANDARD_BAUDRATE); // Default values are defined in the Arm Link Reference
     this->open();
 
     if(!this->connect()) {
@@ -168,11 +169,13 @@ bool WidowX::checkValidity(const std::vector<uint8_t>& data){
  * 
  * buffer size has to be 15 to be valid
  */
-int WidowX::send(const std::vector<uint8_t>& buffer){
+int WidowX::send(const std::vector<uint8_t>& buffer, bool doubleHead){
 
     std::vector<uint8_t> fullBuf(buffer);
 
     fullBuf.insert(fullBuf.begin(), HEADER);
+    if(doubleHead) fullBuf.insert(fullBuf.begin(), HEADER);
+
     fullBuf.push_back(this->computeChecksum(buffer));
 
     int res = this->serialPort->write(fullBuf);
@@ -426,12 +429,12 @@ void WidowX::changeMode(Mode newMode){
  * @param wait wait if true, the method is blocking: will wait until data is available or timeout elapsed, otherwise read immediately the data available even if the buffer is empty
  * @param timeout the maximum time to wait, in milliseconds
  */
-void WidowX::read(std::vector<uint8_t>& buffer, bool wait, int timeout){
+void WidowX::read(std::vector<uint8_t>& buffer, bool wait, int timeout, int bytesExpected){
     if(wait){
         std::chrono::time_point<std::chrono::system_clock> startTime = std::chrono::system_clock::now();
         std::chrono::time_point<std::chrono::system_clock> currentTime = std::chrono::system_clock::now();
 
-        while(this->serialPort->available() < MIN_PACKET_SIZE && std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startTime).count() < timeout){ // TODO: Implement without active waiting
+        while(this->serialPort->available() < bytesExpected && std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startTime).count() < timeout){ // TODO: Implement without active waiting
             currentTime = std::chrono::system_clock::now();
             std::this_thread::sleep_for((std::chrono::milliseconds) 100); // Will check every 100 milliseconds
         }
@@ -505,6 +508,21 @@ std::string WidowX::modeToString(const Mode mode){
             return "sleeping";
             
     }
+}
+
+
+void WidowX::getRegisters(std::vector<uint8_t>& buffer){ // TODO: Make it work
+    int newBaud = 115200; // Might make the system crash depending on the value. Ok: 9600, 115200, 921600, 1000000 ; Not ok: 38400, 57600
+    serialPort->setBaudrate(newBaud);
+    std::cout << "Baudrate set to " << newBaud << "." << std::endl;
+
+    std::vector<uint8_t> sendBuf = {1, 4, 2, 3, 1};
+
+    send(sendBuf, true);
+    read(buffer, true);
+    
+    serialPort->setBaudrate(STANDARD_BAUDRATE);
+    std::cout << "Baudrate set to " << STANDARD_BAUDRATE << "." << std::endl;
 }
     
     

@@ -5,6 +5,8 @@
  * @version 0.1
  * @date 2019-05-22
  * 
+ * Most of the references for the values below can be found at https://learn.trossenrobotics.com/arbotix/arbotix-communication-controllers/31-arm-link-reference.html
+ * 
  * @copyright Copyright (c) 2019
  * 
  */
@@ -12,6 +14,9 @@
 #ifndef DEFINITIONS_H
 #define DEFINITIONS_H
 
+
+// Standard baudrate for WidowX communication
+#define STANDARD_BAUDRATE 38400
 
 // Valid header for a packet
 #define HEADER 255

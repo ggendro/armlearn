@@ -5,6 +5,8 @@
  * @version 0.1
  * @date 2019-05-22
  * 
+ * Most of the references for the values below can be found at https://learn.trossenrobotics.com/arbotix/arbotix-communication-controllers/31-arm-link-reference.html
+ * 
  * @copyright Copyright (c) 2019
  * 
  */
@@ -19,6 +21,8 @@
 
 #include "definitions.h"
 
+
+// Values for backhoe mode
 
 #define BASE_MIN_VALUE_BACKHOE 0
 #define BASE_MAX_VALUE_BACKHOE 4095
@@ -39,7 +43,7 @@
 #define GRIPPER_MAX_VALUE_BACKHOE 512
 
 #define DELTA_MIN_VALUE_BACKHOE 0
-#define DELTA_MAX_VALUE_BACKHOE 255
+#define DELTA_MAX_VALUE_BACKHOE 254
 
 
 /**
