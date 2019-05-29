@@ -26,8 +26,17 @@ int main(int argc, char *argv[]) {
 	arbotix.connect();
 	std::cout << arbotix.servosToString();
 
+	std::cout << "Update servomotors information:" << std::endl;
 	arbotix.updateInfos();
 	std::cout << arbotix.servosToString();
+
+	//std::cout << "Change ID servomotor 6 to 7." << std::endl;
+	//arbotix.changeId(6, 7);
+	//std::cout << arbotix.servosToString();
+
+	//std::cout << "Change ID servomotor 7 to 6." << std::endl;
+	//arbotix.changeId(7, 6);
+	//std::cout << arbotix.servosToString();
 
 	//*/
 

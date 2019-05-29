@@ -5,6 +5,8 @@
  * @version 0.1
  * @date 2019-05-28
  * 
+ * Documentation about the servomotor registers can be found at http://support.robotis.com/en/product/actuator/dynamixel/mx_series/mx-64at_ar.htm
+ * 
  * @copyright Copyright (c) 2019
  * 
  */
@@ -28,6 +30,9 @@
 #define READ_REGISTER 0x24
 // Number of successive registers containging read-only information
 #define READ_LENGTH 0x0A
+
+// Address of the register containing the ID of the servomotor
+#define ID_REGISTER 0x03
 
 
 enum Status{
@@ -78,6 +83,7 @@ class Servomotor{
         void setStatus(Status stat);
         void setModel(uint16_t mod);
         void setFirmware(uint8_t firm);
+        void setId(uint8_t id);
         void setInfos(const std::vector<uint8_t>& infos);
 
 };

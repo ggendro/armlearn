@@ -149,17 +149,49 @@ int Controller::receive(std::vector<uint8_t>& buffer, bool readAll, bool wait, i
 
 
 /**
- * @brief Sends a read instruction to a device
+ * @brief Send a read instruction to a device
  * 
  * @param id the id of the servomotor to send the instruction to 
  * @param registerNum the address of the first register to read
  * @param nbRegisters the number of registers to read starting from registerNum
  * @return int the expected size of the status packet returned
  */
-int Controller::readIns(uint8_t id, uint8_t registerNum, uint8_t nbRegisters){
+int Controller::readIns(uint8_t id, uint8_t registerNum, uint8_t nbRegisters){ // TODO: implement bulk read for MX series, to gain performance
     send({id, 0x04, READ_INSTRUCTION, registerNum, nbRegisters});
     return RESPONSE_BYTES + nbRegisters;
 }
+
+/**
+ * @brief Send a write insturction to a device
+ * 
+ * @param id the id of the servomotor to send the instruction to 
+ * @param startAddress the address of the first register to write in, careful, not all registers can be overwritten
+ * @param newValues the values replacing the old ones, each value will overwrite the value of a regiser
+ * @param wait if true, the servomotor will wait for an action command before taking the new value into account (ex: move the motor to a new position), InstructionRegistered register set to 1 during this waiting period
+ * @return int the expected size of the status packet returned
+ */
+int Controller::writeIns(uint8_t id, uint8_t startAddress, const std::vector<uint8_t>& newValues, bool wait){ // TODO: implement syncWrite to gain performance
+    uint8_t length = 3 + newValues.size();
+    std::vector<uint8_t> toSend = {id, length};
+
+    if(wait) 
+        toSend.push_back(WRITE_WAIT_INSTRUCTION);
+    else 
+        toSend.push_back(WRITE_INSTRUCTION);
+    
+    toSend.push_back(startAddress);
+    toSend.insert(toSend.end(), newValues.begin(), newValues.end());
+
+    send(toSend);
+    return RESPONSE_BYTES;
+}
+
+void Controller::execWaitingWrite(const std::vector<uint8_t>& ids){
+    for(auto ptr = ids.cbegin(); ptr < ids.cend(); ptr++)
+        send({*ptr, 0x02, ACTION_INSTRUCTION}); 
+}
+
+
 
 
 
@@ -184,10 +216,11 @@ void Controller::connect(){
         int res = receive(buf, false, true, 10); // Expected answer is a packet with the following format: {header, header, id, length, error, modelNumberL, modelNumberH, firmwareVersion, id, checksum}
 
         if(res == 10 && validPacket(buf) && buf[2] == buf[8]){
-            motors->find(buf[8])->second->setStatus(connected);
-            motors->find(buf[8])->second->setModel(buf[5] + (buf[6] << 8));
-            motors->find(buf[8])->second->setFirmware(buf[7]);
+            auto servo = motors->find(buf[8])->second;
 
+            servo->setStatus(connected);
+            servo->setModel(buf[5] + (buf[6] << 8));
+            servo->setFirmware(buf[7]);
         }
     }
 
@@ -243,6 +276,50 @@ bool Controller::removeMotor(uint8_t id){
 
 
 /**
+ * @brief Change the id of a servomotor
+ * 
+ * @param oldId the current id of the servomotor to change
+ * @param newId the new id of the servomotor
+ * @return true if the change succeeded
+ * @return false otherwise
+ */
+bool Controller::changeId(uint8_t oldId, uint8_t newId){
+    auto ptr = motors->find(oldId);
+    if(ptr == motors->end() || motors->find(newId) != motors->end()) return false; // Change not valid if old id is not present in the list or if new id is already in
+
+    int repSize = writeIns(oldId, ID_REGISTER, {newId}); // Change id into the device
+    std::vector<uint8_t> rep;
+    int res = receive(rep, false, true, repSize);
+
+    if(res == repSize && validPacket(rep)){ // If change correctly executed in the device, change in the interface
+        ptr->second->setId(newId); // Change in the servo class
+
+        auto val = motors->extract(ptr); // Change in the list
+        val.key() = newId;
+        motors->insert(move(val));
+        
+        return true;
+    }
+    return false;
+}
+
+bool Controller::turnLED(uint8_t id, bool on){
+    
+}
+bool Controller::turnLED(bool on){
+    auto f = [on, *this](uint8_t id){return turnLED(id, on);};
+    FOR_ALL_SERVOS( f, "LED not updated.")
+}
+
+bool changeSpeed(uint8_t id, uint16_t newSpeed);
+bool changeSpeed(uint16_t newSpeed);
+bool setPosition(uint8_t id, uint16_t newPosition);
+bool setPosition(uint16_t newPosition);
+bool addPosition(uint8_t id, uint16_t dx);
+bool addPosition(uint16_t dx);
+
+
+/**
  * @brief Ask information from servomotor device and update the values in the class representing it
  * 
  * @param id the id of the servomotor to update
@@ -250,7 +327,7 @@ bool Controller::removeMotor(uint8_t id){
  * @return false otherwise
  */
 bool Controller::updateInfos(uint8_t id){
-    int repSize = readIns(id, READ_REGISTER, READ_LENGTH); // Temporary code
+    int repSize = readIns(id, READ_REGISTER, READ_LENGTH);
     std::vector<uint8_t> rep;
     int res = receive(rep, false, true, repSize);
 
@@ -266,11 +343,7 @@ bool Controller::updateInfos(uint8_t id){
  * 
  */
 void Controller::updateInfos(){
-    for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){
-        bool success = updateInfos(ptr->first);
-
-        if(!success) std::cout << "Unable to update information from device " << (int) ptr->first << "." << std::endl;
-    }
+    FOR_ALL_SERVOS(updateInfos, "Unable to update information from device.")
 }
 
 

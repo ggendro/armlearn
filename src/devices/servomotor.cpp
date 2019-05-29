@@ -63,10 +63,10 @@ Status Servomotor::getStatus() const{
  */
 std::string Servomotor::toString() const{
     std::stringstream streamRep;
-    streamRep << "Servomotor " << name << "\tID : " << (int) id << "\tModel : " << (int) modelNum << "\tFirmware : " << (int) firmware << "\tStatus : " << status; // Model and status information
-    streamRep << "\tPosition : " << position << "\tSpeed : " << (int) speed << "\tLoad : " << (int) load << "\tVoltage : " << (int) voltage << "\tTemperature : " << (int) temperature; // Integer information
-    streamRep  << "\tInstruction? : " << instructionregistered << "\tMovement? : " << inMovement; // Boolean information
-    streamRep << "\tLast update : " << std::chrono::duration<double, std::ratio<1, 1>>(std::chrono::system_clock::now() - lastUpdate).count() << "s ago "; // Time passed since last update was executed
+    streamRep << "Servomotor " << name << "\tID: " << (int) id << "\tModel: " << (int) modelNum << "\tFirm: " << (int) firmware << "\tStat: " << status; // Model and status information
+    streamRep << "\tPos: " << position << "\tSpd: " << (int) speed << "\tLoad: " << (int) load << "\tVolt: " << (int) voltage << "\tTemp: " << (int) temperature; // Integer information
+    streamRep  << "\tInstr? " << instructionregistered << "\tMove? " << inMovement; // Boolean information
+    streamRep << "\tUpdated: " << std::chrono::duration<double, std::ratio<1, 1>>(std::chrono::system_clock::now() - lastUpdate).count() << "s ago "; // Time passed since last update was executed
     
     return streamRep.str();
 }
@@ -97,6 +97,10 @@ void Servomotor::setModel(uint16_t mod){
  */
 void Servomotor::setFirmware(uint8_t firm){
     firmware = firm;
+}
+
+void Servomotor::setId(uint8_t id){
+    this->id = id;
 }
 
 /**
