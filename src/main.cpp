@@ -2,6 +2,7 @@
 
 
 #include "controller.h"
+#include "trajectory.h"
 
 
 int main(int argc, char *argv[]) {
@@ -26,6 +27,7 @@ int main(int argc, char *argv[]) {
 	std::cout << arbotix.servosToString();
 	//*/
 
+	arbotix.changeSpeed(50);
 
 	std::cout << "Update servomotors information:" << std::endl;
 	arbotix.updateInfos();
@@ -43,7 +45,7 @@ int main(int argc, char *argv[]) {
 	//*/
 
 
-	//*
+	/*
 	std::cout << "Change LED of servomotor 2." << std::endl;
 	arbotix.turnLED(2);
 	std::cout << arbotix.servosToString();
@@ -94,6 +96,28 @@ int main(int argc, char *argv[]) {
 
 	std::cout << "Update servomotors information:" << std::endl;
 	arbotix.updateInfos();
+	//*/
+
+
+	//*
+	Trajectory path(&arbotix);
+
+	path.addPoint(BACKHOE_POSITION);
+	path.addPoint({1024, 2200, 2200, 1025, 512, 511});
+	path.addPoint({1024, 2400, 2200, 1200, 512, 511});
+	path.addPoint({1024, 2400, 2200, 1200, 512, 135});
+	path.addPoint({1024, 2200, 2200, 1025, 512, 135});
+	path.addPoint({2048, 2200, 2200, 1025, 512, 135});
+	path.addPoint({2048, 2400, 2200, 1200, 512, 135});
+	path.addPoint({2048, 2400, 2200, 1200, 512, 511});
+	path.addPoint(SLEEP_POSITION);
+
+	path.printTrajectory();
+
+
+	path.init();
+	path.executeTrajectory();
+
 	//*/
 
 

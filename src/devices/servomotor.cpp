@@ -264,6 +264,6 @@ bool Servomotor::validPosition(uint16_t position) const{
  * @return true if the difference between the target position and the position is inferior to the margin
  * @return false otherwise
  */
-bool Servomotor::targetPositionReached(int errorRange) const{
+bool Servomotor::targetPositionReached(int errorRange) const{ // TODO: improve end of movement detection
     return abs(targetPosition - position) < errorRange;
 }

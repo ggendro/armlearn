@@ -12,6 +12,7 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/home/gagendro/Documents/Stage/Robot/Project/Communication/src/exception/trajectoryerror.cpp" "/home/gagendro/Documents/Stage/Robot/Project/Communication/build/CMakeFiles/main.dir/src/exception/trajectoryerror.cpp.o"
   "/home/gagendro/Documents/Stage/Robot/Project/Communication/src/exception/typeerror.cpp" "/home/gagendro/Documents/Stage/Robot/Project/Communication/build/CMakeFiles/main.dir/src/exception/typeerror.cpp.o"
   "/home/gagendro/Documents/Stage/Robot/Project/Communication/src/main.cpp" "/home/gagendro/Documents/Stage/Robot/Project/Communication/build/CMakeFiles/main.dir/src/main.cpp.o"
+  "/home/gagendro/Documents/Stage/Robot/Project/Communication/src/trajectory/trajectory.cpp" "/home/gagendro/Documents/Stage/Robot/Project/Communication/build/CMakeFiles/main.dir/src/trajectory/trajectory.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
@@ -20,6 +21,7 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "."
   "../include/devices"
   "../include/exception"
+  "../include/trajectory"
   )
 
 # Targets to which this target links.

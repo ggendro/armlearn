@@ -53,7 +53,7 @@
 #define BYTE_SIZE 8
 
 // Margin of error between the current position and the target position
-#define POSITION_ERROR_MARGIN 10
+#define POSITION_ERROR_MARGIN 15
 
 
 

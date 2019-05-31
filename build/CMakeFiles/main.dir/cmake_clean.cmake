@@ -7,6 +7,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/main.dir/src/exception/trajectoryerror.cpp.o"
   "CMakeFiles/main.dir/src/exception/typeerror.cpp.o"
   "CMakeFiles/main.dir/src/main.cpp.o"
+  "CMakeFiles/main.dir/src/trajectory/trajectory.cpp.o"
   "main.pdb"
   "main"
 )
