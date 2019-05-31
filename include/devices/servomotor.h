@@ -50,10 +50,17 @@
 #define POSITION_ERROR_MARGIN 5
 
 
+/**
+ * @brief Enum representing the status of the servomotor
+ * 
+ *  - offline: not connected to the physical device
+ *  - connected: connected to the physical device but motors are not allowed to move or maintain a position
+ *  - activated: connected,  motors can receive move orders and are able to maintain a position TODO: implement (for now, merged with connected)
+ */
 enum Status{
     offline,
     connected,
-    activated // Connected and motors enabled, TODO: implement, (for now, merged with connected)
+    activated
 };
 
 
@@ -112,6 +119,8 @@ class Servomotor{
         void setTargetSpeed(uint16_t speed);
         void setTargetPosition(uint16_t position);
 
+        bool validSpeed(uint16_t speed) const;
+        bool validPosition(uint16_t position) const;
         bool targetPositionReached(uint16_t err = -1) const;
 
 };
