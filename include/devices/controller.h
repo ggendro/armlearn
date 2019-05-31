@@ -96,7 +96,7 @@ class Controller{
 
 
     public:
-        Controller(const std::string& port, int baudrate = DEFAULT_BAUDRATE, DisplayMode displayMode = print, std::ostream& out = std::cout);
+        Controller(const std::string& port, int baudrate = DEFAULT_BAUDRATE, DisplayMode displayMode = except, std::ostream& out = std::cout);
         ~Controller();
 
         void connect();

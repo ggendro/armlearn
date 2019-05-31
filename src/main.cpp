@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
 	//*/
 
 
-	//*
+	/*
 	std::cout << "Set speed:" << std::endl;
 	arbotix.changeSpeed(50);
 
