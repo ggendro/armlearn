@@ -167,7 +167,7 @@ int Controller::readIns(uint8_t id, uint8_t registerNum, uint8_t nbRegisters){ /
 }
 
 /**
- * @brief Send a write insturction to a device
+ * @brief Send a write instruction to a device
  * 
  * @param id the id of the servomotor to send the instruction to 
  * @param startAddress the address of the first register to write in, careful, not all registers can be overwritten
@@ -191,9 +191,74 @@ int Controller::writeIns(uint8_t id, uint8_t startAddress, const std::vector<uin
     return RESPONSE_BYTES;
 }
 
+/**
+ * @brief Execute instructions waiting for an action command in servomotors registers
+ * 
+ * @param ids the ids of the devices to send the action command to
+ */
 void Controller::execWaitingWrite(const std::vector<uint8_t>& ids){
     for(auto ptr = ids.cbegin(); ptr < ids.cend(); ptr++)
         send({*ptr, 0x02, ACTION_INSTRUCTION}); 
+}
+
+/**
+ * @brief Function pattern repeated by most of execution commands
+ * Composed of several steps:
+ *  - 1. Get the Servomotor matching the id in parameter or handle error
+ *  - 2. Send a packet
+ *  - 3. Receive a packet or handle error
+ *  - 4. Process received packet
+ * 
+ * @param id the id of the target servomotor
+ * @param sendFunc function that send a packet and return the number of expected bytes in response, if 0: executionPattern returns immediatly false, if 1: executionPattern returns immediatly true , takes in parameter an iterator to the servomotor asked by the id
+ * @param receiveFunc function that manages the response packet, takes in parameter the same iterator as sendFunc and the response packet
+ * @return true if execution went well
+ * @return false otherwise
+ * @throw IdError if the id is incorrect
+ * @throw if the response packet is incorrect
+ */
+bool Controller::executionPattern(uint16_t id, const std::function< int(std::map<uint8_t, Servomotor*>::iterator) >& sendFunc, const std::function< void(std::map<uint8_t, Servomotor*>::iterator, std::vector<uint8_t>&) >& receiveFunc){
+    auto ptr = motors->find(id);
+    if(ptr == motors->end()){ // Change not valid if id is not present in the list
+        std::stringstream disp;
+        disp << "ID " << (int) id <<" not found.";
+
+        if(mode >= print) output << disp.str() << std::endl;
+        if(mode >= except) throw IdError(disp.str());
+        return false;
+    }
+
+    if(ptr->second->getStatus() == offline){ // Change not valid if id is not present in the list
+        std::stringstream disp;
+        disp << "Device " << (int) id <<" not connected.";
+
+        if(mode >= print) output << disp.str() << std::endl;
+        if(mode >= except) throw ConnectionError(disp.str());
+        return false;
+    }
+
+    int repSize = sendFunc(ptr); // Execute function that send packet and return the number of expectes bytes
+
+    if(repSize == 0) return false;
+    if(repSize == 1) return true;
+
+    std::vector<uint8_t> rep;
+    int res = receive(rep, false, true, repSize);
+
+    if(res == repSize && validPacket(rep)){
+        receiveFunc(ptr, rep); // Execute function that manage received packet
+        return true;
+    }
+
+    std::stringstream disp;
+    disp << "Incorrect response from device " << (int) id << " : ";
+    for(auto&& v : rep) disp << v << " ";
+    disp << "(" << res << ")";
+
+    if(mode >= print) output << disp.str() << std::endl;
+    if(mode >= except) throw ConnectionError(disp.str());
+    return false;
+    
 }
 
 
@@ -250,11 +315,10 @@ void Controller::ping(uint8_t id){
  * @return false otherwise, if the id was already present
  */
 bool Controller::addMotor(uint8_t id, const std::string& name, Type type){
-    for(auto ptr=motors->begin(); ptr != motors->end(); ptr++)
-        if(ptr->first == id)
-            return false;
-
-    if(motors->find(id) != motors->end()) return false;
+    if(motors->find(id) != motors->end()){
+        if(mode >= except) throw IdError("ID already taken.");
+        return false;
+    } 
 
     Servomotor* motor = new Servomotor(id, name, type);
     motors->insert(std::pair<int, Servomotor*>(id, motor));
@@ -271,7 +335,10 @@ bool Controller::addMotor(uint8_t id, const std::string& name, Type type){
  */
 bool Controller::removeMotor(uint8_t id){
     auto ptr = motors->find(id);
-    if(ptr == motors->end()) return false;
+    if(ptr == motors->end()){
+        if(mode >= except) throw IdError("ID not found.");
+        return false;
+    } 
 
     delete ptr->second;
     motors->erase(ptr);
@@ -289,23 +356,26 @@ bool Controller::removeMotor(uint8_t id){
  * @return false otherwise
  */
 bool Controller::changeId(uint8_t oldId, uint8_t newId){
-    auto ptr = motors->find(oldId);
-    if(ptr == motors->end() || motors->find(newId) != motors->end()) return false; // Change not valid if old id is not present in the list or if new id is already in
+    return executionPattern(oldId, 
+        [this, oldId, newId](std::map<uint8_t, Servomotor*>::iterator ptr){
+            if(motors->find(newId) != motors->end()){ // Change not valid if new id is already in
+                std::stringstream disp;
+                disp << "New ID " << newId << " already existing.";
 
-    int repSize = writeIns(oldId, ID_REGISTER, {newId}); // Change id into the device
-    std::vector<uint8_t> rep;
-    int res = receive(rep, false, true, repSize);
+                if(mode >= print) output << disp.str() << std::endl;
+                if(mode >= except) throw IdError(disp.str());
+                return 0; 
+            } 
 
-    if(res == repSize && validPacket(rep)){ // If change correctly executed in the device, change in the interface
-        ptr->second->setId(newId); // Change in the servo class
+            return writeIns(oldId, ID_REGISTER, {newId}); // Change id into the device
+        },
+        [this, newId](std::map<uint8_t, Servomotor*>::iterator ptr, std::vector<uint8_t>& rep){ // If change correctly executed in the device, change in the interface
+            ptr->second->setId(newId); // Change in the servo class
 
-        auto val = motors->extract(ptr); // Change in the list
-        val.key() = newId;
-        motors->insert(move(val));
-        
-        return true;
-    }
-    return false;
+            auto val = motors->extract(ptr); // Change in the list
+            val.key() = newId;
+            motors->insert(move(val));
+        });
 }
 
 /**
@@ -317,19 +387,16 @@ bool Controller::changeId(uint8_t oldId, uint8_t newId){
  * @return false otherwise
  */
 bool Controller::turnLED(uint8_t id, bool on){
-    auto ptr = motors->find(id);
-    if(ptr == motors->end() && motors->find(id)->second->getLED() == on) return true;
+   return executionPattern(id, 
+        [this, id, on](std::map<uint8_t, Servomotor*>::iterator ptr){
+            if(motors->find(id)->second->getLED() == on)
+                return 1;
 
-    int repSize = writeIns(id, LED_REGISTER, {(uint8_t) on});
-    std::vector<uint8_t> rep;
-    int res = receive(rep, false, true, repSize);
-
-    if(res == repSize && validPacket(rep)){
-        ptr->second->setLED(on);
-        
-        return true;
-    }
-    return false;
+            return writeIns(id, LED_REGISTER, {(uint8_t) on});
+        },
+        [on](std::map<uint8_t, Servomotor*>::iterator ptr, std::vector<uint8_t>& rep){
+            ptr->second->setLED(on);
+        });
 }
 
 /**
@@ -340,21 +407,17 @@ bool Controller::turnLED(uint8_t id, bool on){
  * @return false otherwise
  */
 bool Controller::turnLED(uint8_t id){
-    auto ptr = motors->find(id);
-    if(ptr == motors->end()) return false;
+   bool on;
 
-    uint8_t on = !ptr->second->getLED();
+   return executionPattern(id, 
+        [this, id, &on](std::map<uint8_t, Servomotor*>::iterator ptr){
+            on = !ptr->second->getLED();
 
-    int repSize = writeIns(id, LED_REGISTER, {on});
-    std::vector<uint8_t> rep;
-    int res = receive(rep, false, true, repSize);
-
-    if(res == repSize && validPacket(rep)){
-        ptr->second->setLED(on);
-        
-        return true;
-    }
-    return false;
+            return writeIns(id, LED_REGISTER, {(uint8_t) on});
+        },
+        [&on](std::map<uint8_t, Servomotor*>::iterator ptr, std::vector<uint8_t>& rep){
+            ptr->second->setLED(on);
+        });
 }
 
 /**
@@ -366,38 +429,32 @@ bool Controller::turnLED(uint8_t id){
  * @return false otherwise
  */
 bool Controller::changeSpeed(uint8_t id, uint16_t newSpeed){
-    auto ptr = motors->find(id);
-    if(ptr == motors->end()) return false;
-    if(!ptr->second->validSpeed(newSpeed)) return false;
+    return executionPattern(id, 
+        [this, id, newSpeed](std::map<uint8_t, Servomotor*>::iterator ptr){
+            if(!ptr->second->validSpeed(newSpeed)){
+                std::stringstream disp;
+                disp << "Speed value " << newSpeed << " is out of the range.";
 
-    int repSize = writeIns(id, SPEED_REGISTER, {(uint8_t) newSpeed, (uint8_t)(newSpeed >> BYTE_SIZE)});
+                if(mode >= print) output << disp.str() << std::endl;
+                if(mode >= except) throw OutOfRangeError(disp.str());
+                return 0; 
+            }
 
-    std::vector<uint8_t> rep;
-    int res = receive(rep, false, true, repSize);
-
-    if(res == repSize && validPacket(rep)) {
-        ptr->second->setTargetSpeed(newSpeed);
-
-        return true;
-    }
-    return false;
+            return writeIns(id, SPEED_REGISTER, {(uint8_t) newSpeed, (uint8_t)(newSpeed >> BYTE_SIZE)});
+        },
+        [newSpeed](std::map<uint8_t, Servomotor*>::iterator ptr, std::vector<uint8_t>& rep){
+            ptr->second->setTargetSpeed(newSpeed);
+        });
 }
 
 /**
  * @brief Change speed for all servomotors in the list
  * 
  * @param newSpeed the value of the new speed
- * If controller in
  */
 void Controller::changeSpeed(uint16_t newSpeed){
     for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){ 
-        if(!changeSpeed(ptr->first, newSpeed)){
-            std::stringstream disp;
-            disp << "Unable to change speed of device " << (int) ptr->first << ".";
-
-            if(mode >= print) output << disp.str() << std::endl;
-            if(mode >= except) throw ConnectionError(disp.str());
-        }  
+        changeSpeed(ptr->first, newSpeed);
     }
 }
 
@@ -410,21 +467,23 @@ void Controller::changeSpeed(uint16_t newSpeed){
  * @return false otherwise
  */
 bool Controller::setPosition(uint8_t id, uint16_t newPosition){
-    auto ptr = motors->find(id);
-    if(ptr == motors->end()) return false;
-    if(!ptr->second->validPosition(newPosition)) return false;
+    return executionPattern(id, 
+        [this, id, newPosition](std::map<uint8_t, Servomotor*>::iterator ptr){
+            if(!ptr->second->validPosition(newPosition)){
+                std::stringstream disp;
+                disp << "Position " << newPosition <<" is out of the range.";
 
-    int repSize = writeIns(id, POSITION_REGISTER, {(uint8_t) newPosition, (uint8_t)(newPosition >> BYTE_SIZE)});
+                if(mode >= print) output << disp.str() << std::endl;
+                if(mode >= except) throw OutOfRangeError(disp.str());
+                
+                return 0;
+            }
 
-    std::vector<uint8_t> rep;
-    int res = receive(rep, false, true, repSize);
-
-    if(res == repSize && validPacket(rep)) {
-        ptr->second->setTargetPosition(newPosition);
-
-        return true;
-    }
-    return false;
+            return writeIns(id, POSITION_REGISTER, {(uint8_t) newPosition, (uint8_t)(newPosition >> BYTE_SIZE)});
+        },
+        [newPosition](std::map<uint8_t, Servomotor*>::iterator ptr, std::vector<uint8_t>& rep){
+            ptr->second->setTargetPosition(newPosition);
+        });
 }
 
 /**
@@ -435,13 +494,7 @@ bool Controller::setPosition(uint8_t id, uint16_t newPosition){
 void Controller::setPosition(const std::vector<uint16_t>& newPosition){
     auto ptrPos = newPosition.cbegin();
     for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){ 
-        if(!setPosition(ptr->first, *ptrPos)){
-            std::stringstream disp;
-            disp << "Unable to set position of device " << (int) ptr->first << ".";
-
-            if(mode >= print) output << disp.str() << std::endl;
-            if(mode >= except) throw ConnectionError(disp.str());
-        } 
+        setPosition(ptr->first, *ptrPos);
         ptrPos++;
     }
 }
@@ -473,7 +526,14 @@ void Controller::goToSleep(){
  */
 bool Controller::addPosition(uint8_t id, int dx){
     auto ptr = motors->find(id);
-    if(ptr == motors->end()) return false;
+    if(ptr == motors->end()){
+        std::stringstream disp;
+        disp << "ID " << id <<" not found.";
+
+        if(mode >= print) output << disp.str() << std::endl;
+        if(mode >= except) throw IdError(disp.str());
+        return false;
+    }
 
     return setPosition(id, ptr->second->getTargetPosition() + dx);
 }
@@ -486,13 +546,7 @@ bool Controller::addPosition(uint8_t id, int dx){
 void Controller::addPosition(const std::vector<int> dx){
     auto ptrPos = dx.cbegin();
     for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){  
-        if(!addPosition(ptr->first, *ptrPos)){
-            std::stringstream disp;
-            disp << "Unable to add to the position of the device " << (int) ptr->first << ".";
-
-            if(mode >= print) output << disp.str() << std::endl;
-            if(mode >= except) throw ConnectionError(disp.str());
-        }
+        addPosition(ptr->first, *ptrPos);
         ptrPos++;
     }
 }
@@ -505,8 +559,8 @@ void Controller::addPosition(const std::vector<int> dx){
  * @return true 
  * @return false 
  */
-bool Controller::goalReached(uint16_t err) const{
-    for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){ 
+bool Controller::goalReached(int err) const{
+    for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){
         if(!ptr->second->targetPositionReached(err)) return false;
     }
 
@@ -530,6 +584,12 @@ bool Controller::updateInfos(uint8_t id){
         motors->find(id)->second->setInfos(std::vector<uint8_t>(rep.begin()+5, rep.end()-1));
         return true;
     }
+
+    std::stringstream disp;
+    disp << "No response from device " << id << ".";
+
+    if(mode >= print) output << disp.str() << std::endl;
+    if(mode >= except) throw ConnectionError(disp.str());
     return false;
 }
 
@@ -539,15 +599,9 @@ bool Controller::updateInfos(uint8_t id){
  */
 void Controller::updateInfos(){
     for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){
-        if(!updateInfos(ptr->first)){
-            std::stringstream disp;
-            disp << "Unable to update information from device " << (int) ptr->first << ".";
-
-            if(mode >= print) output << disp.str() << std::endl;
-            if(mode >= except) throw ConnectionError(disp.str());
-        }else if(mode >= print)
-            output << servosToString();
+        updateInfos(ptr->first);
     }
+    if(mode >= print) output << servosToString();
 }
 
 

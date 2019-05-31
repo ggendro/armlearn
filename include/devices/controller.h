@@ -21,9 +21,12 @@
 #include <iostream>
 #include <chrono>
 #include <thread>
+#include <functional>
 
 #include "servomotor.h"
 #include "connectionerror.h"
+#include "iderror.h"
+#include "outofrangeerror.h"
 
 
 // Default baudrate for the serial port
@@ -50,10 +53,7 @@
 // Position of the servomotors to put the arm in backhoe position
 #define BACKHOE_POSITION {2048, 2048, 2048, 2048, 512, 256}
 // Position of the servomotors to put the arm in sleep position
-#define SLEEP_POSITION {2048, 1005, 990, 1830, 512, 256}
-
-// Macro used to do computations for all servomotors, a servo pointor is represented by ptr, ptr->first gives the ID and ptr->second gives a pointor to the Servomotor instance
-#define FOR_ALL_MOTORS(instructions) for(auto ptr = motors->cbegin(); ptr != motors->cend(); ptr++){ instructions }
+#define SLEEP_POSITION {2048, 1025, 1025, 1830, 512, 256}
 
 
 /**
@@ -94,6 +94,8 @@ class Controller{
         int writeIns(uint8_t id, uint8_t startAddress, const std::vector<uint8_t>& newValues, bool wait = false);
         void execWaitingWrite(const std::vector<uint8_t>& ids);
 
+        bool executionPattern(uint16_t id, const std::function< int(std::map<uint8_t, Servomotor*>::iterator) >& sendFunc, const std::function< void(std::map<uint8_t, Servomotor*>::iterator, std::vector<uint8_t>&) >& receiveFunc);
+
 
     public:
         Controller(const std::string& port, int baudrate = DEFAULT_BAUDRATE, DisplayMode displayMode = except, std::ostream& out = std::cout);
@@ -120,7 +122,7 @@ class Controller{
         bool addPosition(uint8_t id, int dx);
         void addPosition(const std::vector<int> dx);
 
-        bool goalReached(uint16_t err = -1) const;
+        bool goalReached(int err = POSITION_ERROR_MARGIN) const;
 
         bool updateInfos(uint8_t id);
         void updateInfos();

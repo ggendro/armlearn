@@ -1,7 +1,7 @@
 /**
  * @file outofrangeerror.h
  * @author Gaël Gendron (gael.genron@insa-rennes.fr)
- * @brief Exception threw when trying to set a servomotor's value out of its range
+ * @brief Exception thrown when trying to set a servomotor's value out of its range
  * @version 0.1
  * @date 2019-05-23
  * 

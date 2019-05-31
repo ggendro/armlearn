@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
 	//*/
 
 
-	/*
+	//*
 	std::cout << "Change LED of servomotor 2." << std::endl;
 	arbotix.turnLED(2);
 	std::cout << arbotix.servosToString();
@@ -65,36 +65,35 @@ int main(int argc, char *argv[]) {
 
 	while(!arbotix.goalReached()){
 		std::cout << "Goal not reached yet, wait..." << std::endl;
+		arbotix.updateInfos();
 		std::this_thread::sleep_for((std::chrono::milliseconds) 100);
 	}
+	
 
 	std::cout << "Update servomotors information:" << std::endl;
 	arbotix.updateInfos();
-	std::cout << arbotix.servosToString();
 
 	std::cout << "Add to position:" << std::endl;
 	arbotix.addPosition({100, 50, 50, 50, -50, -50});
 
 	while(!arbotix.goalReached()){
 		std::cout << "Goal not reached yet, wait..." << std::endl;
+		arbotix.updateInfos();
 		std::this_thread::sleep_for((std::chrono::milliseconds) 100);
 	}
-
-	std::cout << "Update servomotors information:" << std::endl;
-	arbotix.updateInfos();
-	std::cout << arbotix.servosToString();
 
 	std::cout << "Set sleep position:" << std::endl;
 	arbotix.goToSleep();
 
 	while(!arbotix.goalReached()){
 		std::cout << "Goal not reached yet, wait..." << std::endl;
+		arbotix.updateInfos();
 		std::this_thread::sleep_for((std::chrono::milliseconds) 100);
 	}
 
+
 	std::cout << "Update servomotors information:" << std::endl;
 	arbotix.updateInfos();
-	std::cout << arbotix.servosToString();
 	//*/
 
 

@@ -1,7 +1,7 @@
 /**
  * @file typeerror.h
  * @author Gaël Gendron (gael.genron@insa-rennes.fr)
- * @brief Exception threw when initializing a servomotor's type
+ * @brief Exception thrown when initializing a servomotor's type
  * @version 0.1
  * @date 2019-05-31
  * 

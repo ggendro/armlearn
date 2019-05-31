@@ -16,7 +16,6 @@
 #ifndef SERVOMOTOR_H
 #define SERVOMOTOR_H
 
-#include <nlohmann/json.hpp>
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -54,7 +53,7 @@
 #define BYTE_SIZE 8
 
 // Margin of error between the current position and the target position
-#define POSITION_ERROR_MARGIN 5
+#define POSITION_ERROR_MARGIN 10
 
 
 
@@ -121,9 +120,6 @@ class Servomotor{
 
         std::chrono::time_point<std::chrono::system_clock> creationTime;
         std::chrono::time_point<std::chrono::system_clock> lastUpdate;
-
-        static nlohmann::json* ranges;
-        static bool rangesInit;
         
 
     public:
@@ -152,10 +148,10 @@ class Servomotor{
 
         bool validSpeed(uint16_t speed) const;
         bool validPosition(uint16_t position) const;
-        bool targetPositionReached(uint16_t err = -1) const;
+        bool targetPositionReached(int errorRange = POSITION_ERROR_MARGIN) const;
 
 };
 
-bool Servomotor::rangesInit = false;
+
 
 #endif

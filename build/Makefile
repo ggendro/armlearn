@@ -169,60 +169,6 @@ main/fast:
 	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
 .PHONY : main/fast
 
-src/connection/range.o: src/connection/range.cpp.o
-
-.PHONY : src/connection/range.o
-
-# target to build an object file
-src/connection/range.cpp.o:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/connection/range.cpp.o
-.PHONY : src/connection/range.cpp.o
-
-src/connection/range.i: src/connection/range.cpp.i
-
-.PHONY : src/connection/range.i
-
-# target to preprocess a source file
-src/connection/range.cpp.i:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/connection/range.cpp.i
-.PHONY : src/connection/range.cpp.i
-
-src/connection/range.s: src/connection/range.cpp.s
-
-.PHONY : src/connection/range.s
-
-# target to generate assembly for a file
-src/connection/range.cpp.s:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/connection/range.cpp.s
-.PHONY : src/connection/range.cpp.s
-
-src/connection/widowx.o: src/connection/widowx.cpp.o
-
-.PHONY : src/connection/widowx.o
-
-# target to build an object file
-src/connection/widowx.cpp.o:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/connection/widowx.cpp.o
-.PHONY : src/connection/widowx.cpp.o
-
-src/connection/widowx.i: src/connection/widowx.cpp.i
-
-.PHONY : src/connection/widowx.i
-
-# target to preprocess a source file
-src/connection/widowx.cpp.i:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/connection/widowx.cpp.i
-.PHONY : src/connection/widowx.cpp.i
-
-src/connection/widowx.s: src/connection/widowx.cpp.s
-
-.PHONY : src/connection/widowx.s
-
-# target to generate assembly for a file
-src/connection/widowx.cpp.s:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/connection/widowx.cpp.s
-.PHONY : src/connection/widowx.cpp.s
-
 src/devices/controller.o: src/devices/controller.cpp.o
 
 .PHONY : src/devices/controller.o
@@ -304,32 +250,32 @@ src/exception/connectionerror.cpp.s:
 	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/exception/connectionerror.cpp.s
 .PHONY : src/exception/connectionerror.cpp.s
 
-src/exception/movementerror.o: src/exception/movementerror.cpp.o
+src/exception/iderror.o: src/exception/iderror.cpp.o
 
-.PHONY : src/exception/movementerror.o
+.PHONY : src/exception/iderror.o
 
 # target to build an object file
-src/exception/movementerror.cpp.o:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/exception/movementerror.cpp.o
-.PHONY : src/exception/movementerror.cpp.o
+src/exception/iderror.cpp.o:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/exception/iderror.cpp.o
+.PHONY : src/exception/iderror.cpp.o
 
-src/exception/movementerror.i: src/exception/movementerror.cpp.i
+src/exception/iderror.i: src/exception/iderror.cpp.i
 
-.PHONY : src/exception/movementerror.i
+.PHONY : src/exception/iderror.i
 
 # target to preprocess a source file
-src/exception/movementerror.cpp.i:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/exception/movementerror.cpp.i
-.PHONY : src/exception/movementerror.cpp.i
+src/exception/iderror.cpp.i:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/exception/iderror.cpp.i
+.PHONY : src/exception/iderror.cpp.i
 
-src/exception/movementerror.s: src/exception/movementerror.cpp.s
+src/exception/iderror.s: src/exception/iderror.cpp.s
 
-.PHONY : src/exception/movementerror.s
+.PHONY : src/exception/iderror.s
 
 # target to generate assembly for a file
-src/exception/movementerror.cpp.s:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/exception/movementerror.cpp.s
-.PHONY : src/exception/movementerror.cpp.s
+src/exception/iderror.cpp.s:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/exception/iderror.cpp.s
+.PHONY : src/exception/iderror.cpp.s
 
 src/exception/outofrangeerror.o: src/exception/outofrangeerror.cpp.o
 
@@ -385,6 +331,33 @@ src/exception/trajectoryerror.cpp.s:
 	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/exception/trajectoryerror.cpp.s
 .PHONY : src/exception/trajectoryerror.cpp.s
 
+src/exception/typeerror.o: src/exception/typeerror.cpp.o
+
+.PHONY : src/exception/typeerror.o
+
+# target to build an object file
+src/exception/typeerror.cpp.o:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/exception/typeerror.cpp.o
+.PHONY : src/exception/typeerror.cpp.o
+
+src/exception/typeerror.i: src/exception/typeerror.cpp.i
+
+.PHONY : src/exception/typeerror.i
+
+# target to preprocess a source file
+src/exception/typeerror.cpp.i:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/exception/typeerror.cpp.i
+.PHONY : src/exception/typeerror.cpp.i
+
+src/exception/typeerror.s: src/exception/typeerror.cpp.s
+
+.PHONY : src/exception/typeerror.s
+
+# target to generate assembly for a file
+src/exception/typeerror.cpp.s:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/exception/typeerror.cpp.s
+.PHONY : src/exception/typeerror.cpp.s
+
 src/main.o: src/main.cpp.o
 
 .PHONY : src/main.o
@@ -412,33 +385,6 @@ src/main.cpp.s:
 	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
-src/trajectory/trajectory.o: src/trajectory/trajectory.cpp.o
-
-.PHONY : src/trajectory/trajectory.o
-
-# target to build an object file
-src/trajectory/trajectory.cpp.o:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/trajectory/trajectory.cpp.o
-.PHONY : src/trajectory/trajectory.cpp.o
-
-src/trajectory/trajectory.i: src/trajectory/trajectory.cpp.i
-
-.PHONY : src/trajectory/trajectory.i
-
-# target to preprocess a source file
-src/trajectory/trajectory.cpp.i:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/trajectory/trajectory.cpp.i
-.PHONY : src/trajectory/trajectory.cpp.i
-
-src/trajectory/trajectory.s: src/trajectory/trajectory.cpp.s
-
-.PHONY : src/trajectory/trajectory.s
-
-# target to generate assembly for a file
-src/trajectory/trajectory.cpp.s:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/trajectory/trajectory.cpp.s
-.PHONY : src/trajectory/trajectory.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -452,12 +398,6 @@ help:
 	@echo "... list_install_components"
 	@echo "... install/local"
 	@echo "... install"
-	@echo "... src/connection/range.o"
-	@echo "... src/connection/range.i"
-	@echo "... src/connection/range.s"
-	@echo "... src/connection/widowx.o"
-	@echo "... src/connection/widowx.i"
-	@echo "... src/connection/widowx.s"
 	@echo "... src/devices/controller.o"
 	@echo "... src/devices/controller.i"
 	@echo "... src/devices/controller.s"
@@ -467,21 +407,21 @@ help:
 	@echo "... src/exception/connectionerror.o"
 	@echo "... src/exception/connectionerror.i"
 	@echo "... src/exception/connectionerror.s"
-	@echo "... src/exception/movementerror.o"
-	@echo "... src/exception/movementerror.i"
-	@echo "... src/exception/movementerror.s"
+	@echo "... src/exception/iderror.o"
+	@echo "... src/exception/iderror.i"
+	@echo "... src/exception/iderror.s"
 	@echo "... src/exception/outofrangeerror.o"
 	@echo "... src/exception/outofrangeerror.i"
 	@echo "... src/exception/outofrangeerror.s"
 	@echo "... src/exception/trajectoryerror.o"
 	@echo "... src/exception/trajectoryerror.i"
 	@echo "... src/exception/trajectoryerror.s"
+	@echo "... src/exception/typeerror.o"
+	@echo "... src/exception/typeerror.i"
+	@echo "... src/exception/typeerror.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
-	@echo "... src/trajectory/trajectory.o"
-	@echo "... src/trajectory/trajectory.i"
-	@echo "... src/trajectory/trajectory.s"
 .PHONY : help
 
 

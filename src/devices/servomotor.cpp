@@ -264,10 +264,6 @@ bool Servomotor::validPosition(uint16_t position) const{
  * @return true if the difference between the target position and the position is inferior to the margin
  * @return false otherwise
  */
-bool Servomotor::targetPositionReached(uint16_t err) const{
-    uint16_t margin = POSITION_ERROR_MARGIN;
-    if(err >= 0)
-        margin = err;
-
-    return abs(targetPosition - position) < margin;
+bool Servomotor::targetPositionReached(int errorRange) const{
+    return abs(targetPosition - position) < errorRange;
 }
