@@ -1,0 +1,26 @@
+{
+    "base" : {
+        "min" : 0,
+        "max" : 4095
+    },
+    "shoulder" : {
+        "min" : 1024,
+        "max" : 3072
+    },
+    "elbow" : {
+        "min" : 1024,
+        "max" : 3072
+    },
+    "wristAngle" : {
+        "min" : 1024,
+        "max" : 3072
+    },
+    "wristRotate" : {
+        "min" : 0,
+        "max" : 1023
+    },
+    "gripper" : {
+        "min" : 0,
+        "max" : 512
+    }
+}

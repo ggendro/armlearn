@@ -33,9 +33,6 @@ Libraries
 *serial* library required for port communication.
 Can be found here : <https://github.com/wjwwood/serial>
 
-*json for modern c++* library used.
-Already included in the project but can be found here : <https://github.com/open-source-parsers/json>
-
 
 C++ Version
 ===

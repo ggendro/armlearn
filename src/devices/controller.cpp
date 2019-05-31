@@ -10,10 +10,9 @@
  * @param port the port to use
  * @param baudrate to use, default : 115200
  */
-Controller::Controller(const std::string& port, int baudrate) {
+Controller::Controller(const std::string& port, int baudrate, DisplayMode displayMode, std::ostream& out):mode(displayMode), output(out) {
     serialPort = new serial::Serial(port, baudrate);
     motors = new std::map<uint8_t, Servomotor*>();
-
 }
 
 /**
@@ -87,6 +86,8 @@ bool Controller::validPacket(std::vector<uint8_t>& packet, int verifStep){
  * 
  * @param buffer the content of the packet
  * @return int the number of bytes really sent
+ * 
+ * If controller display mode is superior or equal to print, will display the sent packet in the output stream
  */
 int Controller::send(const std::vector<uint8_t>& buffer){
 
@@ -99,12 +100,13 @@ int Controller::send(const std::vector<uint8_t>& buffer){
 
     int res = this->serialPort->write(sendBuf);
 
-    //*
-    std::cout << "Packet sent : ";
-    for (auto&& x : sendBuf)
-        std::cout << (int) x << " ";
-    std::cout << "(" << res << ")" << std::endl;
-    //*/
+    if(mode > none){
+        output << "Packet sent : ";
+        for (auto&& x : sendBuf)
+            output << (int) x << " ";
+
+        output << "(" << res << ")" << std::endl;
+    }
 
     return res;
 }
@@ -118,6 +120,8 @@ int Controller::send(const std::vector<uint8_t>& buffer){
  * @param bytesExpected the minimum number of bytes expected, if wait is true, will wait until this amount of bytes is in the buffer
  * @param timeout the time to wait if wait is true
  * @return int the number of bytes read
+ * 
+ * If controller display mode is superior or equal to print, will display the received packet in the output stream
  */
 int Controller::receive(std::vector<uint8_t>& buffer, bool readAll, bool wait, int bytesExpected, int timeout){
 
@@ -137,12 +141,13 @@ int Controller::receive(std::vector<uint8_t>& buffer, bool readAll, bool wait, i
     
     int res = serialPort->read(buffer, nbChar);
 
-    //*
-    std::cout << "Message received : ";
-    for(auto&& v : buffer)
-        std::cout << (int) v << " ";
-    std::cout << "(" << res << ")" << std::endl;
-    //*/
+    if(mode > none){
+        output << "Message received : ";
+        for(auto&& v : buffer)
+            output << (int) v << " ";
+
+        output << "(" << res << ")" << std::endl;
+    }
 
     return res;
 }
@@ -244,14 +249,14 @@ void Controller::ping(uint8_t id){
  * @return true if it was correctly added
  * @return false otherwise, if the id was already present
  */
-bool Controller::addMotor(uint8_t id, const std::string& name){
+bool Controller::addMotor(uint8_t id, const std::string& name, Type type){
     for(auto ptr=motors->begin(); ptr != motors->end(); ptr++)
         if(ptr->first == id)
             return false;
 
     if(motors->find(id) != motors->end()) return false;
 
-    Servomotor* motor = new Servomotor(id, name);
+    Servomotor* motor = new Servomotor(id, name, type);
     motors->insert(std::pair<int, Servomotor*>(id, motor));
 
     return true;
@@ -360,9 +365,10 @@ bool Controller::turnLED(uint8_t id){
  * @return true if successfully changed
  * @return false otherwise
  */
-bool Controller::changeSpeed(uint8_t id, uint16_t newSpeed){ //TODO: add range tests
+bool Controller::changeSpeed(uint8_t id, uint16_t newSpeed){
     auto ptr = motors->find(id);
     if(ptr == motors->end()) return false;
+    if(!ptr->second->validSpeed(newSpeed)) return false;
 
     int repSize = writeIns(id, SPEED_REGISTER, {(uint8_t) newSpeed, (uint8_t)(newSpeed >> BYTE_SIZE)});
 
@@ -381,10 +387,17 @@ bool Controller::changeSpeed(uint8_t id, uint16_t newSpeed){ //TODO: add range t
  * @brief Change speed for all servomotors in the list
  * 
  * @param newSpeed the value of the new speed
+ * If controller in
  */
 void Controller::changeSpeed(uint16_t newSpeed){
     for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){ 
-        if(!changeSpeed(ptr->first, newSpeed)) std::cerr << "Unable to change speed of device" << (int) ptr->first << "." << std::endl; 
+        if(!changeSpeed(ptr->first, newSpeed)){
+            std::stringstream disp;
+            disp << "Unable to change speed of device " << (int) ptr->first << ".";
+
+            if(mode >= print) output << disp.str() << std::endl;
+            if(mode >= except) throw ConnectionError(disp.str());
+        }  
     }
 }
 
@@ -396,9 +409,10 @@ void Controller::changeSpeed(uint16_t newSpeed){
  * @return true if successfully changed
  * @return false otherwise
  */
-bool Controller::setPosition(uint8_t id, uint16_t newPosition){ // TODO: add range tests
+bool Controller::setPosition(uint8_t id, uint16_t newPosition){
     auto ptr = motors->find(id);
     if(ptr == motors->end()) return false;
+    if(!ptr->second->validPosition(newPosition)) return false;
 
     int repSize = writeIns(id, POSITION_REGISTER, {(uint8_t) newPosition, (uint8_t)(newPosition >> BYTE_SIZE)});
 
@@ -421,7 +435,13 @@ bool Controller::setPosition(uint8_t id, uint16_t newPosition){ // TODO: add ran
 void Controller::setPosition(const std::vector<uint16_t>& newPosition){
     auto ptrPos = newPosition.cbegin();
     for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){ 
-        if(!setPosition(ptr->first, *ptrPos)) std::cerr << "Unable to set position of device" << (int) ptr->first << "." << std::endl; 
+        if(!setPosition(ptr->first, *ptrPos)){
+            std::stringstream disp;
+            disp << "Unable to set position of device " << (int) ptr->first << ".";
+
+            if(mode >= print) output << disp.str() << std::endl;
+            if(mode >= except) throw ConnectionError(disp.str());
+        } 
         ptrPos++;
     }
 }
@@ -465,8 +485,14 @@ bool Controller::addPosition(uint8_t id, int dx){
  */
 void Controller::addPosition(const std::vector<int> dx){
     auto ptrPos = dx.cbegin();
-    for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){ 
-        if(!addPosition(ptr->first, *ptrPos)) std::cerr << "Unable to add to the position of the device" << (int) ptr->first << "." << std::endl; 
+    for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){  
+        if(!addPosition(ptr->first, *ptrPos)){
+            std::stringstream disp;
+            disp << "Unable to add to the position of the device " << (int) ptr->first << ".";
+
+            if(mode >= print) output << disp.str() << std::endl;
+            if(mode >= except) throw ConnectionError(disp.str());
+        }
         ptrPos++;
     }
 }
@@ -512,8 +538,15 @@ bool Controller::updateInfos(uint8_t id){
  * 
  */
 void Controller::updateInfos(){
-    for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){ 
-        if(!updateInfos(ptr->first)) std::cerr << "Unable to update information from device" << (int) ptr->first << "." << std::endl; 
+    for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){
+        if(!updateInfos(ptr->first)){
+            std::stringstream disp;
+            disp << "Unable to update information from device " << (int) ptr->first << ".";
+
+            if(mode >= print) output << disp.str() << std::endl;
+            if(mode >= except) throw ConnectionError(disp.str());
+        }else if(mode >= print)
+            output << servosToString();
     }
 }
 

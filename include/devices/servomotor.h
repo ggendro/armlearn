@@ -16,11 +16,18 @@
 #ifndef SERVOMOTOR_H
 #define SERVOMOTOR_H
 
+#include <nlohmann/json.hpp>
+#include <iostream>
+#include <fstream>
 #include <vector>
 #include <string>
 #include <sstream>
 #include <chrono>
 #include <cstdlib>
+
+#include "typeerror.h"
+#include "range.h"
+
 
 // Starting address of the register containing the model number
 #define MODEL_REGISTER 0x00
@@ -50,17 +57,32 @@
 #define POSITION_ERROR_MARGIN 5
 
 
+
 /**
  * @brief Enum representing the status of the servomotor
  * 
  *  - offline: not connected to the physical device
  *  - connected: connected to the physical device but motors are not allowed to move or maintain a position
- *  - activated: connected,  motors can receive move orders and are able to maintain a position TODO: implement (for now, merged with connected)
+ *  - activated: connected + motors can receive move orders and are able to maintain a position TODO: implement (for now, merged with connected)
  */
 enum Status{
     offline,
     connected,
     activated
+};
+
+
+/**
+ * @brief Enum representing the type of the servomotor, used for range setting
+ * 
+ */
+enum Type{ // TODO: make a comparison between current switch impementation and the one using range.json parsing and static array
+    base,
+    shoulder, 
+    elbow, 
+    wristAngle, 
+    wristRotate, 
+    gripper
 };
 
 
@@ -75,6 +97,10 @@ class Servomotor{
         uint8_t id;
         std::string name;
         Status status;
+        Type type;
+
+        uint16_t posMin;
+        uint16_t posMax;
 
         uint16_t modelNum;
         uint8_t firmware;
@@ -95,25 +121,30 @@ class Servomotor{
 
         std::chrono::time_point<std::chrono::system_clock> creationTime;
         std::chrono::time_point<std::chrono::system_clock> lastUpdate;
+
+        static nlohmann::json* ranges;
+        static bool rangesInit;
         
 
     public:
-        Servomotor(uint8_t id, const std::string& name);
+        Servomotor(uint8_t id, const std::string& name, Type type);
         ~Servomotor();
 
         uint8_t getId() const;
         std::string getName() const;
         Status getStatus() const;
+        Type getType() const;
         bool getLED() const;
         uint16_t getTargetPosition() const;
 
         std::string toString() const;
 
+        void setName(const std::string& newName);
         void setStatus(Status stat);
+        void setType(Type newType);
         void setModel(uint16_t mod);
         void setFirmware(uint8_t firm);
         void setId(uint8_t id);
-        void setName(const std::string& newName);
         void setLED(bool on);
         void setInfos(const std::vector<uint8_t>& infos);
         void setTargetSpeed(uint16_t speed);
@@ -124,5 +155,7 @@ class Servomotor{
         bool targetPositionReached(uint16_t err = -1) const;
 
 };
+
+bool Servomotor::rangesInit = false;
 
 #endif

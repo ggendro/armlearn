@@ -57,6 +57,20 @@
 
 
 /**
+ * @brief Controller display mode, ordered from the one giving the least information to user to the one giving the most
+ * 
+ *  - none : No information display
+ *  - print : Print when sending and receiving packet and when handling errors
+ *  - except : Print and throw exceptions when errors occur
+ */
+enum DisplayMode{
+    none,
+    print,
+    except
+};
+
+
+/**
  * @class Controller
  * @brief Provides an interface to link servomotor classes with servomotor devices using serial port
  * 
@@ -66,6 +80,9 @@ class Controller{
     private:
         serial::Serial* serialPort;
         std::map<uint8_t, Servomotor*>* motors;
+
+        DisplayMode mode;
+        std::ostream& output;
 
         static uint8_t computeChecksum(const std::vector<uint8_t>& data);
         static bool validPacket(std::vector<uint8_t>& packet, int verifStep = 0);
@@ -79,13 +96,13 @@ class Controller{
 
 
     public:
-        Controller(const std::string& port, int baudrate = DEFAULT_BAUDRATE);
+        Controller(const std::string& port, int baudrate = DEFAULT_BAUDRATE, DisplayMode displayMode = print, std::ostream& out = std::cout);
         ~Controller();
 
         void connect();
         void ping(uint8_t id);
 
-        bool addMotor(uint8_t id, const std::string& name);
+        bool addMotor(uint8_t id, const std::string& name, Type type);
         bool removeMotor(uint8_t id);
 
         bool changeId(uint8_t oldId, uint8_t newId);

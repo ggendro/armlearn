@@ -10,9 +10,11 @@
  * @param id the id of the servomotor
  * @param name the name of theservomotor
  */
-Servomotor::Servomotor(uint8_t id, const std::string& name):status(offline), targetSpeed(0), targetPosition(0), modelNum(0), firmware(0), speed(0), position(0), load(0), voltage(0), temperature(0), activeLED(0), instructionregistered(0), inMovement(0){
+Servomotor::Servomotor(uint8_t id, const std::string& name, Type type):status(offline), posMin(0), posMax(0), targetSpeed(0), targetPosition(0), modelNum(0), firmware(0), speed(0), position(0), load(0), voltage(0), temperature(0), activeLED(0), instructionregistered(0), inMovement(0){
     this->id = id;
     this->name = name;
+
+    this->setType(type);
 
     auto currentTime = std::chrono::system_clock::now();
     creationTime = currentTime;
@@ -53,6 +55,15 @@ std::string Servomotor::getName() const{
  */
 Status Servomotor::getStatus() const{
     return status;
+}
+
+/**
+ * @brief Return the type of the servomotor
+ * 
+ * @return Type an enum corresponding to the type of the servomotor
+ */
+Type Servomotor::getType() const{
+    return type;
 }
 
 /**
@@ -98,6 +109,46 @@ std::string Servomotor::toString() const{
  */
 void Servomotor::setStatus(Status stat){
     status = stat;
+}
+
+void Servomotor::setType(Type newType){
+    type = newType;
+
+    switch(newType){
+        case base:
+            posMin = BASE_MIN;
+            posMax = BASE_MAX;
+            break;
+
+        case shoulder:
+            posMin = SHOULDER_MIN;
+            posMax = SHOULDER_MAX;
+            break;
+
+        case elbow:
+            posMin = ELBOW_MIN;
+            posMax = ELBOW_MAX;
+            break;
+
+        case wristAngle:
+            posMin = WRISTANGLE_MIN;
+            posMax = WRISTANGLE_MAX;
+            break;
+
+        case wristRotate:
+            posMin = WRISTROTATE_MIN;
+            posMax = WRISTROTATE_MAX;
+            break;
+
+        case gripper:
+            posMin = GRIPPER_MIN;
+            posMax = GRIPPER_MAX;
+            break;
+
+        default:
+            throw TypeError("Type is not part of the list of types.");
+            break;
+    }
 }
 
 /**
@@ -191,6 +242,20 @@ void Servomotor::setTargetPosition(uint16_t position){
     targetPosition = position;
 }
 
+
+/**
+ * @brief Check if the speed is within the boundaries of the servomotor
+ * 
+ * @return true if it is
+ * @return false otherwise
+ */
+bool Servomotor::validSpeed(uint16_t speed) const{
+    return speed > SPEED_MIN && speed < SPEED_MAX;
+}
+
+bool Servomotor::validPosition(uint16_t position) const{
+    return position > posMin && position < posMax;
+}
 
 /**
  * @brief Check if the target position has been reached

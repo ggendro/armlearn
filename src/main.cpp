@@ -8,12 +8,12 @@ int main(int argc, char *argv[]) {
 
 	Controller arbotix("/dev/ttyUSB0");
 
-	arbotix.addMotor(1, "base ");
-	arbotix.addMotor(2, "shoulder");
-	arbotix.addMotor(3, "elbow");
-	arbotix.addMotor(4, "wristAngle");
-	arbotix.addMotor(5, "wristRotate");
-	arbotix.addMotor(6, "gripper");
+	arbotix.addMotor(1, "base ", base);
+	arbotix.addMotor(2, "shoulder", shoulder);
+	arbotix.addMotor(3, "elbow", elbow);
+	arbotix.addMotor(4, "wristAngle", wristAngle);
+	arbotix.addMotor(5, "wristRotate", wristRotate);
+	arbotix.addMotor(6, "gripper", gripper);
 	
 	arbotix.connect();
 	std::cout << arbotix.servosToString();
