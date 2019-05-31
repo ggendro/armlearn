@@ -10,14 +10,20 @@ Install
 Not done yet. For now you can execute the following lines on  a terminal to download, compile and run the `main.cpp` file:
 
 Get the code:
+```
     git clone https://gitlab.insa-rennes.fr/Gael.Gendron/WidowXArmLearning.git
+```
 
 Build:
+```
     cd build/
     make
+```
 
 Run. `sudo` authorization is required to access serial ports:
+```
     sudo ./main
+```
 
 
 
