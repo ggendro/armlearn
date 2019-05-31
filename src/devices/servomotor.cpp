@@ -10,10 +10,9 @@
  * @param id the id of the servomotor
  * @param name the name of theservomotor
  */
-Servomotor::Servomotor(uint8_t id, const std::string& name):modelNum(0), firmware(0), speed(0), position(0), load(0), voltage(0), temperature(0), activeLED(0), instructionregistered(0), inMovement(0){
+Servomotor::Servomotor(uint8_t id, const std::string& name):status(offline), targetSpeed(0), targetPosition(0), modelNum(0), firmware(0), speed(0), position(0), load(0), voltage(0), temperature(0), activeLED(0), instructionregistered(0), inMovement(0){
     this->id = id;
     this->name = name;
-    this->status = notConnected;
 
     auto currentTime = std::chrono::system_clock::now();
     creationTime = currentTime;
@@ -57,7 +56,7 @@ Status Servomotor::getStatus() const{
 }
 
 /**
- * @brief Return the current stae of the servomotor's LED
+ * @brief Return the current state of the servomotor's LED
  * 
  * @return true if ON
  * @return false if OFF
@@ -67,15 +66,25 @@ bool Servomotor::getLED() const{
 }
 
 /**
+ * @brief Return the current target position
+ * 
+ * @return uint16_t the position to reach
+ */
+uint16_t Servomotor::getTargetPosition() const{
+    return targetPosition;
+}
+
+/**
  * @brief Retunr a string containing informations about the servomotor (id, name, status, position, ...)
  * 
  * @return std::string informations contained in the servomotor under string format
  */
 std::string Servomotor::toString() const{
     std::stringstream streamRep;
-    streamRep << "Servomotor " << name << "\tID: " << (int) id << "\tModel: " << (int) modelNum << "\tFirm: " << (int) firmware << "\tStat: " << status; // Model and status information
-    streamRep << "\tLED: " << activeLED << "\tPos: " << position << "\tSpd: " << (int) speed << "\tLoad: " << (int) load << "\tVolt: " << (int) voltage << "\tTemp: " << (int) temperature; // Integer information
-    streamRep  << "\tInstr? " << instructionregistered << "\tMove? " << inMovement; // Boolean information
+    streamRep << "Servomotor " << name << "\tID: " << (int) id << "\tModel: " << (int) modelNum << "\tFirmware: " << (int) firmware << "\tStatus: " << status; // Model and status information
+    streamRep << "\tLED: " << activeLED << "\tPosition: " << (int) position << " (target: " << targetPosition <<  ")" << "\tSpeed: " << (int) speed << " (target: " << targetSpeed <<  ")";
+    streamRep << "\tLoad: " << (int) load << "\tVoltage: " << (int) voltage << "\tTemperature: " << (int) temperature; // Integer information
+    streamRep << "\tInstruction waiting? " << instructionregistered << "\tIn movement? " << inMovement; // Boolean information
     streamRep << "\tUpdated: " << std::chrono::duration<double, std::ratio<1, 1>>(std::chrono::system_clock::now() - lastUpdate).count() << "s ago "; // Time passed since last update was executed
     
     return streamRep.str();
@@ -118,6 +127,20 @@ void Servomotor::setId(uint8_t id){
     this->id = id;
 }
 
+/**
+ * @brief Change the name of the servo
+ * 
+ * @param newName the new name
+ */
+void Servomotor::setName(const std::string& newName){
+    name = newName;
+}
+
+/**
+ * @brief Change the value of the LED
+ * 
+ * @param on the value of the LED (true = ON, false = OFF)
+ */
 void Servomotor::setLED(bool on){
     activeLED = on;
 }
@@ -148,4 +171,38 @@ void Servomotor::setInfos(const std::vector<uint8_t>& infos){
     inMovement = infos[9];
 
     lastUpdate = std::chrono::system_clock::now();
+}
+
+/**
+ * @brief Set the target speed of the servomotor
+ * 
+ * @param speed the new speed to reach
+ */
+void Servomotor::setTargetSpeed(uint16_t speed){
+    targetSpeed = speed;
+}
+
+/**
+ * @brief Set the target position of the servomotor
+ * 
+ * @param speed the new position to reach
+ */
+void Servomotor::setTargetPosition(uint16_t position){
+    targetPosition = position;
+}
+
+
+/**
+ * @brief Check if the target position has been reached
+ * 
+ * @param err the margin of error, if negative, will use the default value
+ * @return true if the difference between the target position and the position is inferior to the margin
+ * @return false otherwise
+ */
+bool Servomotor::targetPositionReached(uint16_t err) const{
+    uint16_t margin = POSITION_ERROR_MARGIN;
+    if(err >= 0)
+        margin = err;
+
+    return abs(targetPosition - position) < margin;
 }

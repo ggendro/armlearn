@@ -47,6 +47,13 @@
 // Action command, execute instructions sent with WRITE_WAIT_INSTRUCTION
 #define ACTION_INSTRUCTION 0x05
 
+// Position of the servomotors to put the arm in backhoe position
+#define BACKHOE_POSITION {2048, 2048, 2048, 2048, 512, 256}
+// Position of the servomotors to put the arm in sleep position
+#define SLEEP_POSITION {2048, 1005, 990, 1830, 512, 256}
+
+// Macro used to do computations for all servomotors, a servo pointor is represented by ptr, ptr->first gives the ID and ptr->second gives a pointor to the Servomotor instance
+#define FOR_ALL_MOTORS(instructions) for(auto ptr = motors->cbegin(); ptr != motors->cend(); ptr++){ instructions }
 
 
 /**
@@ -87,10 +94,16 @@ class Controller{
 
         bool changeSpeed(uint8_t id, uint16_t newSpeed);
         void changeSpeed(uint16_t newSpeed);
+
         bool setPosition(uint8_t id, uint16_t newPosition);
         void setPosition(const std::vector<uint16_t>& newPosition);
-        bool addPosition(uint8_t id, uint16_t dx); // TODO: implement addPosition methods
-        void addPosition(const std::vector<uint16_t> dx);
+        void goToBackhoe();
+        void goToSleep();
+
+        bool addPosition(uint8_t id, int dx);
+        void addPosition(const std::vector<int> dx);
+
+        bool goalReached(uint16_t err = -1) const;
 
         bool updateInfos(uint8_t id);
         void updateInfos();

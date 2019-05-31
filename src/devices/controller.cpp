@@ -208,7 +208,7 @@ void Controller::connect(){
 
     for(auto ptr = motors->cbegin(); ptr != motors->cend(); ptr++){
         ping(ptr->first);
-        ptr->second->setStatus(notConnected);
+        ptr->second->setStatus(offline);
     }
 
     for(auto ptr = motors->cbegin(); ptr != motors->cend(); ptr++){
@@ -361,12 +361,19 @@ bool Controller::turnLED(uint8_t id){
  * @return false otherwise
  */
 bool Controller::changeSpeed(uint8_t id, uint16_t newSpeed){ //TODO: add range tests
+    auto ptr = motors->find(id);
+    if(ptr == motors->end()) return false;
+
     int repSize = writeIns(id, SPEED_REGISTER, {(uint8_t) newSpeed, (uint8_t)(newSpeed >> BYTE_SIZE)});
 
     std::vector<uint8_t> rep;
     int res = receive(rep, false, true, repSize);
 
-    if(res == repSize && validPacket(rep)) return true;
+    if(res == repSize && validPacket(rep)) {
+        ptr->second->setTargetSpeed(newSpeed);
+
+        return true;
+    }
     return false;
 }
 
@@ -390,12 +397,19 @@ void Controller::changeSpeed(uint16_t newSpeed){
  * @return false otherwise
  */
 bool Controller::setPosition(uint8_t id, uint16_t newPosition){ // TODO: add range tests
+    auto ptr = motors->find(id);
+    if(ptr == motors->end()) return false;
+
     int repSize = writeIns(id, POSITION_REGISTER, {(uint8_t) newPosition, (uint8_t)(newPosition >> BYTE_SIZE)});
 
     std::vector<uint8_t> rep;
     int res = receive(rep, false, true, repSize);
 
-    if(res == repSize && validPacket(rep)) return true;
+    if(res == repSize && validPacket(rep)) {
+        ptr->second->setTargetPosition(newPosition);
+
+        return true;
+    }
     return false;
 }
 
@@ -410,6 +424,67 @@ void Controller::setPosition(const std::vector<uint16_t>& newPosition){
         if(!setPosition(ptr->first, *ptrPos)) std::cerr << "Unable to set position of device" << (int) ptr->first << "." << std::endl; 
         ptrPos++;
     }
+}
+
+/**
+ * @brief Set the position of the arm to backhoe position
+ * 
+ */
+void Controller::goToBackhoe(){
+    setPosition(BACKHOE_POSITION);
+}
+
+/**
+ * @brief Set the position of the arm to sleep position
+ * 
+ */
+void Controller::goToSleep(){
+    setPosition(SLEEP_POSITION);
+}
+
+
+/**
+ * @brief Add to the current target position
+ * 
+ * @param id the id of the servomotor whose position has to be changed
+ * @param dx the number to add to the current goal position
+ * @return true if successfully changed
+ * @return false otherwise
+ */
+bool Controller::addPosition(uint8_t id, int dx){
+    auto ptr = motors->find(id);
+    if(ptr == motors->end()) return false;
+
+    return setPosition(id, ptr->second->getTargetPosition() + dx);
+}
+
+/**
+ * @brief Add to the goal position of all servos
+ * 
+ * @param dx the number to add to the servos' position
+ */
+void Controller::addPosition(const std::vector<int> dx){
+    auto ptrPos = dx.cbegin();
+    for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){ 
+        if(!addPosition(ptr->first, *ptrPos)) std::cerr << "Unable to add to the position of the device" << (int) ptr->first << "." << std::endl; 
+        ptrPos++;
+    }
+}
+
+
+/**
+ * @brief Check if the goal position of all servomotors has been reached
+ * 
+ * @param err the margin of error, if negative, will use the default value of servos
+ * @return true 
+ * @return false 
+ */
+bool Controller::goalReached(uint16_t err) const{
+    for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){ 
+        if(!ptr->second->targetPositionReached(err)) return false;
+    }
+
+    return true;
 }
 
 

@@ -20,6 +20,7 @@
 #include <string>
 #include <sstream>
 #include <chrono>
+#include <cstdlib>
 
 // Starting address of the register containing the model number
 #define MODEL_REGISTER 0x00
@@ -45,10 +46,14 @@
 // Size of a byte in servomotor register
 #define BYTE_SIZE 8
 
+// Margin of error between the current position and the target position
+#define POSITION_ERROR_MARGIN 5
+
 
 enum Status{
-    notConnected,
-    connected
+    offline,
+    connected,
+    activated // Connected and motors enabled, TODO: implement, (for now, merged with connected)
 };
 
 
@@ -67,7 +72,7 @@ class Servomotor{
         uint16_t modelNum;
         uint8_t firmware;
 
-        uint16_t targetSpeed; // TODO: to use
+        uint16_t targetSpeed;
         uint16_t targetPosition;
 
         uint16_t position;
@@ -93,6 +98,7 @@ class Servomotor{
         std::string getName() const;
         Status getStatus() const;
         bool getLED() const;
+        uint16_t getTargetPosition() const;
 
         std::string toString() const;
 
@@ -100,8 +106,13 @@ class Servomotor{
         void setModel(uint16_t mod);
         void setFirmware(uint8_t firm);
         void setId(uint8_t id);
+        void setName(const std::string& newName);
         void setLED(bool on);
         void setInfos(const std::vector<uint8_t>& infos);
+        void setTargetSpeed(uint16_t speed);
+        void setTargetPosition(uint16_t position);
+
+        bool targetPositionReached(uint16_t err = -1) const;
 
 };
 
