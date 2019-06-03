@@ -4,21 +4,11 @@
 
 #include "controller.h"
 
-/**
- * @brief Construct a new Controller:: Controller object
- * 
- * @param port the port to use
- * @param baudrate to use, default : 115200
- */
 Controller::Controller(const std::string& port, int baudrate, DisplayMode displayMode, std::ostream& out):mode(displayMode), output(out) {
     serialPort = new serial::Serial(port, baudrate);
     motors = new std::map<uint8_t, Servomotor*>();
 }
 
-/**
- * @brief Destroy the Controller:: Controller object
- * 
- */
 Controller::~Controller(){
     delete serialPort;
 
@@ -29,12 +19,6 @@ Controller::~Controller(){
 }
 
 
-/**
- * @brief Computes the checksum of a packet
- * 
- * @param data the data containedin the packet
- * @return uint8_t the according checksum
- */
 uint8_t Controller::computeChecksum(const std::vector<uint8_t>& data){
     int sum = 0;
     for(std::vector<uint8_t>::const_iterator ptr = data.cbegin(); ptr < data.cend(); ptr++){
@@ -44,13 +28,6 @@ uint8_t Controller::computeChecksum(const std::vector<uint8_t>& data){
 	return 255 - (sum % 256);
 }
 
-/**
- * @brief Checks if a status packet isvalid
- * 
- * @param packet the status packet to verify
- * @return true if valid
- * @return false if not
- */
 bool Controller::validPacket(std::vector<uint8_t>& packet, int verifStep){
 
     switch(verifStep){ // Switch voluntarily does not have break statements to verify all following cases
@@ -81,14 +58,6 @@ bool Controller::validPacket(std::vector<uint8_t>& packet, int verifStep){
 }
 
 
-/**
- * @brief Send a packet to the connected serial port
- * 
- * @param buffer the content of the packet
- * @return int the number of bytes really sent
- * 
- * If controller display mode is superior or equal to print, will display the sent packet in the output stream
- */
 int Controller::send(const std::vector<uint8_t>& buffer){
 
     std::vector<uint8_t> sendBuf(buffer);
@@ -111,18 +80,6 @@ int Controller::send(const std::vector<uint8_t>& buffer){
     return res;
 }
 
-/**
- * @brief Fills a buffer with the input from the device
- * 
- * @param buffer the buffer to fill data with
- * @param readAll if true, will read all available data in the buffer, if false, will only read bytesExoected bytes
- * @param wait if true, method will block until bytesExpected bytes are read or timeout is reached
- * @param bytesExpected the minimum number of bytes expected, if wait is true, will wait until this amount of bytes is in the buffer
- * @param timeout the time to wait if wait is true
- * @return int the number of bytes read
- * 
- * If controller display mode is superior or equal to print, will display the received packet in the output stream
- */
 int Controller::receive(std::vector<uint8_t>& buffer, bool readAll, bool wait, int bytesExpected, int timeout){
 
     if(wait){
@@ -153,28 +110,11 @@ int Controller::receive(std::vector<uint8_t>& buffer, bool readAll, bool wait, i
 }
 
 
-/**
- * @brief Send a read instruction to a device
- * 
- * @param id the id of the servomotor to send the instruction to 
- * @param registerNum the address of the first register to read
- * @param nbRegisters the number of registers to read starting from registerNum
- * @return int the expected size of the status packet returned
- */
 int Controller::readIns(uint8_t id, uint8_t registerNum, uint8_t nbRegisters){ // TODO: implement bulk read for MX series, to gain performance
     send({id, 0x04, READ_INSTRUCTION, registerNum, nbRegisters});
     return RESPONSE_BYTES + nbRegisters;
 }
 
-/**
- * @brief Send a write instruction to a device
- * 
- * @param id the id of the servomotor to send the instruction to 
- * @param startAddress the address of the first register to write in, careful, not all registers can be overwritten
- * @param newValues the values replacing the old ones, each value will overwrite the value of a regiser
- * @param wait if true, the servomotor will wait for an action command before taking the new value into account (ex: move the motor to a new position), InstructionRegistered register set to 1 during this waiting period
- * @return int the expected size of the status packet returned
- */
 int Controller::writeIns(uint8_t id, uint8_t startAddress, const std::vector<uint8_t>& newValues, bool wait){ // TODO: implement syncWrite to gain performance
     uint8_t length = 3 + newValues.size();
     std::vector<uint8_t> toSend = {id, length};
@@ -191,32 +131,12 @@ int Controller::writeIns(uint8_t id, uint8_t startAddress, const std::vector<uin
     return RESPONSE_BYTES;
 }
 
-/**
- * @brief Execute instructions waiting for an action command in servomotors registers
- * 
- * @param ids the ids of the devices to send the action command to
- */
 void Controller::execWaitingWrite(const std::vector<uint8_t>& ids){
     for(auto ptr = ids.cbegin(); ptr < ids.cend(); ptr++)
         send({*ptr, 0x02, ACTION_INSTRUCTION}); 
 }
 
-/**
- * @brief Function pattern repeated by most of execution commands
- * Composed of several steps:
- *  - 1. Get the Servomotor matching the id in parameter or handle error
- *  - 2. Send a packet
- *  - 3. Receive a packet or handle error
- *  - 4. Process received packet
- * 
- * @param id the id of the target servomotor
- * @param sendFunc function that send a packet and return the number of expected bytes in response, if 0: executionPattern returns immediatly false, if 1: executionPattern returns immediatly true , takes in parameter an iterator to the servomotor asked by the id
- * @param receiveFunc function that manages the response packet, takes in parameter the same iterator as sendFunc and the response packet
- * @return true if execution went well
- * @return false otherwise
- * @throw IdError if the id is incorrect
- * @throw if the response packet is incorrect
- */
+
 bool Controller::executionPattern(uint16_t id, const std::function< int(std::map<uint8_t, Servomotor*>::iterator) >& sendFunc, const std::function< void(std::map<uint8_t, Servomotor*>::iterator, std::vector<uint8_t>&) >& receiveFunc){
     auto ptr = motors->find(id);
     if(ptr == motors->end()){ // Change not valid if id is not present in the list
@@ -266,11 +186,6 @@ bool Controller::executionPattern(uint16_t id, const std::function< int(std::map
 
 
 
-/**
- * @brief Connect the controller to the physical devices
- * 
- * Connect to serial port and to all servomotors included in the controller
- */
 void Controller::connect(){
     if(!serialPort->isOpen()) serialPort->open();
     serialPort->flush();
@@ -291,29 +206,23 @@ void Controller::connect(){
             servo->setStatus(connected);
             servo->setModel(buf[5] + (buf[6] << BYTE_SIZE));
             servo->setFirmware(buf[7]);
+
+            
         }
     }
 
+    for(auto ptr = motors->cbegin(); ptr != motors->cend(); ptr++){
+        if(ptr->second->getStatus() == connected && torqueEnabled(ptr->first)) ptr->second->setStatus(activated); 
+    }
 }
 
-/**
- * @brief Send a ping to a device, the device will return its id, model number and firmware version
- * 
- * @param id the id of the device to send the ping to
- */
+
 void Controller::ping(uint8_t id){
     readIns(id, MODEL_REGISTER, MODEL_LENGTH); // Ask for id and model of the device
 }
 
 
-/**
- * @brief Add a servomotor to the controller's list
- * 
- * @param id the id of the servo
- * @param name the name of the servo
- * @return true if it was correctly added
- * @return false otherwise, if the id was already present
- */
+
 bool Controller::addMotor(uint8_t id, const std::string& name, Type type){
     if(motors->find(id) != motors->end()){
         if(mode >= except) throw IdError("ID already taken.");
@@ -326,13 +235,6 @@ bool Controller::addMotor(uint8_t id, const std::string& name, Type type){
     return true;
 }
 
-/**
- * @brief Remove a servomotor fro mthe controller's list
- * 
- * @param id the id of the servo
- * @return true if it was correctly removed
- * @return false otherwise, if it was not in the list
- */
 bool Controller::removeMotor(uint8_t id){
     auto ptr = motors->find(id);
     if(ptr == motors->end()){
@@ -347,14 +249,6 @@ bool Controller::removeMotor(uint8_t id){
 }
 
 
-/**
- * @brief Change the id of a servomotor
- * 
- * @param oldId the current id of the servomotor to change
- * @param newId the new id of the servomotor
- * @return true if the change succeeded
- * @return false otherwise
- */
 bool Controller::changeId(uint8_t oldId, uint8_t newId){
     return executionPattern(oldId, 
         [this, oldId, newId](std::map<uint8_t, Servomotor*>::iterator ptr){
@@ -372,20 +266,21 @@ bool Controller::changeId(uint8_t oldId, uint8_t newId){
         [this, newId](std::map<uint8_t, Servomotor*>::iterator ptr, std::vector<uint8_t>& rep){ // If change correctly executed in the device, change in the interface
             ptr->second->setId(newId); // Change in the servo class
 
-            auto val = motors->extract(ptr); // Change in the list
-            val.key() = newId;
-            motors->insert(move(val));
+            // Change in the list
+
+            // C++11 version
+            auto servo = ptr->second;
+            motors->erase(ptr);
+            motors->insert(std::pair<int, Servomotor*>(newId, servo));
+
+
+            // C++17 version (without realloc)
+            //auto val = motors->extract(ptr); 
+            //val.key() = newId;
+            //motors->insert(std::move(val));
         });
 }
 
-/**
- * @brief Turn the LED of the servomotor ON / OFF
- * 
- * @param id the id of the servomotor the LED must be changed
- * @param on if true, will turn LED on, if false will turn off
- * @return true if successfully changed
- * @return false otherwise
- */
 bool Controller::turnLED(uint8_t id, bool on){
    return executionPattern(id, 
         [this, id, on](std::map<uint8_t, Servomotor*>::iterator ptr){
@@ -399,13 +294,6 @@ bool Controller::turnLED(uint8_t id, bool on){
         });
 }
 
-/**
- * @brief Turn the LED of the servomotor ON if it is currently OFF and OFF if it is currently ON
- * 
- * @param id the id of the servomotor the LED must be changed
- * @return true if successfully changed
- * @return false otherwise
- */
 bool Controller::turnLED(uint8_t id){
    bool on;
 
@@ -420,14 +308,7 @@ bool Controller::turnLED(uint8_t id){
         });
 }
 
-/**
- * @brief Change speed of the specified servomotor
- * 
- * @param id the id of the servomotor whose speed has to change
- * @param newSpeed the value of the new speed
- * @return true if successfully changed
- * @return false otherwise
- */
+
 bool Controller::changeSpeed(uint8_t id, uint16_t newSpeed){
     return executionPattern(id, 
         [this, id, newSpeed](std::map<uint8_t, Servomotor*>::iterator ptr){
@@ -447,25 +328,13 @@ bool Controller::changeSpeed(uint8_t id, uint16_t newSpeed){
         });
 }
 
-/**
- * @brief Change speed for all servomotors in the list
- * 
- * @param newSpeed the value of the new speed
- */
 void Controller::changeSpeed(uint16_t newSpeed){
     for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){ 
         changeSpeed(ptr->first, newSpeed);
     }
 }
 
-/**
- * @brief Set the position of the servomotor
- * 
- * @param id the id of the servomotor whose position has to be changed
- * @param newPosition the new position of the servo
- * @return true if successfully changed
- * @return false otherwise
- */
+
 bool Controller::setPosition(uint8_t id, uint16_t newPosition){
     return executionPattern(id, 
         [this, id, newPosition](std::map<uint8_t, Servomotor*>::iterator ptr){
@@ -486,11 +355,6 @@ bool Controller::setPosition(uint8_t id, uint16_t newPosition){
         });
 }
 
-/**
- * @brief Set the position of all servomotors
- * 
- * @param newPosition the new position of the servo
- */
 void Controller::setPosition(const std::vector<uint16_t>& newPosition){
     auto ptrPos = newPosition.cbegin();
     for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){ 
@@ -499,31 +363,15 @@ void Controller::setPosition(const std::vector<uint16_t>& newPosition){
     }
 }
 
-/**
- * @brief Set the position of the arm to backhoe position
- * 
- */
 void Controller::goToBackhoe(){
     setPosition(BACKHOE_POSITION);
 }
 
-/**
- * @brief Set the position of the arm to sleep position
- * 
- */
 void Controller::goToSleep(){
     setPosition(SLEEP_POSITION);
 }
 
 
-/**
- * @brief Add to the current target position
- * 
- * @param id the id of the servomotor whose position has to be changed
- * @param dx the number to add to the current goal position
- * @return true if successfully changed
- * @return false otherwise
- */
 bool Controller::addPosition(uint8_t id, int dx){
     auto ptr = motors->find(id);
     if(ptr == motors->end()){
@@ -538,11 +386,6 @@ bool Controller::addPosition(uint8_t id, int dx){
     return setPosition(id, ptr->second->getTargetPosition() + dx);
 }
 
-/**
- * @brief Add to the goal position of all servos
- * 
- * @param dx the number to add to the servos' position
- */
 void Controller::addPosition(const std::vector<int> dx){
     auto ptrPos = dx.cbegin();
     for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){  
@@ -552,51 +395,72 @@ void Controller::addPosition(const std::vector<int> dx){
 }
 
 
-/**
- * @brief Check if the goal position of all servomotors has been reached
- * 
- * @param err the margin of error, if negative, will use the default value of servos
- * @return true 
- * @return false 
- */
-bool Controller::goalReached(int err) const{
-    for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){
-        if(!ptr->second->targetPositionReached(err)) return false;
+bool Controller::enableTorque(int id, bool enable){
+    return executionPattern(id, 
+        [this, id, enable](std::map<uint8_t, Servomotor*>::iterator ptr){
+            return writeIns(id, TORQUE_REGISTER, {(uint8_t) enable});
+        },
+        [enable](std::map<uint8_t, Servomotor*>::iterator ptr, std::vector<uint8_t>& rep){
+            ptr->second->setStatus(enable ? activated : connected);
+        });
+}
+
+bool Controller::torqueEnabled(int id){
+    bool isEnabled;
+    bool execFine = executionPattern(id, 
+        [this, id](std::map<uint8_t, Servomotor*>::iterator ptr){
+            return readIns(id, TORQUE_REGISTER, 1);
+        },
+        [&isEnabled](std::map<uint8_t, Servomotor*>::iterator ptr, std::vector<uint8_t>& rep){
+            isEnabled = rep[5];
+        });
+
+        if(!execFine){
+            std::stringstream disp;
+            disp << "Error during execution. Cannot read torque value of device " << id << ".";
+
+            if(mode >= print) output << disp.str() << std::endl;
+            if(mode >= except) throw ConnectionError(disp.str());
+            return false;
+        }
+
+        return isEnabled;
+}
+
+
+bool Controller::goalReached() const{
+    for(auto ptr=motors->cbegin(); ptr != motors->cend(); ptr++){
+        if(ptr->second->motorMoving()) return false;
     }
 
     return true;
 }
 
-
-/**
- * @brief Ask information from servomotor device and update the values in the class representing it
- * 
- * @param id the id of the servomotor to update
- * @return true if information has successfully been updated
- * @return false otherwise
- */
-bool Controller::updateInfos(uint8_t id){
-    int repSize = readIns(id, READ_REGISTER, READ_LENGTH);
-    std::vector<uint8_t> rep;
-    int res = receive(rep, false, true, repSize);
-
-    if(res == repSize && validPacket(rep)){
-        motors->find(id)->second->setInfos(std::vector<uint8_t>(rep.begin()+5, rep.end()-1));
-        return true;
+double Controller::positionSumSquaredError() const{
+    double sse = 0;
+    for(auto ptr=motors->cbegin(); ptr != motors->cend(); ptr++){
+        sse += std::pow(ptr->second->targetPositionReached(), 2);
     }
 
-    std::stringstream disp;
-    disp << "No response from device " << id << ".";
-
-    if(mode >= print) output << disp.str() << std::endl;
-    if(mode >= except) throw ConnectionError(disp.str());
-    return false;
+    return std::sqrt(sse);
 }
 
-/**
- * @brief Update all servomotor informations (see updatesInfos(uint8_t id) for more details)
- * 
- */
+
+bool Controller::updateInfos(uint8_t id){
+    return executionPattern(id, 
+        [this, id](std::map<uint8_t, Servomotor*>::iterator ptr){
+            return readIns(id, READ_REGISTER, READ_LENGTH);
+        },
+        [this, id](std::map<uint8_t, Servomotor*>::iterator ptr, std::vector<uint8_t>& rep){
+            ptr->second->setInfos(std::vector<uint8_t>(rep.begin()+5, rep.end()-1));
+
+            if(torqueEnabled(ptr->first))
+                ptr->second->setStatus(activated);
+            else
+                ptr->second->setStatus(connected);
+        });
+}
+
 void Controller::updateInfos(){
     for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){
         updateInfos(ptr->first);
@@ -605,11 +469,6 @@ void Controller::updateInfos(){
 }
 
 
-/**
- * @brief Return informations about servomotors under string format (see Servomotor::toString() method)
- * 
- * @return std::string informations contained by servomotors
- */
 std::string Controller::servosToString() const {
     std::stringstream streamRep;
     streamRep << "Servomotors :" << std::endl;

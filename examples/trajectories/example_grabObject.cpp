@@ -1,13 +1,15 @@
 
 
-
 #include "controller.h"
 #include "trajectory.h"
 
-
 int main(int argc, char *argv[]) {
 
-	Controller arbotix("/dev/ttyUSB0");
+    /******************************************/
+    /****     Common base for examples     ****/
+    /******************************************/
+
+    Controller arbotix("/dev/ttyUSB0");
 
 	arbotix.addMotor(1, "base ", base);
 	arbotix.addMotor(2, "shoulder", shoulder);
@@ -20,21 +22,26 @@ int main(int argc, char *argv[]) {
 	std::cout << arbotix.servosToString();
 
 
-	//*
-	std::this_thread::sleep_for((std::chrono::milliseconds) 1000);
-	
+	std::this_thread::sleep_for((std::chrono::milliseconds) 1000); // Usually, a waiting period and a second connect attempt is necessary to reach all devices
 	arbotix.connect();
 	std::cout << arbotix.servosToString();
-	//*/
 
-	arbotix.changeSpeed(50);
+	arbotix.changeSpeed(50); // Servomotor speed is reduced for safety
 
 	std::cout << "Update servomotors information:" << std::endl;
 	arbotix.updateInfos();
 
 
-	/*
-	Trajectory path(&arbotix);
+    /******************************************/
+    /****       Grab object example        ****/
+    /******************************************/
+
+    /*
+     * Set arm to backhoe position. Grab and move an invisible object located at its right in front of him and drop it. Go to sleep position.
+     * 
+     */
+
+    Trajectory path(&arbotix);
 
 	path.addPoint(BACKHOE_POSITION);
 	path.addPoint({1024, 2200, 2200, 1025, 512, 511});
@@ -52,8 +59,5 @@ int main(int argc, char *argv[]) {
 
 	path.init();
 	path.executeTrajectory();
-
-	//*/
-
 
 }

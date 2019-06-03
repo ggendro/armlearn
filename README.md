@@ -1,13 +1,13 @@
+# WidowX Arm communication
 
+API for a high level communication between an user and an Interbotix WidowX robotic arm, composed of 6 MX-64T Dynamixel servomotors and an Arbotix-m microcontroller.
+Developed on linux OS but is theoretically cross-platform.
 
-This is the second draft of an API allowing a high level communication between an user and a WidowX robotic arm.
-Developed on linux OS, is theoretically cross-platform, until now.
+## Getting started
 
+### Install
 
-Install
-===
-
-Not done yet. For now you can execute the following lines on  a terminal to download, compile and run the `main.cpp` file:
+Not done yet. For now you can execute the following lines on a terminal to download, compile and run the `main.cpp` file:
 
 Get the code:
 ```
@@ -17,6 +17,7 @@ Get the code:
 Build:
 ```
     cd build/
+    cmake ..
     make
 ```
 
@@ -27,26 +28,22 @@ Run. `sudo` authorization is required to access serial ports:
 
 
 
-Libraries
-===
+### Dependencies
 
 *serial* library required for port communication.
 Can be found here : <https://github.com/wjwwood/serial>
 
 
-C++ Version
-===
+## C++ Version
 
-C++17 required for compilation of the project
+C++11 required for compilation of the project
 
 
-License
-===
+## License
 
 Not yet
 
 
-Author
-===
+## Author
 
 Gaël Gendron (gael.gendron@insa-rennes.fr)
