@@ -14,6 +14,7 @@ option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 
 # specify link directory
 link_directories("/usr/local/lib/")
+link_libraries(serial)
 
 # add headers
 file(GLOB_RECURSE HEADERS "include/*.h")
@@ -25,16 +26,17 @@ endforeach()
 list(REMOVE_DUPLICATES INCLUDE_DIRS)
 include_directories(${INCLUDE_DIRS})
 
-#add source code
+# add source code
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 
-# add the executable
-add_executable(main ${SOURCES})
-# TODO: add target for tests and examples
+# create examples
+add_subdirectory(examples)
+
+# create test
+add_subdirectory(tests)
 
 
 # add the binary tree to the search path for include files
-target_link_libraries(main serial)
 
 
 include(InstallRequiredSystemLibraries)

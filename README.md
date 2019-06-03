@@ -3,11 +3,19 @@
 API for a high level communication between an user and an Interbotix WidowX robotic arm, composed of 6 MX-64T Dynamixel servomotors and an Arbotix-m microcontroller.
 Developed on linux OS but is theoretically cross-platform.
 
+
 ## Getting started
+
+
+### Dependencies
+
+*serial* library required for port communication.
+Can be found here : <https://github.com/wjwwood/serial>
+
 
 ### Install
 
-Not done yet. For now you can execute the following lines on a terminal to download, compile and run the `main.cpp` file:
+Not done yet. For now you can execute the following lines on a terminal to download and compile:
 
 Get the code:
 ```
@@ -21,17 +29,67 @@ Build:
     make
 ```
 
-Run. `sudo` authorization is required to access serial ports:
+<div class="note">
+Note that the previous command will generate all possible executable files.
+</div>
+
+To generate only the executable you want, run the following:
 ```
+    cd build/
+    cmake ..
+```
+
+Then go to the next section. Insert the make command between the instructions. Here is how to do for the ID example:
+```
+    cd examples/device_communication/example_id
+    make
+    sudo ./example_id
+```
+
+
+### Run tests and examples
+
+After installation, you will find in the the build folder the project executables. For all of them, `sudo` authorization is required to access serial ports:
+
+#### Run ID example
+
+Run a code example setting the ID of a servomotor. 
+```
+    cd examples/device_communication/example_id
+    sudo ./example_id
+```
+
+#### Run LED example
+
+Run a code example turning ON and OFF the LED of a servomotor. 
+```
+    cd examples/device_communication/example_led
+    sudo ./example_led
+```
+
+#### Run movement example
+
+Run a code example executing several movements to the arm. 
+```
+    cd examples/device_communication/example_movement
+    sudo ./example_movement
+```
+
+#### Run grab example
+
+Run a code example executing a specific trajectory to the arm, grab and drop an object.
+```
+    cd examples/trajectories/example_grab
+    sudo ./example_grab
+```
+
+#### Run main
+
+Run the main file. 
+```
+    cd tests/
     sudo ./main
 ```
-
-
-
-### Dependencies
-
-*serial* library required for port communication.
-Can be found here : <https://github.com/wjwwood/serial>
 
 
 ## C++ Version
