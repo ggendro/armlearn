@@ -216,6 +216,21 @@ class Controller{
 
 
         /**
+         * @brief Get the controller's mode of display (see DisplayMode enum for more details)
+         * 
+         * @return DisplayMode the current mode
+         */
+        DisplayMode getDisplayMode() const;
+
+        /**
+         * @brief Set the controller's mode of display (see DisplayMode enum for more details)
+         * 
+         * @param newMode the new mode to set
+         */
+        void setDisplayMode(DisplayMode newMode);
+
+
+        /**
          * @brief Adds a servomotor to the controller's list
          * 
          * @param id the id of the servo

@@ -223,6 +223,15 @@ void Controller::ping(uint8_t id){
 
 
 
+DisplayMode Controller::getDisplayMode() const{
+    return mode;
+}
+
+void Controller::setDisplayMode(DisplayMode newMode){
+    mode = newMode;
+}
+
+
 bool Controller::addMotor(uint8_t id, const std::string& name, Type type){
     if(motors->find(id) != motors->end()){
         if(mode >= except) throw IdError("ID already taken.");

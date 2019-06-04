@@ -36,7 +36,6 @@ add_subdirectory(examples)
 add_subdirectory(tests)
 
 
-# add the binary tree to the search path for include files
 
 
 include(InstallRequiredSystemLibraries)

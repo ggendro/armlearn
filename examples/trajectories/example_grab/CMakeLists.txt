@@ -1,5 +1,8 @@
 
-# set executable directory
+# auto-generated file
+
+# set executable directory 
+
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "./")
 
 # add executable
