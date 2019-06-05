@@ -15,17 +15,17 @@ CylindricalConverter::~CylindricalConverter(){
 }
 
 
-Converter* CylindricalConverter::computeServoToCoord(std::vector<uint16_t>& positions){
-    lastInput = std::vector<uint16_t>(positions);
+Converter* CylindricalConverter::computeServoToCoord(const std::vector<uint16_t>& positions){
+    lastServo = std::vector<uint16_t>(positions);
 
-    
+    // TODO: do computation
 
 
     return this;
 }
 
-Converter* CylindricalConverter::computeCoordToServo(std::vector<uint16_t>& coordinates){
-    lastOutput = std::vector<uint16_t>(coordinates);
+Converter* CylindricalConverter::computeCoordToServo(const std::vector<double>& coordinates){
+    lastCoord = std::vector<double>(coordinates);
 
     // TODO: do computation
     

@@ -14,6 +14,8 @@
 #ifndef RANGE_H
 #define RANGE_H
 
+#include <math.h>
+
 
 // Ranges of values for servomotor position with base type
 #define BASE_MIN 0
@@ -42,6 +44,12 @@
 // Ranges of values for speed of servomotors, no matter their type
 #define SPEED_MIN 0
 #define SPEED_MAX 1023
+
+// Number to multiply a position to convert it into degree (unit is 0.088 degrees)
+#define TO_DEGREE(position) ((position) * 0.088 - 180)
+
+// Number to multiply a position to convert it into radian (unit is 0.088 degrees)
+#define TO_RADIAN(position) ((TO_DEGREE(position)) * M_PI / 180)
 
 
 #endif

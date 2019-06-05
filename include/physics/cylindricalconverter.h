@@ -43,7 +43,7 @@ class CylindricalConverter : public Converter{
          * @param positions the positions of the servomotors
          * @return Converter* itself (see converter.h)
          */
-        virtual Converter* computeServoToCoord(std::vector<uint16_t>& positions) override;
+        virtual Converter* computeServoToCoord(const std::vector<uint16_t>& positions) override;
 
         /**
          * @brief Computes servomotor positions from cylindrical coordinates using Forward Kinematics
@@ -51,7 +51,7 @@ class CylindricalConverter : public Converter{
          * @param coordinates under cylindrical coordinate system [R, Têta, Z] 
          * @return Converter* itself (see converter.h)
          */
-        virtual Converter* computeCoordToServo(std::vector<uint16_t>& positions) override;
+        virtual Converter* computeCoordToServo(const std::vector<double>& coordinates) override;
 
 };
 

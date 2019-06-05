@@ -13,6 +13,9 @@
 #ifndef CARTESIANCONVERTER_H
 #define CARTESIANCONVERTER_H
 
+#include <kdl/chainfksolverpos_recursive.hpp>
+#include <kdl/chainiksolverpos_lma.hpp>
+
 #include "converter.h"
 
 
@@ -21,6 +24,11 @@
  * 
  */
 class CartesianConverter : public Converter{
+
+    private:
+        KDL::ChainFkSolverPos* cartesianConverter;
+        KDL::ChainIkSolverPos* positionConverter;
+
 
     public:
 
@@ -43,7 +51,7 @@ class CartesianConverter : public Converter{
          * @param positions the positions of the servomotors
          * @return Converter* itself (see converter.h)
          */
-        virtual Converter* computeServoToCoord(std::vector<uint16_t>& positions) override;
+        virtual Converter* computeServoToCoord(const std::vector<uint16_t>& positions) override;
 
         /**
          * @brief Computes servomotor positions from cartesian coordinates
@@ -51,7 +59,7 @@ class CartesianConverter : public Converter{
          * @param coordinates under cartesian coordinate system [X, Y, Z] 
          * @return Converter* itself (see converter.h)
          */
-        virtual Converter* computeCoordToServo(std::vector<uint16_t>& coordinates) override;
+        virtual Converter* computeCoordToServo(const std::vector<double>& coordinates) override;
 
 };
 
