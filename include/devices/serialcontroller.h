@@ -1,29 +1,28 @@
 /**
- * @file controller.h
+ * @file serialcontroller.h
  * @author Gaël Gendron (gael.genron@insa-rennes.fr)
- * @brief File containing the Controller class, used for communication with hardware
+ * @brief File containing the SerialController class, inherited from AbstractContoller, used to control hardware via serial communication
  * @version 0.1
  * @date 2019-05-28
  * 
- * Documenation about the communication protocol can be found at http://support.robotis.com/en/product/actuator/dynamixel/communication/dxl_packet.htm
+ * Documentation about the communication protocol can be found at http://support.robotis.com/en/product/actuator/dynamixel/communication/dxl_packet.htm
  * 
  * @copyright Copyright (c) 2019
  * 
  */
 
-#ifndef CONTROLLER_H
-#define CONTROLLER_H
+#ifndef SERIALCONTROLLER_H
+#define SERIALCONTROLLER_H
 
 #include <serial/serial.h>
 #include <vector>
 #include <map>
-#include <string>
 #include <iostream>
 #include <chrono>
 #include <thread>
 #include <functional>
-#include <math.h>
 
+#include "abstractcontroller.h"
 #include "servomotor.h"
 #include "connectionerror.h"
 #include "iderror.h"
@@ -51,39 +50,19 @@
 // Action command, execute instructions sent with WRITE_WAIT_INSTRUCTION
 #define ACTION_INSTRUCTION 0x05
 
-// Position of the servomotors to put the arm in backhoe position
-#define BACKHOE_POSITION {2048, 2048, 2048, 2048, 512, 256}
-// Position of the servomotors to put the arm in sleep position
-#define SLEEP_POSITION {2048, 1025, 1025, 1830, 512, 256}
+
+
 
 
 /**
- * @brief Controller display mode, ordered from the one giving the least information to user to the one giving the most
- * 
- *  - none : No information display
- *  - print : Print when sending and receiving packet and when handling errors
- *  - except : Print and throw exceptions when errors occur
- */
-enum DisplayMode{
-    none,
-    print,
-    except
-};
-
-
-/**
- * @class Controller
+ * @class SerialController
  * @brief Provides an interface to link servomotor classes with servomotor devices using serial port
  * 
  */
-class Controller{
+class SerialController : public AbstractController{
 
     private:
         serial::Serial* serialPort;
-        std::map<uint8_t, Servomotor*>* motors;
-
-        DisplayMode mode;
-        std::ostream& output;
 
 
         /**
@@ -181,73 +160,40 @@ class Controller{
     public:
 
         /**
-         * @brief Construct a new Controller object
+         * @brief Construct a new SerialController object
          * 
          * @param port the port to use
          * @param baudrate to use, default : 115200
          * @param displayMode mode of display (see DisplayMode enum for more details)
          * @param out the output stream to display the results, standard std output by default
          */
-        Controller(const std::string& port, int baudrate = DEFAULT_BAUDRATE, DisplayMode displayMode = except, std::ostream& out = std::cout);
+        SerialController(const std::string& port, int baudrate = DEFAULT_BAUDRATE, DisplayMode displayMode = except, std::ostream& out = std::cout);
 
         /**
-         * @brief Destroys the Controller:: Controller object
+         * @brief Destroys the SerialController object
          * 
          */
-        ~Controller();
+        ~SerialController();
 
 
         
         /**
          * @brief Connects the controller to the physical devices
          * 
-         * Connect to serial port and to all servomotors included in the controller
+         * Connects to serial port and to all servomotors included in the controller
+         * Inherited method from AbstractController
          */
-        void connect();
+        virtual void connect() override;
 
 
         /**
          * @brief Sends a ping to a device, the device will return its id, model number and firmware version
          * 
          * @param id the id of the device to send the ping to
-         */
-        void ping(uint8_t id);
-
-
-
-        /**
-         * @brief Get the controller's mode of display (see DisplayMode enum for more details)
          * 
-         * @return DisplayMode the current mode
+         * Inherited method from AbstractController
          */
-        DisplayMode getDisplayMode() const;
-
-        /**
-         * @brief Set the controller's mode of display (see DisplayMode enum for more details)
-         * 
-         * @param newMode the new mode to set
-         */
-        void setDisplayMode(DisplayMode newMode);
-
-
-        /**
-         * @brief Adds a servomotor to the controller's list
-         * 
-         * @param id the id of the servo
-         * @param name the name of the servo
-         * @return true if it was correctly added
-         * @return false otherwise, if the id was already present
-         */
-        bool addMotor(uint8_t id, const std::string& name, Type type);
-
-        /**
-         * @brief Removes a servomotor fro mthe controller's list
-         * 
-         * @param id the id of the servo
-         * @return true if it was correctly removed
-         * @return false otherwise, if it was not in the list
-         */
-        bool removeMotor(uint8_t id);
+        virtual void ping(uint8_t id) override;
 
         /**
          * @brief Change the id of a servomotor
@@ -256,8 +202,10 @@ class Controller{
          * @param newId the new id of the servomotor
          * @return true if the change succeeded
          * @return false otherwise
+         * 
+         * Inherited method from AbstractController
          */
-        bool changeId(uint8_t oldId, uint8_t newId);
+        virtual bool changeId(uint8_t oldId, uint8_t newId) override;
 
         /**
          * @brief Turns the LED of the servomotor ON / OFF
@@ -266,8 +214,10 @@ class Controller{
          * @param on if true, will turn LED on, if false will turn off
          * @return true if successfully changed
          * @return false otherwise
+         * 
+         * Inherited method from AbstractController
          */
-        bool turnLED(uint8_t id, bool on);
+        virtual bool turnLED(uint8_t id, bool on) override;
 
         /**
          * @brief Turns the LED of the servomotor ON if it is currently OFF and OFF if it is currently ON
@@ -275,8 +225,10 @@ class Controller{
          * @param id the id of the servomotor the LED must be changed
          * @return true if successfully changed
          * @return false otherwise
+         * 
+         * Inherited method from AbstractController
          */
-        bool turnLED(uint8_t id);
+        virtual bool turnLED(uint8_t id) override;
 
 
         /**
@@ -286,15 +238,10 @@ class Controller{
          * @param newSpeed the value of the new speed
          * @return true if successfully changed
          * @return false otherwise
-         */
-        bool changeSpeed(uint8_t id, uint16_t newSpeed);
-
-        /**
-         * @brief Changes speed for all servomotors in the list
          * 
-         * @param newSpeed the value of the new speed
+         * Inherited method from AbstractController
          */
-        void changeSpeed(uint16_t newSpeed);
+        virtual bool changeSpeed(uint8_t id, uint16_t newSpeed) override;
 
 
         /**
@@ -304,27 +251,10 @@ class Controller{
          * @param newPosition the new position of the servo
          * @return true if successfully changed
          * @return false otherwise
-         */
-        bool setPosition(uint8_t id, uint16_t newPosition);
-
-        /**
-         * @brief Sets the position of all servomotors
          * 
-         * @param newPosition the new position of the servo
+         * Inherited method from AbstractController
          */
-        void setPosition(const std::vector<uint16_t>& newPosition);
-
-        /**
-         * @brief Sets the position of the arm to backhoe position
-         * 
-         */
-        void goToBackhoe();
-
-        /**
-         * @brief Sets the position of the arm to sleep position
-         * 
-         */
-        void goToSleep();
+        virtual bool setPosition(uint8_t id, uint16_t newPosition) override;
 
 
         /**
@@ -334,23 +264,10 @@ class Controller{
          * @param dx the number to add to the current goal position
          * @return true if successfully changed
          * @return false otherwise
-         */
-        bool addPosition(uint8_t id, int dx);
-
-        /**
-         * @brief Adds to the goal position of all servos
          * 
-         * @param dx the number to add to the servos' position
+         * Inherited method from AbstractController
          */
-        void addPosition(const std::vector<int> dx);
-
-
-        /**
-         * @brief Get the real position of all servomotors at last update
-         * 
-         * @return std::vector<uint16_t> the positions of each servo
-         */
-        std::vector<uint16_t> getPosition() const;
+        virtual bool addPosition(uint8_t id, int dx) override;
 
 
         /**
@@ -359,8 +276,10 @@ class Controller{
          * @param enable if true, enables the torque, otherwise, disables it
          * @return true if successfully changed
          * @return false otherwise
+         * 
+         * Inherited method from AbstractController
          */
-        bool enableTorque(int id, bool enable = true);
+        virtual bool enableTorque(int id, bool enable = true) override;
 
         /**
          * @brief Checks if torque is enabled for the given servomotor (see enableTorque() method)
@@ -368,24 +287,10 @@ class Controller{
          * @param id the id of the torque to check
          * @return true if enabled
          * @return false otherwise
-         */
-        bool torqueEnabled(int id);
-
-
-        /**
-         * @brief Checks if the goal position of all servomotors has been reached (i.e: all servomotors have stopped moving)
          * 
-         * @return true if all motors stopped
-         * @return false otherwise
+         * Inherited method from AbstractController
          */
-        bool goalReached() const;
-
-        /**
-         * @brief Returns the sum squared error of the differences between servo's target and current positions
-         * 
-         * @return double the SSE
-         */
-        double positionSumSquaredError() const;
+        virtual bool torqueEnabled(int id) override;
 
 
         /**
@@ -394,22 +299,10 @@ class Controller{
          * @param id the id of the servomotor to update
          * @return true if information has successfully been updated
          * @return false otherwise
-         */
-        bool updateInfos(uint8_t id);
-
-        /**
-         * @brief Updates all servomotor informations (see updatesInfos(uint8_t id) for more details)
          * 
+         * Inherited method from AbstractController
          */
-        void updateInfos();
-
-
-        /**
-         * @brief Returns informations about servomotors under string format (see Servomotor::toString() method)
-         * 
-         * @return std::string informations contained by servomotors
-         */
-        std::string servosToString() const;
+        virtual bool updateInfos(uint8_t id) override;
     
 };
 

@@ -84,7 +84,7 @@ void AbstractController::addPosition(const std::vector<int> dx){
 }
 
 
-std::vector<uint16_t> Controller::getPosition() const{
+std::vector<uint16_t> AbstractController::getPosition() const{
     std::vector<uint16_t> res;
     for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){  
         res.push_back(ptr->second->getCurrentPosition());
@@ -94,7 +94,7 @@ std::vector<uint16_t> Controller::getPosition() const{
 }
 
 
-bool Controller::goalReached() const{
+bool AbstractController::goalReached() const{
     for(auto ptr=motors->cbegin(); ptr != motors->cend(); ptr++){
         if(ptr->second->motorMoving()) return false;
     }
@@ -102,7 +102,7 @@ bool Controller::goalReached() const{
     return true;
 }
 
-double Controller::positionSumSquaredError() const{
+double AbstractController::positionSumSquaredError() const{
     double sse = 0;
     for(auto ptr=motors->cbegin(); ptr != motors->cend(); ptr++){
         sse += std::pow(ptr->second->targetPositionReached(), 2);
@@ -112,7 +112,7 @@ double Controller::positionSumSquaredError() const{
 }
 
 
-void Controller::updateInfos(){
+void AbstractController::updateInfos(){
     for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){
         updateInfos(ptr->first);
     }
@@ -120,7 +120,7 @@ void Controller::updateInfos(){
 }
 
 
-std::string Controller::servosToString() const {
+std::string AbstractController::servosToString() const {
     std::stringstream streamRep;
     streamRep << "Servomotors :" << std::endl;
     for(auto ptr = motors->cbegin(); ptr != motors->cend(); ptr++) streamRep << ptr->second->toString() << std::endl;

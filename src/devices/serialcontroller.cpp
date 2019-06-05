@@ -2,24 +2,18 @@
  * @copyright Copyright (c) 2019
  */
 
-#include "controller.h"
+#include "serialcontroller.h"
 
-Controller::Controller(const std::string& port, int baudrate, DisplayMode displayMode, std::ostream& out):mode(displayMode), output(out) {
+SerialController::SerialController(const std::string& port, int baudrate, DisplayMode displayMode, std::ostream& out):AbstractController(displayMode, out) {
     serialPort = new serial::Serial(port, baudrate);
-    motors = new std::map<uint8_t, Servomotor*>();
 }
 
-Controller::~Controller(){
+SerialController::~SerialController(){
     delete serialPort;
-
-    for(auto ptr = motors->begin(); ptr != motors->end(); ptr++){
-        delete ptr->second;
-    }
-    delete motors;
 }
 
 
-uint8_t Controller::computeChecksum(const std::vector<uint8_t>& data){
+uint8_t SerialController::computeChecksum(const std::vector<uint8_t>& data){
     int sum = 0;
     for(std::vector<uint8_t>::const_iterator ptr = data.cbegin(); ptr < data.cend(); ptr++){
 		sum += *ptr;
@@ -28,7 +22,7 @@ uint8_t Controller::computeChecksum(const std::vector<uint8_t>& data){
 	return 255 - (sum % 256);
 }
 
-bool Controller::validPacket(std::vector<uint8_t>& packet, int verifStep){
+bool SerialController::validPacket(std::vector<uint8_t>& packet, int verifStep){
 
     switch(verifStep){ // Switch voluntarily does not have break statements to verify all following cases
 
@@ -58,7 +52,7 @@ bool Controller::validPacket(std::vector<uint8_t>& packet, int verifStep){
 }
 
 
-int Controller::send(const std::vector<uint8_t>& buffer){
+int SerialController::send(const std::vector<uint8_t>& buffer){
 
     std::vector<uint8_t> sendBuf(buffer);
 
@@ -80,7 +74,7 @@ int Controller::send(const std::vector<uint8_t>& buffer){
     return res;
 }
 
-int Controller::receive(std::vector<uint8_t>& buffer, bool readAll, bool wait, int bytesExpected, int timeout){
+int SerialController::receive(std::vector<uint8_t>& buffer, bool readAll, bool wait, int bytesExpected, int timeout){
 
     if(wait){
         std::chrono::time_point<std::chrono::system_clock> startTime = std::chrono::system_clock::now();
@@ -110,12 +104,12 @@ int Controller::receive(std::vector<uint8_t>& buffer, bool readAll, bool wait, i
 }
 
 
-int Controller::readIns(uint8_t id, uint8_t registerNum, uint8_t nbRegisters){ // TODO: implement bulk read for MX series, to gain performance
+int SerialController::readIns(uint8_t id, uint8_t registerNum, uint8_t nbRegisters){ // TODO: implement bulk read for MX series, to gain performance
     send({id, 0x04, READ_INSTRUCTION, registerNum, nbRegisters});
     return RESPONSE_BYTES + nbRegisters;
 }
 
-int Controller::writeIns(uint8_t id, uint8_t startAddress, const std::vector<uint8_t>& newValues, bool wait){ // TODO: implement syncWrite to gain performance
+int SerialController::writeIns(uint8_t id, uint8_t startAddress, const std::vector<uint8_t>& newValues, bool wait){ // TODO: implement syncWrite to gain performance
     uint8_t length = 3 + newValues.size();
     std::vector<uint8_t> toSend = {id, length};
 
@@ -131,13 +125,13 @@ int Controller::writeIns(uint8_t id, uint8_t startAddress, const std::vector<uin
     return RESPONSE_BYTES;
 }
 
-void Controller::execWaitingWrite(const std::vector<uint8_t>& ids){
+void SerialController::execWaitingWrite(const std::vector<uint8_t>& ids){
     for(auto ptr = ids.cbegin(); ptr < ids.cend(); ptr++)
         send({*ptr, 0x02, ACTION_INSTRUCTION}); 
 }
 
 
-bool Controller::executionPattern(uint16_t id, const std::function< int(std::map<uint8_t, Servomotor*>::iterator) >& sendFunc, const std::function< void(std::map<uint8_t, Servomotor*>::iterator, std::vector<uint8_t>&) >& receiveFunc){
+bool SerialController::executionPattern(uint16_t id, const std::function< int(std::map<uint8_t, Servomotor*>::iterator) >& sendFunc, const std::function< void(std::map<uint8_t, Servomotor*>::iterator, std::vector<uint8_t>&) >& receiveFunc){
     auto ptr = motors->find(id);
     if(ptr == motors->end()){ // Change not valid if id is not present in the list
         std::stringstream disp;
@@ -186,7 +180,7 @@ bool Controller::executionPattern(uint16_t id, const std::function< int(std::map
 
 
 
-void Controller::connect(){
+void SerialController::connect(){
     if(!serialPort->isOpen()) serialPort->open();
     serialPort->flush();
 
@@ -217,48 +211,13 @@ void Controller::connect(){
 }
 
 
-void Controller::ping(uint8_t id){
+void SerialController::ping(uint8_t id){
     readIns(id, MODEL_REGISTER, MODEL_LENGTH); // Ask for id and model of the device
 }
 
 
 
-DisplayMode Controller::getDisplayMode() const{
-    return mode;
-}
-
-void Controller::setDisplayMode(DisplayMode newMode){
-    mode = newMode;
-}
-
-
-bool Controller::addMotor(uint8_t id, const std::string& name, Type type){
-    if(motors->find(id) != motors->end()){
-        if(mode >= except) throw IdError("ID already taken.");
-        return false;
-    } 
-
-    Servomotor* motor = new Servomotor(id, name, type);
-    motors->insert(std::pair<int, Servomotor*>(id, motor));
-
-    return true;
-}
-
-bool Controller::removeMotor(uint8_t id){
-    auto ptr = motors->find(id);
-    if(ptr == motors->end()){
-        if(mode >= except) throw IdError("ID not found.");
-        return false;
-    } 
-
-    delete ptr->second;
-    motors->erase(ptr);
-
-    return true;
-}
-
-
-bool Controller::changeId(uint8_t oldId, uint8_t newId){
+bool SerialController::changeId(uint8_t oldId, uint8_t newId){
     return executionPattern(oldId, 
         [this, oldId, newId](std::map<uint8_t, Servomotor*>::iterator ptr){
             if(motors->find(newId) != motors->end()){ // Change not valid if new id is already in
@@ -290,7 +249,7 @@ bool Controller::changeId(uint8_t oldId, uint8_t newId){
         });
 }
 
-bool Controller::turnLED(uint8_t id, bool on){
+bool SerialController::turnLED(uint8_t id, bool on){
    return executionPattern(id, 
         [this, id, on](std::map<uint8_t, Servomotor*>::iterator ptr){
             if(motors->find(id)->second->getLED() == on)
@@ -303,7 +262,7 @@ bool Controller::turnLED(uint8_t id, bool on){
         });
 }
 
-bool Controller::turnLED(uint8_t id){
+bool SerialController::turnLED(uint8_t id){
    bool on;
 
    return executionPattern(id, 
@@ -318,7 +277,7 @@ bool Controller::turnLED(uint8_t id){
 }
 
 
-bool Controller::changeSpeed(uint8_t id, uint16_t newSpeed){
+bool SerialController::changeSpeed(uint8_t id, uint16_t newSpeed){
     return executionPattern(id, 
         [this, id, newSpeed](std::map<uint8_t, Servomotor*>::iterator ptr){
             if(!ptr->second->validSpeed(newSpeed)){
@@ -337,14 +296,8 @@ bool Controller::changeSpeed(uint8_t id, uint16_t newSpeed){
         });
 }
 
-void Controller::changeSpeed(uint16_t newSpeed){
-    for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){ 
-        changeSpeed(ptr->first, newSpeed);
-    }
-}
 
-
-bool Controller::setPosition(uint8_t id, uint16_t newPosition){
+bool SerialController::setPosition(uint8_t id, uint16_t newPosition){
     return executionPattern(id, 
         [this, id, newPosition](std::map<uint8_t, Servomotor*>::iterator ptr){
             if(!ptr->second->validPosition(newPosition)){
@@ -364,24 +317,8 @@ bool Controller::setPosition(uint8_t id, uint16_t newPosition){
         });
 }
 
-void Controller::setPosition(const std::vector<uint16_t>& newPosition){
-    auto ptrPos = newPosition.cbegin();
-    for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){ 
-        setPosition(ptr->first, *ptrPos);
-        ptrPos++;
-    }
-}
 
-void Controller::goToBackhoe(){
-    setPosition(BACKHOE_POSITION);
-}
-
-void Controller::goToSleep(){
-    setPosition(SLEEP_POSITION);
-}
-
-
-bool Controller::addPosition(uint8_t id, int dx){
+bool SerialController::addPosition(uint8_t id, int dx){
     auto ptr = motors->find(id);
     if(ptr == motors->end()){
         std::stringstream disp;
@@ -395,26 +332,8 @@ bool Controller::addPosition(uint8_t id, int dx){
     return setPosition(id, ptr->second->getTargetPosition() + dx);
 }
 
-void Controller::addPosition(const std::vector<int> dx){
-    auto ptrPos = dx.cbegin();
-    for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){  
-        addPosition(ptr->first, *ptrPos);
-        ptrPos++;
-    }
-}
 
-
-std::vector<uint16_t> Controller::getPosition() const{
-    std::vector<uint16_t> res;
-    for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){  
-        res.push_back(ptr->second->getCurrentPosition());
-    }
-
-    return res;
-}
-
-
-bool Controller::enableTorque(int id, bool enable){
+bool SerialController::enableTorque(int id, bool enable){
     return executionPattern(id, 
         [this, id, enable](std::map<uint8_t, Servomotor*>::iterator ptr){
             return writeIns(id, TORQUE_REGISTER, {(uint8_t) enable});
@@ -424,7 +343,7 @@ bool Controller::enableTorque(int id, bool enable){
         });
 }
 
-bool Controller::torqueEnabled(int id){
+bool SerialController::torqueEnabled(int id){
     bool isEnabled;
     bool execFine = executionPattern(id, 
         [this, id](std::map<uint8_t, Servomotor*>::iterator ptr){
@@ -447,25 +366,7 @@ bool Controller::torqueEnabled(int id){
 }
 
 
-bool Controller::goalReached() const{
-    for(auto ptr=motors->cbegin(); ptr != motors->cend(); ptr++){
-        if(ptr->second->motorMoving()) return false;
-    }
-
-    return true;
-}
-
-double Controller::positionSumSquaredError() const{
-    double sse = 0;
-    for(auto ptr=motors->cbegin(); ptr != motors->cend(); ptr++){
-        sse += std::pow(ptr->second->targetPositionReached(), 2);
-    }
-
-    return std::sqrt(sse);
-}
-
-
-bool Controller::updateInfos(uint8_t id){
+bool SerialController::updateInfos(uint8_t id){
     return executionPattern(id, 
         [this, id](std::map<uint8_t, Servomotor*>::iterator ptr){
             return readIns(id, READ_REGISTER, READ_LENGTH);
@@ -478,20 +379,4 @@ bool Controller::updateInfos(uint8_t id){
             else
                 ptr->second->setStatus(connected);
         });
-}
-
-void Controller::updateInfos(){
-    for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){
-        updateInfos(ptr->first);
-    }
-    if(mode >= print) output << servosToString();
-}
-
-
-std::string Controller::servosToString() const {
-    std::stringstream streamRep;
-    streamRep << "Servomotors :" << std::endl;
-    for(auto ptr = motors->cbegin(); ptr != motors->cend(); ptr++) streamRep << ptr->second->toString() << std::endl;
-
-    return streamRep.str();
 }

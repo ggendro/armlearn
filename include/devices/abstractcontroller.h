@@ -1,7 +1,7 @@
 /**
  * @file abstractcontroller.h
  * @author Gaël Gendron (gael.genron@insa-rennes.fr)
- * @brief File containing the abstract class AbstractController, used for controllingh hardware or simulated device
+ * @brief File containing the abstract class AbstractController, used for controlling hardware or simulated device
  * @version 0.1
  * @date 2019-06-04
  * 
@@ -15,6 +15,7 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <math.h>
 
 #include "servomotor.h"
 #include "iderror.h"
@@ -41,9 +42,10 @@ enum DisplayMode{
 
 
 /**
- * @class Controller
- * @brief Provides an interface to link servomotor classes with servomotor devices using serial port
- * 
+ * @class AbstractController
+ * @brief Provides an abstract interface to link servomotor classes with servomotor devices
+ * Link with classes implemented
+ * Link with devices (physical or simulated) to be implemnted in inherited classes
  */
 class AbstractController{
 
