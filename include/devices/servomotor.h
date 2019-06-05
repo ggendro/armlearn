@@ -187,6 +187,14 @@ class Servomotor{
 
 
         /**
+         * @brief Get the Current real position
+         * 
+         * @return uint16_t the real position of the servo
+         */
+        uint16_t getCurrentPosition() const;
+
+
+        /**
          * @brief Returns a string containing informations about the servomotor (id, name, status, position, ...)
          * 
          * @return std::string informations contained in the servomotor under string format

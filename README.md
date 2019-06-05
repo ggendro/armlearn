@@ -12,6 +12,8 @@ Developed on linux OS but is theoretically cross-platform.
 *serial* library required for port communication.
 Can be found here : <https://github.com/wjwwood/serial>
 
+*KDL* library required for Reinforcement Learning.
+Can be found here : <http://www.orocos.org/kdl>
 
 ### Install
 

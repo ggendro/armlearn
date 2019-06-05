@@ -404,6 +404,16 @@ void Controller::addPosition(const std::vector<int> dx){
 }
 
 
+std::vector<uint16_t> Controller::getPosition() const{
+    std::vector<uint16_t> res;
+    for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){  
+        res.push_back(ptr->second->getCurrentPosition());
+    }
+
+    return res;
+}
+
+
 bool Controller::enableTorque(int id, bool enable){
     return executionPattern(id, 
         [this, id, enable](std::map<uint8_t, Servomotor*>::iterator ptr){

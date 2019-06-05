@@ -44,6 +44,10 @@ uint16_t Servomotor::getTargetPosition() const{
     return targetPosition;
 }
 
+uint16_t Servomotor::getCurrentPosition() const{
+    return position;
+}
+
 
 std::string Servomotor::toString() const{
     std::stringstream streamRep;

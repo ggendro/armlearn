@@ -1,55 +1,24 @@
 /**
- * @file controller.h
+ * @file abstractcontroller.h
  * @author Gaël Gendron (gael.genron@insa-rennes.fr)
- * @brief File containing the Controller class, used for communication with hardware
+ * @brief File containing the abstract class AbstractController, used for controllingh hardware or simulated device
  * @version 0.1
- * @date 2019-05-28
- * 
- * Documenation about the communication protocol can be found at http://support.robotis.com/en/product/actuator/dynamixel/communication/dxl_packet.htm
+ * @date 2019-06-04
  * 
  * @copyright Copyright (c) 2019
  * 
  */
 
-#ifndef CONTROLLER_H
-#define CONTROLLER_H
+#ifndef ABSTRACTCONTROLLER_H
+#define ABSTRACTCONTROLLER_H
 
-#include <serial/serial.h>
 #include <vector>
 #include <map>
 #include <string>
-#include <iostream>
-#include <chrono>
-#include <thread>
-#include <functional>
-#include <math.h>
 
 #include "servomotor.h"
-#include "connectionerror.h"
 #include "iderror.h"
-#include "outofrangeerror.h"
 
-
-// Default baudrate for the serial port
-#define DEFAULT_BAUDRATE 115200
-
-// Header of a packet
-#define PACKET_HEADER 0xFF
-// Default max delay allowed when waiting for a response from a device
-#define RESPONSE_DELAY 1000
-// Default min bytes expected when waiting for a packet from a device
-#define RESPONSE_BYTES 6
-// Id to use for broadcast a packet to all devices (careful, no responses are returned when broadcast is used)
-#define BROADCAST_ID 0xFE
-
-// Read instruction for sending packet
-#define READ_INSTRUCTION 0x02
-// Write instruction for sending packet
-#define WRITE_INSTRUCTION 0x03
-// Write instruction with wait for action command
-#define WRITE_WAIT_INSTRUCTION 0x04
-// Action command, execute instructions sent with WRITE_WAIT_INSTRUCTION
-#define ACTION_INSTRUCTION 0x05
 
 // Position of the servomotors to put the arm in backhoe position
 #define BACKHOE_POSITION {2048, 2048, 2048, 2048, 512, 256}
@@ -76,142 +45,49 @@ enum DisplayMode{
  * @brief Provides an interface to link servomotor classes with servomotor devices using serial port
  * 
  */
-class Controller{
+class AbstractController{
 
-    private:
-        serial::Serial* serialPort;
+    protected:
         std::map<uint8_t, Servomotor*>* motors;
 
         DisplayMode mode;
         std::ostream& output;
 
 
-        /**
-         * @brief Computes the checksum of a packet
-         * 
-         * @param data the data containedin the packet
-         * @return uint8_t the according checksum
-         */
-        static uint8_t computeChecksum(const std::vector<uint8_t>& data);
-
-        /**
-         * @brief Checks if a status packet isvalid 
-         * 
-         * @param packet the status packet to verify
-         * @param verifStep the current step of verification, 0 means that no step has been done, 5 means that only one step is remaining
-         * @return true if valid
-         * @return false if not 
-         */
-        static bool validPacket(std::vector<uint8_t>& packet, int verifStep = 0);
-
-
-        /**
-         * @brief Sends a packet to the connected serial port
-         * 
-         * @param buffer the content of the packet
-         * @return int the number of bytes really sent
-         * 
-         * If controller display mode is superior or equal to print, will display the sent packet in the output stream
-         */
-        int send(const std::vector<uint8_t>& buffer);
-
-        /**
-         * @brief Fills a buffer with the input from the device
-         * 
-         * @param buffer the buffer to fill data with
-         * @param readAll if true, will read all available data in the buffer, if false, will only read bytesExoected bytes
-         * @param wait if true, method will block until bytesExpected bytes are read or timeout is reached
-         * @param bytesExpected the minimum number of bytes expected, if wait is true, will wait until this amount of bytes is in the buffer
-         * @param timeout the time to wait if wait is true
-         * @return int the number of bytes read
-         * 
-         * If controller display mode is superior or equal to print, will display the received packet in the output stream
-         */
-        int receive(std::vector<uint8_t>& buffer, bool readAll = false, bool wait = false, int bytesExpected = RESPONSE_BYTES, int timeout = RESPONSE_DELAY);
-
-
-        /**
-         * @brief Sends a read instruction to a device
-         * 
-         * @param id the id of the servomotor to send the instruction to 
-         * @param registerNum the address of the first register to read
-         * @param nbRegisters the number of registers to read starting from registerNum
-         * @return int the expected size of the status packet returned
-         */
-        int readIns(uint8_t id, uint8_t registerNum, uint8_t nbRegisters);
-
-        /**
-         * @brief Sends a write instruction to a device
-         * 
-         * @param id the id of the servomotor to send the instruction to 
-         * @param startAddress the address of the first register to write in, careful, not all registers can be overwritten
-         * @param newValues the values replacing the old ones, each value will overwrite the value of a regiser
-         * @param wait if true, the servomotor will wait for an action command before taking the new value into account (ex: move the motor to a new position), InstructionRegistered register set to 1 during this waiting period
-         * @return int the expected size of the status packet returned
-         */
-        int writeIns(uint8_t id, uint8_t startAddress, const std::vector<uint8_t>& newValues, bool wait = false);
-
-        /**
-         * @brief Execute instructions waiting for an action command in servomotors registers
-         * 
-         * @param ids the ids of the devices to send the action command to
-         */
-        void execWaitingWrite(const std::vector<uint8_t>& ids);
-
-
-        /**
-         * @brief Function pattern repeated by most of execution commands
-         * Composed of several steps:
-         *  - 1. Get the Servomotor matching the id in parameter or handle error
-         *  - 2. Send a packet
-         *  - 3. Receive a packet or handle error
-         *  - 4. Process received packet
-         * 
-         * @param id the id of the target servomotor
-         * @param sendFunc function that send a packet and return the number of expected bytes in response, if 0: executionPattern returns immediatly false, if 1: executionPattern returns immediatly true, takes in parameter an iterator to the servomotor asked by the id
-         * @param receiveFunc function that manages the response packet, takes in parameter the same iterator as sendFunc and the response packet
-         * @return true if execution went well
-         * @return false otherwise
-         * @throw IdError if the id is incorrect
-         * @throw if the response packet is incorrect
-         */
-        bool executionPattern(uint16_t id, const std::function< int(std::map<uint8_t, Servomotor*>::iterator) >& sendFunc, const std::function< void(std::map<uint8_t, Servomotor*>::iterator, std::vector<uint8_t>&) >& receiveFunc);
-
-
     public:
 
         /**
-         * @brief Construct a new Controller object
+         * @brief Construct a new AbstractController object
          * 
-         * @param port the port to use
-         * @param baudrate to use, default : 115200
          * @param displayMode mode of display (see DisplayMode enum for more details)
          * @param out the output stream to display the results, standard std output by default
          */
-        Controller(const std::string& port, int baudrate = DEFAULT_BAUDRATE, DisplayMode displayMode = except, std::ostream& out = std::cout);
+        AbstractController(DisplayMode displayMode = except, std::ostream& out = std::cout);
 
         /**
          * @brief Destroys the Controller:: Controller object
          * 
          */
-        ~Controller();
+        virtual ~AbstractController();
 
 
         
         /**
-         * @brief Connects the controller to the physical devices
+         * @brief Connects the controller to the physical or simulated devices
          * 
-         * Connect to serial port and to all servomotors included in the controller
+         * Abstract method, implemented in inherited classes
          */
-        void connect();
+        virtual void connect() = 0;
 
 
         /**
          * @brief Sends a ping to a device, the device will return its id, model number and firmware version
          * 
          * @param id the id of the device to send the ping to
+         * 
+         * Abstract method, implemented in inherited classes
          */
-        void ping(uint8_t id);
+        virtual void ping(uint8_t id) = 0;
 
 
 
@@ -256,8 +132,10 @@ class Controller{
          * @param newId the new id of the servomotor
          * @return true if the change succeeded
          * @return false otherwise
+         * 
+         * Abstract method, implemented in inherited classes
          */
-        bool changeId(uint8_t oldId, uint8_t newId);
+        virtual bool changeId(uint8_t oldId, uint8_t newId) = 0;
 
         /**
          * @brief Turns the LED of the servomotor ON / OFF
@@ -266,8 +144,10 @@ class Controller{
          * @param on if true, will turn LED on, if false will turn off
          * @return true if successfully changed
          * @return false otherwise
+         * 
+         * Abstract method, implemented in inherited classes
          */
-        bool turnLED(uint8_t id, bool on);
+        virtual bool turnLED(uint8_t id, bool on) = 0;
 
         /**
          * @brief Turns the LED of the servomotor ON if it is currently OFF and OFF if it is currently ON
@@ -275,8 +155,10 @@ class Controller{
          * @param id the id of the servomotor the LED must be changed
          * @return true if successfully changed
          * @return false otherwise
+         * 
+         * Abstract method, implemented in inherited classes
          */
-        bool turnLED(uint8_t id);
+        virtual bool turnLED(uint8_t id) = 0;
 
 
         /**
@@ -286,8 +168,10 @@ class Controller{
          * @param newSpeed the value of the new speed
          * @return true if successfully changed
          * @return false otherwise
+         * 
+         * Abstract method, implemented in inherited classes
          */
-        bool changeSpeed(uint8_t id, uint16_t newSpeed);
+        virtual bool changeSpeed(uint8_t id, uint16_t newSpeed) = 0;
 
         /**
          * @brief Changes speed for all servomotors in the list
@@ -304,8 +188,10 @@ class Controller{
          * @param newPosition the new position of the servo
          * @return true if successfully changed
          * @return false otherwise
+         * 
+         * Abstract method, implemented in inherited classes
          */
-        bool setPosition(uint8_t id, uint16_t newPosition);
+        virtual bool setPosition(uint8_t id, uint16_t newPosition) = 0;
 
         /**
          * @brief Sets the position of all servomotors
@@ -334,8 +220,10 @@ class Controller{
          * @param dx the number to add to the current goal position
          * @return true if successfully changed
          * @return false otherwise
+         * 
+         * Abstract method, implemented in inherited classes
          */
-        bool addPosition(uint8_t id, int dx);
+        virtual bool addPosition(uint8_t id, int dx) = 0;
 
         /**
          * @brief Adds to the goal position of all servos
@@ -359,8 +247,10 @@ class Controller{
          * @param enable if true, enables the torque, otherwise, disables it
          * @return true if successfully changed
          * @return false otherwise
+         * 
+         * Abstract method, implemented in inherited classes
          */
-        bool enableTorque(int id, bool enable = true);
+        virtual bool enableTorque(int id, bool enable = true) = 0;
 
         /**
          * @brief Checks if torque is enabled for the given servomotor (see enableTorque() method)
@@ -368,8 +258,10 @@ class Controller{
          * @param id the id of the torque to check
          * @return true if enabled
          * @return false otherwise
+         * 
+         * Abstract method, implemented in inherited classes
          */
-        bool torqueEnabled(int id);
+        virtual bool torqueEnabled(int id) = 0;
 
 
         /**
@@ -389,13 +281,15 @@ class Controller{
 
 
         /**
-         * @brief Asks information from servomotor device and update the values in the class representing it
+         * @brief Asks information from servomotor device or simulation and update the values in the class representing it
          * 
          * @param id the id of the servomotor to update
          * @return true if information has successfully been updated
          * @return false otherwise
+         * 
+         * Abstract method, implemented in inherited classes
          */
-        bool updateInfos(uint8_t id);
+        virtual bool updateInfos(uint8_t id) = 0;
 
         /**
          * @brief Updates all servomotor informations (see updatesInfos(uint8_t id) for more details)

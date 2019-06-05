@@ -3,10 +3,12 @@
 
 #include "controller.h"
 #include "trajectory.h"
+#include "cartesianconverter.h"
 
 
 int main(int argc, char *argv[]) {
 
+	
 	Controller arbotix("/dev/ttyUSB0");
 
 	arbotix.addMotor(1, "base ", base);
@@ -19,13 +21,9 @@ int main(int argc, char *argv[]) {
 	arbotix.connect();
 	std::cout << arbotix.servosToString();
 
-
-	//*
 	std::this_thread::sleep_for((std::chrono::milliseconds) 1000);
-	
 	arbotix.connect();
 	std::cout << arbotix.servosToString();
-	//*/
 
 	arbotix.changeSpeed(50);
 
@@ -33,25 +31,21 @@ int main(int argc, char *argv[]) {
 	arbotix.updateInfos();
 
 
-	/*
-	Trajectory path(&arbotix);
 
-	path.addPoint(BACKHOE_POSITION);
-	path.addPoint({1024, 2200, 2200, 1025, 512, 511});
-	path.addPoint({1024, 2400, 2200, 1200, 512, 511});
-	path.addPoint({1024, 2400, 2200, 1200, 512, 135});
-	path.addPoint({1024, 2200, 2200, 1025, 512, 135});
-	path.addPoint({2048, 2200, 2200, 1025, 512, 135});
-	path.addPoint({2048, 2400, 2200, 1200, 512, 135});
-	path.addPoint({2048, 2400, 2200, 1200, 512, 511});
-	path.addPoint({2048, 2200, 2200, 1025, 512, 511});
-	path.addPoint(SLEEP_POSITION);
+	//*
+	// Servo positions to cartesian coordonate system computation
+	CartesianConverter conv;
+	std::vector<uint16_t> servoPositions = arbotix.getPosition();
 
-	path.printTrajectory();
+	std::cout << "Positions of servomotors : \t";
+	for(auto&& v : servoPositions) std::cout << v << " ";
+	std::cout << std::endl;
 
+	std::vector<uint16_t> cartesianCoordinates = conv.computeServoToCoord(servoPositions)->get();
+	std::cout << "Coordinates equivalent : \t";
+	for(auto&& v : cartesianCoordinates) std::cout << v << " ";
+	std::cout << std::endl;
 
-	path.init();
-	path.executeTrajectory();
 
 	//*/
 
