@@ -13,8 +13,9 @@
 #define TRAJECTORY_H
 
 #include <iterator>
+#include <thread>
 
-#include "controller.h"
+#include "abstractcontroller.h"
 #include "trajectoryerror.h"
 
 // Time to wait for servomotors to reach each position
@@ -30,7 +31,7 @@
 class Trajectory{
 
     private:
-        Controller* device;
+        AbstractController* device;
         std::vector<std::vector<uint16_t>*>* trajectories;
         // TODO: add time management (pauses during execution, varying speed of servomotors, ...)
 
@@ -58,7 +59,7 @@ class Trajectory{
          * 
          * @param toDevice pointer to the Controller device to send the trajectories to, does not create it
          */
-        Trajectory(Controller* toDevice);
+        Trajectory(AbstractController* toDevice);
 
         /**
          * @brief Destroys the Trajectory:: Trajectory object

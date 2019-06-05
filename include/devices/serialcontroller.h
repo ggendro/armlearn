@@ -241,6 +241,7 @@ class SerialController : public AbstractController{
          * 
          * Inherited method from AbstractController
          */
+        using AbstractController::changeSpeed;
         virtual bool changeSpeed(uint8_t id, uint16_t newSpeed) override;
 
 
@@ -254,6 +255,7 @@ class SerialController : public AbstractController{
          * 
          * Inherited method from AbstractController
          */
+        using AbstractController::setPosition;
         virtual bool setPosition(uint8_t id, uint16_t newPosition) override;
 
 
@@ -267,6 +269,7 @@ class SerialController : public AbstractController{
          * 
          * Inherited method from AbstractController
          */
+        using AbstractController::addPosition;
         virtual bool addPosition(uint8_t id, int dx) override;
 
 
@@ -302,6 +305,7 @@ class SerialController : public AbstractController{
          * 
          * Inherited method from AbstractController
          */
+        using AbstractController::updateInfos;
         virtual bool updateInfos(uint8_t id) override;
     
 };

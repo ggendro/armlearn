@@ -6,7 +6,7 @@
 #include "trajectory.h"
 
 
-Trajectory::Trajectory(Controller* toDevice){
+Trajectory::Trajectory(AbstractController* toDevice){
     device = toDevice;
 
     trajectories = new std::vector<std::vector<uint16_t>*>();

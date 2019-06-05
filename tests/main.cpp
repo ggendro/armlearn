@@ -1,7 +1,7 @@
 
 
 
-#include "controller.h"
+#include "serialcontroller.h"
 #include "trajectory.h"
 #include "cartesianconverter.h"
 
@@ -9,7 +9,7 @@
 int main(int argc, char *argv[]) {
 
 	
-	Controller arbotix("/dev/ttyUSB0");
+	SerialController arbotix("/dev/ttyUSB0");
 
 	arbotix.addMotor(1, "base ", base);
 	arbotix.addMotor(2, "shoulder", shoulder);

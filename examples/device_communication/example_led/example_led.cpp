@@ -1,6 +1,6 @@
 
 
-#include "controller.h"
+#include "serialcontroller.h"
 
 int main(int argc, char *argv[]) {
 
@@ -8,7 +8,7 @@ int main(int argc, char *argv[]) {
     /****     Common base for examples     ****/
     /******************************************/
 
-    Controller arbotix("/dev/ttyUSB0");
+    SerialController arbotix("/dev/ttyUSB0");
 
 	arbotix.addMotor(1, "base ", base);
 	arbotix.addMotor(2, "shoulder", shoulder);
@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
     /******************************************/
 
     /*
-     * Turn on LED of servomotor with ID 2, usually the shoulder servomotor. Wait 1 second and turn it off. 
+     * Turn on LED of servomotor with ID 2, usually the shoulder servomotor. Wait 10 seconds and turn it off. 
      * 
      */
 

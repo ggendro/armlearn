@@ -7,9 +7,9 @@
 
 
 Converter::Converter():lastInput(), lastOutput(){
-    device = new KDL::Chain();
+    //device = new KDL::Chain();
 
-    device->addSegment(KDL::Segment());
+    //device->addSegment(KDL::Segment());
 
 }
 

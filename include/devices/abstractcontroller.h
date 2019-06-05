@@ -19,6 +19,8 @@
 
 #include "servomotor.h"
 #include "iderror.h"
+#include "connectionerror.h"
+#include "outofrangeerror.h"
 
 
 // Position of the servomotors to put the arm in backhoe position
