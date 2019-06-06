@@ -15,6 +15,12 @@ Can be found here : <https://github.com/wjwwood/serial>
 *KDL* library required for Reinforcement Learning.
 Can be found here : <http://www.orocos.org/kdl>
 
+*OpenMP* library used for computation tests.
+Can be installed by executing the fllowing line on a terminal:
+```
+sudo apt-get install libomp-dev
+```
+
 ### Install
 
 Not done yet. For now you can execute the following lines on a terminal to download and compile:
@@ -51,7 +57,7 @@ Then go to the next section. Insert the make command between the instructions. H
 
 ### Run tests and examples
 
-After installation, you will find in the the build folder the project executables. For all of them, `sudo` authorization is required to access serial ports:
+After installation, you will find in the the build folder the project executables. For most of them, `sudo` authorization is required to access serial ports:
 
 #### Run ID example
 
@@ -83,6 +89,14 @@ Run a code example executing a specific trajectory to the arm, grab and drop an 
 ```
     cd examples/trajectories/example_grab
     sudo ./example_grab
+```
+
+#### Run coordinates example
+
+Run a code example computing valid what coordinates are valid or the arm. Requires OpenMP.
+```
+    cd examples/computations/example_coordinates
+    ./example_coordinates
 ```
 
 #### Run main

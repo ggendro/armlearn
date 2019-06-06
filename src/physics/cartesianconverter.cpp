@@ -8,7 +8,9 @@
 
 CartesianConverter::CartesianConverter():Converter(){
     cartesianConverter = new KDL::ChainFkSolverPos_recursive(*device);
-    positionConverter = new KDL::ChainIkSolverPos_LMA(*device);
+
+    intermediaryVelocitySolver = new KDL::ChainIkSolverVel_pinv(*device);
+    positionConverter = new KDL::ChainIkSolverPos_NR(*device, *cartesianConverter, *intermediaryVelocitySolver);
 }
 
 CartesianConverter::~CartesianConverter(){
@@ -95,7 +97,7 @@ Converter* CartesianConverter::computeCoordToServo(const std::vector<double>& co
     // Save positions
     lastServo = {};
     for(int i=0; i < jointPositions.rows(); i++){
-        lastServo.push_back(TO_RADIAN(jointPositions(i))); // Conversion from radian to servomotor unit
+        lastServo.push_back(FROM_RADIAN(jointPositions(i))); // Conversion from radian to servomotor unit
     }
 
 

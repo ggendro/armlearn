@@ -45,11 +45,15 @@
 #define SPEED_MIN 0
 #define SPEED_MAX 1023
 
-// Number to multiply a position to convert it into degree (unit is 0.088 degrees)
+// Convert a position in servomotor unit into degree (unit is 0.088 degrees)
 #define TO_DEGREE(position) ((position) * 0.088 - 180)
-
-// Number to multiply a position to convert it into radian (unit is 0.088 degrees)
+// Convert a position in servomotor unit into radian (unit is 0.088 degrees)
 #define TO_RADIAN(position) ((TO_DEGREE(position)) * M_PI / 180)
+
+// Convert a position in degree into servomotor unit
+#define FROM_DEGREE(position) (((position) + 180) / 0.088)
+// Convert a position in radian into servomotor unit
+#define FROM_RADIAN(position) (FROM_DEGREE((position) / M_PI * 180))
 
 
 #endif

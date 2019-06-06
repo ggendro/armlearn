@@ -15,25 +15,20 @@ Converter::~Converter(){
 }
 
 
-Converter* Converter::addServo(const std::string& name, Axis axis, double lengthX, double lengthY, double lengthZ, double rot){
+Converter* Converter::addServo(const std::string& name, Axis axis, double lengthX, double lengthY, double lengthZ, double rotationX, double rotationY, double rotationZ){
 
     KDL::Joint::JointType joint;
-    KDL::Rotation rotFrame;
-    
     switch (axis){
         case rotX:
             joint = KDL::Joint::RotX;
-            rotFrame.DoRotX(rot);
             break;
 
         case rotY:
             joint = KDL::Joint::RotY;
-            rotFrame.DoRotY(rot);
             break;
 
         case rotZ:
             joint = KDL::Joint::RotZ;
-            rotFrame.DoRotZ(rot);
             break;
 
         case transX:
@@ -48,9 +43,17 @@ Converter* Converter::addServo(const std::string& name, Axis axis, double length
             joint = KDL::Joint::TransZ;
             break;
         
+        case fixed:
+
         default:
+            joint = KDL::Joint::None;
             break;
     }
+
+    KDL::Rotation rotFrame;
+    rotFrame.DoRotX(rotationX);
+    rotFrame.DoRotY(rotationY);
+    rotFrame.DoRotZ(rotationZ);
 
     device->addSegment(KDL::Segment(name, KDL::Joint(joint), KDL::Frame(rotFrame, KDL::Vector(lengthX, lengthY, lengthZ))));
     return this;

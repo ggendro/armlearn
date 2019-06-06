@@ -27,6 +27,7 @@
  * @brief Enumeration listing the axis possibilities of each servomotor
  *  - rotation along X, Y or Z axis
  *  - translation along X, Y or Z axis
+ *  - if fixed, does not count as a servomotor
  */
 enum Axis{
     rotX,
@@ -34,7 +35,8 @@ enum Axis{
     rotZ,
     transX,
     transY,
-    transZ
+    transZ,
+    fixed
 };
 
 
@@ -77,7 +79,7 @@ class Converter{
          * @param rot initial rotation of the servomotor along its rotation axis (rotating its inner frame), in radian
          * @return Converter* pointor to itself, to be able to chain computations (as in functional programming)
          */
-        Converter* addServo(const std::string& name, Axis axis = rotX, double lengthX = 0.0, double lengthY = 0.0, double lengthZ = 0.0, double rot = 0.0);
+        Converter* addServo(const std::string& name, Axis axis = fixed, double lengthX = 0.0, double lengthY = 0.0, double lengthZ = 0.0, double rotationX = 0.0, double rotationY = 0.0, double rotationZ = 0.0);
 
         /**
          * @brief Resets device system

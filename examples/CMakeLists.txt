@@ -1,4 +1,5 @@
 
+
 # look for examples to build a CMakeLists.txt file for
 file(GLOB_RECURSE EXAMPLES_TO_BUILD "example_*.cpp")
 
@@ -33,4 +34,5 @@ endforeach()
 
 #add_subdirectory("trajectories/example_grab")
 
+#add_subdirectory("computations/example_coordinates")
 

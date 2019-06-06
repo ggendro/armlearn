@@ -14,7 +14,8 @@
 #define CARTESIANCONVERTER_H
 
 #include <kdl/chainfksolverpos_recursive.hpp>
-#include <kdl/chainiksolverpos_lma.hpp>
+#include <kdl/chainiksolvervel_pinv.hpp>
+#include <kdl/chainiksolverpos_nr.hpp>
 
 #include "converter.h"
 
@@ -27,6 +28,8 @@ class CartesianConverter : public Converter{
 
     private:
         KDL::ChainFkSolverPos* cartesianConverter;
+
+        KDL::ChainIkSolverVel* intermediaryVelocitySolver;
         KDL::ChainIkSolverPos* positionConverter;
 
 
