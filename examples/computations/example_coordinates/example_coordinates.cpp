@@ -3,9 +3,7 @@
 #include <omp.h>
 #include <chrono>
 
-#include "cartesianconverter.h"
-#include "cylindricalconverter.h"
-
+#include "basiccartesianconverter.h"
 
 int main(int argc, char *argv[]) {
 
@@ -67,7 +65,7 @@ int main(int argc, char *argv[]) {
 
                 // Servo positions to cartesian coordinate system computation (created here to avoid segmentation errors due to parallelism)
                 
-                CartesianConverter conv;
+                BasicCartesianConverter conv;
                 conv.addServo("base", fixed, 0, 0, 1, 0, 0, M_PI); // To simplify computation, only the part of the arm moving along the y axis is represented, fixed implies that it does not count as a servomotor
                 conv.addServo("shoulder", rotX, 0, -2, 5, M_PI/2, 0, M_PI); // Add 90° because of the orientation of the elbow servomotor
                 conv.addServo("elbow", rotX, 0, 0, 5);

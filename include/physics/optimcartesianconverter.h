@@ -1,52 +1,63 @@
 /**
- * @file cylindricalconverter.h
+ * @file optimcartesianconverter.h
  * @author Gaël Gendron (gael.genron@insa-rennes.fr)
- * @brief File containing the CylindricalConverter class, inherited from Converter class
+ * @brief File containing the OptimCartesianConverter class, inherited from CartesianConverter class
  * @version 0.1
- * @date 2019-06-04
+ * @date 2019-06-07
  * 
  * @copyright Copyright (c) 2019
  * 
  */
 
+#ifndef OPTIMCARTESIANCONVERTER_H
+#define OPTIMCARTESIANCONVERTER_H
 
-#ifndef CYLINDRICALCONVERTER_H
-#define CYLINDRICALCONVERTER_H
-
-#include <math.h>
-
-#include "basiccartesianconverter.h"
-#include "convertererror.h"
+#include "cartesianconverter.h"
+#include "cylindricalconverter.h"
 
 
 /**
- * @brief Class computing servomotor positions into cylindrical coordinate system and reciprocally
- * 
- * Note that the first servo must have a rotation axis in order to set the cylindrical coordinate system
+ * @brief Class computing servomotor positions into cartesian coordinate system and reciprocally, can optimize computations if basis is cylindrical
  * 
  */
-class CylindricalConverter : public Converter{
+class OptimCartesianConverter : public CartesianConverter{
 
     protected:
-        BasicCartesianConverter* movingPart;
+        Converter* converters[2];
 
-        Axis baseAxis;
+        bool rotatingBase;
         bool baseDefined;
+
+        /**
+         * @brief Converts coordinates in cartesian system into coordinates in cylindrical system
+         * 
+         * @param cartCoord input coordinates in cartesian system
+         * @return std::vector<double> output coordinates in cylindrical system
+         */
+        std::vector<double> convertCoordToCylindricalSystem(std::vector<double> cartCoord);
+
+        /**
+         * @brief Converts coordinates in cylindrical system into coordinates in cartesian system
+         * 
+         * @param cylCoord input coordinates in cylindrical system
+         * @return std::vector<double> output coordinates in cartesian system
+         */
+        std::vector<double> convertCoordFromCylindricalSystem(std::vector<double> cylCoord);
 
 
     public:
 
         /**
-         * @brief Constructs a new Cylindrical Converter object
+         * @brief Constructs a new Optimized Cartesian Converter object
          * 
          */
-        CylindricalConverter();
+        OptimCartesianConverter();
 
         /**
-         * @brief Destroys the Cylindrical Converter object
+         * @brief Destroys the Optimized Cartesian Converter object
          * 
          */
-        virtual ~CylindricalConverter();
+        virtual ~OptimCartesianConverter();
 
 
         /**
@@ -61,7 +72,7 @@ class CylindricalConverter : public Converter{
          * @param rot initial rotation of the servomotor along its rotation axis (rotating its inner frame), in radian
          * @return Converter* pointor to itself, to be able to chain computations (as in functional programming)
          * 
-         * @throw ConverterError if the first servomotor added is not along a rotating axis, required to set the coordinate system
+         * if the first servomotor added is along a rotating axis, will use cylindrical computations and simply convert the result into a cartesian coordinate system
          * Redefinition of Converter method
          */
         virtual Converter* addServo(const std::string& name, Axis axis = fixed, double lengthX = 0.0, double lengthY = 0.0, double lengthZ = 0.0, double rotationX = 0.0, double rotationY = 0.0, double rotationZ = 0.0) override;

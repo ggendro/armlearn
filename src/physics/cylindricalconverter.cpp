@@ -7,7 +7,7 @@
 
 
 CylindricalConverter::CylindricalConverter():Converter(), baseDefined(false){
-    movingPart = new CartesianConverter();
+    movingPart = new BasicCartesianConverter();
 
 }
 
@@ -102,7 +102,6 @@ Converter* CylindricalConverter::computeCoordToServo(const std::vector<double>& 
             movPos = movingPart->computeCoordToServo({coordinates[0] * std::cos(i), coordinates[0] * std::sin(i), coordinates[2]})->getServo();
 
             dTeta = dTeta - i;
-            std::cout << "Teta : " << dTeta << std::endl;
             found = true;
         }catch(ComputationError e){ // Computation did not succeed, have to try again for another value of teta
             errMsg = e.what();
