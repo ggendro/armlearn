@@ -4,15 +4,49 @@
 #include <chrono>
 
 #include "cartesianconverter.h"
+#include "cylindricalconverter.h"
 
 
 int main(int argc, char *argv[]) {
+
+
+    /******************************************/
+    /****   Compute coordinates example    ****/
+    /******************************************/
+
+    /*
+     * Computes coordinates for all arm positions. Displays the number of invalid positions.
+     * 
+     * Shape of the array:
+     * Test tn (en) : ps1 ps2 ps3   |   x y z   |   cs1 cs2 cs3 |   rx ry rz
+     * 
+     *  - tn : number of the test display
+     *  - en : number of failed tests since now
+     *  - ps1 : position of servomotor 1 
+     *  - ps2 : position of servomotor 2
+     *  - ps3 : position of servomotor 3 
+     *  - x : computed x coordinate using forward kinematics
+     *  - y : computed y coordinate using forward kinematics
+     *  - z : computed z coordinate using forward kinematics
+     *  - cs1 : position of servomotor 1 computed using inverse kinematics from coordinates x, y and z
+     *  - cs2 : position of servomotor 2 computed using inverse kinematics from coordinates x, y and z
+     *  - cs3 : position of servomotor 3 computed using inverse kinematics from coordinates x, y and z
+     *  - rx : x coordinate computed again from csx using forward kinematics
+     *  - ry : y coordinate computed again from csx using forward kinematics
+     *  - rz : z coordinate computed again from csx using forward kinematics
+     * 
+     * Parallelism does not affetc the results, simply speed up the computations.
+     * 
+     * Tests show that, for a granularity of 10, the algorithm can compute only 42.24% of positions' corresponding coordinates.
+     * 20.42% of coordinates found by the algorithm are not valid.
+     * 37.34% of computations fail to finish.
+     */
 
     // Is parallelism enabled
     bool enableParallelism = true;
 
     // Granularity of coordinates search
-    int incr = 50;
+    int incr = 100;
     
 
     int nbTests = 0;
@@ -23,23 +57,22 @@ int main(int argc, char *argv[]) {
     std::chrono::time_point<std::chrono::system_clock> startTime = std::chrono::system_clock::now();
 
     #pragma omp parallel for if (enableParallelism)
-    for(uint16_t shPos=1025; shPos < 3071; shPos+=incr){
+    for(uint16_t shPos=SHOULDER_MIN; shPos < SHOULDER_MAX; shPos+=incr){
 
         #pragma omp parallel for if (enableParallelism)
-        for(uint16_t elPos=1025; elPos < 3071; elPos+=incr){
+        for(uint16_t elPos=ELBOW_MIN; elPos < ELBOW_MAX; elPos+=incr){
 
             #pragma omp parallel for if (enableParallelism)
-            for(uint16_t wrPos=1025; wrPos < 3071; wrPos+=incr){
+            for(uint16_t wrPos=WRISTANGLE_MIN; wrPos < WRISTANGLE_MAX; wrPos+=incr){
 
-                // Servo positions to cartesian coordinate system computation (created here to avoid segmentation errores du to parallelism)
+                // Servo positions to cartesian coordinate system computation (created here to avoid segmentation errors due to parallelism)
+                
                 CartesianConverter conv;
-                //conv.addServo("stand", fixed, 15, 15, 15); // fixed implies that it does not count as a servomotor (in order to simplify computations)
-                conv.addServo("base", fixed, 0, 0, 1, 0, 0, M_PI);
+                conv.addServo("base", fixed, 0, 0, 1, 0, 0, M_PI); // To simplify computation, only the part of the arm moving along the y axis is represented, fixed implies that it does not count as a servomotor
                 conv.addServo("shoulder", rotX, 0, -2, 5, M_PI/2, 0, M_PI); // Add 90° because of the orientation of the elbow servomotor
                 conv.addServo("elbow", rotX, 0, 0, 5);
                 conv.addServo("wristAngle", rotX, 0, 0, 3);
-                //conv.addServo("wristRotate", rotZ, 0, 0, 2);
-                // Useless to add gripper
+                // Useless to add wristRotate and gripper
 
                 std::vector<uint16_t> servoPositions = {shPos, elPos, wrPos};
 
@@ -61,7 +94,7 @@ int main(int argc, char *argv[]) {
 
                     #pragma omp critical(dataupdate)
                     {
-                        std::cout << "Test " << nbTests << "(" << nbErr << " errors) : ";
+                        std::cout << "Test " << nbTests << " (" << nbErr << " errors) : ";
 
                         for(auto&& v : servoPositions) std::cout << v << " ";
                         std::cout << "\t|\t";
@@ -76,7 +109,6 @@ int main(int argc, char *argv[]) {
                         std::cout << std::endl;
                     }
 
-                    //errSeries = 0;
                 }catch(ComputationError e){
                     #pragma omp atomic
                     nbErr++;
@@ -96,7 +128,7 @@ int main(int argc, char *argv[]) {
 
     // variable stating the end of calculations
     std::chrono::time_point<std::chrono::system_clock> endTime = std::chrono::system_clock::now();
-    std::cout << "Execution finished at " << std::chrono::duration<double, std::ratio<1, 1>>(endTime - startTime).count() << " s" << std::endl;
+    std::cout << "Execution finished in " << std::chrono::duration<double, std::ratio<1, 1>>(endTime - startTime).count() << " s" << std::endl;
 
     int succ = nbTests - nbErr;
     std::cout << "End of tests : " << succ << " success over " << nbTests << " tests (" << (((double) succ) / nbTests * 100) << "%)." << std::endl;

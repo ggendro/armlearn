@@ -3,7 +3,7 @@
 
 #include "serialcontroller.h"
 #include "trajectory.h"
-#include "cartesianconverter.h"
+#include "cylindricalconverter.h"
 
 
 int main(int argc, char *argv[]) {
@@ -40,38 +40,63 @@ int main(int argc, char *argv[]) {
 	//*/
 
 	//*
-	std::vector<uint16_t> servoPositions = {2048, 2048, 2048};
+	std::vector<uint16_t> servoPositions = {1500, 2048, 2048, 2048};
+	std::vector<uint16_t> reducedServoPositions = std::vector<uint16_t>(servoPositions);
+	reducedServoPositions.erase(reducedServoPositions.begin());
 	//*/
 
 
 	//*
-	// Servo positions to cartesian coordonate system computation
-	CartesianConverter conv;
-	//conv.addServo("stand", fixed, 15, 15, 15); // fixed implies that it does not count as a servomotor (in order to simplify computations)
-	conv.addServo("base", fixed, 0, 0, 1, 0, 0, M_PI);
-	conv.addServo("shoulder", rotX, 0, -2, 5, M_PI/2, 0, M_PI); // Add 90° because of the orientation of the elbow servomotor
-	conv.addServo("elbow", rotX, 0, 0, 5);
-	conv.addServo("wristAngle", rotX, 0, 0, 3);
-	//conv.addServo("wristRotate", rotZ, 0, 0, 2);
-	// Useless to add gripper
+	// Servo positions to cylindrical coordinate system computation
+	CylindricalConverter convCyl;
+	convCyl.addServo("base", rotZ, 0, 0, 1, 0, 0, M_PI);
+	convCyl.addServo("shoulder", rotX, 0, -2, 5, M_PI/2, 0, M_PI); // Add 90° because of the orientation of the elbow servomotor
+	convCyl.addServo("elbow", rotX, 0, 0, 5);
+	convCyl.addServo("wristAngle", rotX, 0, 0, 3);
+
+
+	// Servo positions to cartesian coordinate system computation
+	CartesianConverter convCart;
+	convCart.addServo("base", fixed, 0, 0, 1, 0, 0, M_PI); // fixed to avoid 3D computations
+	convCart.addServo("shoulder", rotX, 0, -2, 5, M_PI/2, 0, M_PI); // Add 90° because of the orientation of the elbow servomotor
+	convCart.addServo("elbow", rotX, 0, 0, 5);
+	convCart.addServo("wristAngle", rotX, 0, 0, 3);
 
 	std::cout << "Positions of servomotors : ";
 	for(auto&& v : servoPositions) std::cout << v << " ";
 	std::cout << std::endl;
 
-	std::vector<double> cartesianCoordinates = conv.computeServoToCoord(servoPositions)->getCoord();
-	std::cout << "Coordinates equivalent : ";
+
+	std::vector<double> cylindricalCoordinates = convCyl.computeServoToCoord(servoPositions)->getCoord();
+	std::cout << "Cylindrical coordinates equivalent : ";
+	for(auto&& v : cylindricalCoordinates) std::cout << v << " ";
+	std::cout << std::endl;
+
+	std::vector<double> cartesianCoordinates = convCart.computeServoToCoord(reducedServoPositions)->getCoord();
+	std::cout << "Cartesian coordinates equivalent : ";
 	for(auto&& v : cartesianCoordinates) std::cout << v << " ";
 	std::cout << std::endl;
 
-	std::vector<uint16_t> afterComp_servoPositions = conv.computeCoordToServo(cartesianCoordinates)->getServo();
-	std::cout << "Positions got after computation : ";
-	for(auto&& v : afterComp_servoPositions) std::cout << v << " ";
+
+	std::vector<uint16_t> afterCompCyl_servoPositions = convCyl.computeCoordToServo(cylindricalCoordinates)->getServo();
+	std::cout << "Positions got after cylindrical computation : ";
+	for(auto&& v : afterCompCyl_servoPositions) std::cout << v << " ";
 	std::cout << std::endl;
 
-	std::vector<double> afterComp_cartesianCoordinates = conv.computeServoToCoord(afterComp_servoPositions)->getCoord();
-	std::cout << "Coordinates equivalent after computation : ";
-	for(auto&& v : afterComp_cartesianCoordinates) std::cout << v << " ";
+	std::vector<uint16_t> afterCompCart_servoPositions = convCart.computeCoordToServo(cartesianCoordinates)->getServo();
+	std::cout << "Positions got after cartesian computation : ";
+	for(auto&& v : afterCompCart_servoPositions) std::cout << v << " ";
+	std::cout << std::endl;
+
+
+	std::vector<double> afterCompCyl_cylindricalCoordinates = convCyl.computeServoToCoord(afterCompCyl_servoPositions)->getCoord();
+	std::cout << "Coordinates equivalent after cylindrical computation : ";
+	for(auto&& v : afterCompCyl_cylindricalCoordinates) std::cout << v << " ";
+	std::cout << std::endl;
+
+	std::vector<double> afterCompCart_cartesianCoordinates = convCart.computeServoToCoord(afterCompCart_servoPositions)->getCoord();
+	std::cout << "Coordinates equivalent after cartesian computation : ";
+	for(auto&& v : afterCompCart_cartesianCoordinates) std::cout << v << " ";
 	std::cout << std::endl;
 
 

@@ -79,14 +79,14 @@ class Converter{
          * @param rot initial rotation of the servomotor along its rotation axis (rotating its inner frame), in radian
          * @return Converter* pointor to itself, to be able to chain computations (as in functional programming)
          */
-        Converter* addServo(const std::string& name, Axis axis = fixed, double lengthX = 0.0, double lengthY = 0.0, double lengthZ = 0.0, double rotationX = 0.0, double rotationY = 0.0, double rotationZ = 0.0);
+        virtual Converter* addServo(const std::string& name, Axis axis = fixed, double lengthX = 0.0, double lengthY = 0.0, double lengthZ = 0.0, double rotationX = 0.0, double rotationY = 0.0, double rotationZ = 0.0);
 
         /**
          * @brief Resets device system
          * 
          * @return Converter* pointor to itself, to be able to chain computations (as in functional programming)
          */
-        Converter* removeAllServos();
+        virtual Converter* removeAllServos();
 
 
         /**

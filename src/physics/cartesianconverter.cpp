@@ -20,8 +20,6 @@ CartesianConverter::~CartesianConverter(){
 
 
 Converter* CartesianConverter::computeServoToCoord(const std::vector<uint16_t>& positions){
-    // Save  positions
-    lastServo = std::vector<uint16_t>(positions);
 
     // Create input joint array
     int nbJoints = device->getNrOfJoints();
@@ -50,6 +48,10 @@ Converter* CartesianConverter::computeServoToCoord(const std::vector<uint16_t>& 
         throw ComputationError("Error : could not calculate forward kinematics");
     }
 
+
+    // Save positions
+    lastServo = std::vector<uint16_t>(positions);
+
     // Save coordinates
     KDL::Vector res = cartPos.p;
     lastCoord = {res.x(), res.y(), res.z()};
@@ -59,8 +61,7 @@ Converter* CartesianConverter::computeServoToCoord(const std::vector<uint16_t>& 
 }
 
 Converter* CartesianConverter::computeCoordToServo(const std::vector<double>& coordinates){
-    // Save coordinates
-    lastCoord = std::vector<double>(coordinates);
+    for(auto&& v : coordinates) std::cout << v << " "; std::cout << std::endl;
 
     // Create input frame
     int spaceDim = 3;
@@ -93,6 +94,10 @@ Converter* CartesianConverter::computeCoordToServo(const std::vector<double>& co
 
         throw ComputationError(errMsg.str());
     }
+
+
+    // Save coordinates
+    lastCoord = std::vector<double>(coordinates);
 
     // Save positions
     lastServo = {};

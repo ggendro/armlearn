@@ -23,10 +23,12 @@
 /**
  * @brief Class computing servomotor positions into cartesian coordinate system and reciprocally
  * 
+ * Note that computations are more likely to succeed if the device only moves within a plane 
+ *  
  */
 class CartesianConverter : public Converter{
 
-    private:
+    protected:
         KDL::ChainFkSolverPos* cartesianConverter;
 
         KDL::ChainIkSolverVel* intermediaryVelocitySolver;
