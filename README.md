@@ -93,10 +93,26 @@ Run a code example executing a specific trajectory to the arm, grab and drop an 
 
 #### Run coordinates example
 
-Run a code example computing valid what coordinates are valid or the arm. Requires OpenMP.
+Run a code example computing what coordinates are valid for the arm. Requires OpenMP.
 ```
     cd examples/computations/example_coordinates
     ./example_coordinates
+```
+
+#### Run converters example
+
+Run a code example where positions are given and converted to cartesian and cylindrical coordinates.
+```
+    cd examples/computations/example_converters
+    ./example_converters
+```
+
+#### Run cartesian mode example
+
+Run a code example giving a (very) simple interface to control the arm by giving it cartesian oordinates.
+```
+    cd examples/computations/example_cartesianMode
+    sudo ./example_cartesianMode
 ```
 
 #### Run main
