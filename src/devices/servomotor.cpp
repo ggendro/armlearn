@@ -40,12 +40,20 @@ bool Servomotor::getLED() const{
     return activeLED;
 }
 
+uint16_t Servomotor::getTargetSpeed() const{
+    return targetSpeed;
+}
+
 uint16_t Servomotor::getTargetPosition() const{
     return targetPosition;
 }
 
 uint16_t Servomotor::getCurrentPosition() const{
     return position;
+}
+
+double Servomotor::getTimeSinceUpdate() const{
+    return std::chrono::duration<double, std::ratio<1, 1>>(lastUpdate - creationTime).count();
 }
 
 

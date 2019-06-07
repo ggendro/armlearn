@@ -55,5 +55,11 @@
 // Convert a position in radian into servomotor unit
 #define FROM_RADIAN(position) (FROM_DEGREE((position) / M_PI * 180))
 
+// Unit of servomotor speed (0.114rpm)
+#define SPEED_UNIT 0.114
+
+// Unit of servomotor distances (0.088°)
+#define MOVE_UNIT 0.088
+
 
 #endif

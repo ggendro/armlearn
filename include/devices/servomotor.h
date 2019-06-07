@@ -179,6 +179,13 @@ class Servomotor{
         bool getLED() const;
 
         /**
+         * @brief Get the current target speed
+         * 
+         * @return uint16_t the speed to reach
+         */
+        uint16_t getTargetSpeed() const;
+
+        /**
          * @brief Returns the current target position
          * 
          * @return uint16_t the position to reach
@@ -192,6 +199,13 @@ class Servomotor{
          * @return uint16_t the real position of the servo
          */
         uint16_t getCurrentPosition() const;
+
+        /**
+         * @brief Get the Time since last update
+         * 
+         * @return double the time in seconds
+         */
+        double getTimeSinceUpdate() const; // TODO: add a parameter to change unit used
 
 
         /**

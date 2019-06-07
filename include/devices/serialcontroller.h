@@ -196,7 +196,7 @@ class SerialController : public AbstractController{
         virtual void ping(uint8_t id) override;
 
         /**
-         * @brief Change the id of a servomotor
+         * @brief Changes the id of a servomotor
          * 
          * @param oldId the current id of the servomotor to change
          * @param newId the new id of the servomotor
