@@ -2,12 +2,14 @@
 
 
 #include "armsimulator.h"
+#include "serialcontroller.h"
 #include "trajectory.h"
 
 
 int main(int argc, char *argv[]) {
 
-    ArmSimulator arbotix;
+    //ArmSimulator arbotix;
+	SerialController arbotix("/dev/ttyUSB0");
 
 	arbotix.addMotor(1, "base ", base);
 	arbotix.addMotor(2, "shoulder", shoulder);
@@ -19,12 +21,7 @@ int main(int argc, char *argv[]) {
 	arbotix.connect();
 	std::cout << arbotix.servosToString();
 
-
-	std::this_thread::sleep_for((std::chrono::milliseconds) 1000); // Usually, a waiting period and a second connect attempt is necessary to reach all devices
-	arbotix.connect();
-	std::cout << arbotix.servosToString();
-
-	arbotix.changeSpeed(50); // Servomotor speed is reduced for safety
+	arbotix.changeSpeed(50);
 
 	std::cout << "Update servomotors information:" << std::endl;
 	arbotix.updateInfos();
@@ -43,10 +40,17 @@ int main(int argc, char *argv[]) {
 	path.addPoint(SLEEP_POSITION);
 
 	path.printTrajectory();
+    
+    // Variable stating the begin of calculations
+    std::chrono::time_point<std::chrono::system_clock> startTime = std::chrono::system_clock::now();
 
 
 	path.init();
 	path.executeTrajectory();
+
+	// variable stating the end of calculations
+    std::chrono::time_point<std::chrono::system_clock> endTime = std::chrono::system_clock::now();
+    std::cout << "Execution finished in " << std::chrono::duration<double, std::ratio<1, 1>>(endTime - startTime).count() << " s" << std::endl;
 
 
 }

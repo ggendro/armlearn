@@ -1,6 +1,6 @@
 /**
  * @file trajectory.h
- * @author Gaël Gendron (gael.genron@insa-rennes.fr)
+ * @author Gaël Gendron (gael.gendron@insa-rennes.fr)
  * @brief Provides an interface to send trajectories to WidowX robot arm
  * @version 0.1
  * @date 2019-05-23
@@ -25,6 +25,7 @@
 #define MARGIN_ERROR 40
 
 /**
+ * @class Trajectory
  * @brief class Trajectory
  * 
  */

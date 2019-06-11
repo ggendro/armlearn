@@ -1,6 +1,6 @@
 /**
  * @file basiccartesianconverter.h
- * @author Gaël Gendron (gael.genron@insa-rennes.fr)
+ * @author Gaël Gendron (gael.gendron@insa-rennes.fr)
  * @brief File containing the BasicCartesianConverter class, inherited from CartesianConverter class
  * @version 0.1
  * @date 2019-06-04
@@ -21,6 +21,7 @@
 
 
 /**
+ * @class BasicCartesianConverter
  * @brief Class computing servomotor positions into cartesian coordinate system and reciprocally
  * 
  * Note that computations are more likely to succeed if the device only moves within a plane 

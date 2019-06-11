@@ -1,6 +1,6 @@
 /**
  * @file armsimulator.h
- * @author Gaël Gendron (gael.genron@insa-rennes.fr)
+ * @author d
  * @brief File containing the ArmSimulator class, inherited from AbstractContoller, used to control a simulation of the hardware
  * @version 0.1
  * @date 2019-06-07

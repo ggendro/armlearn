@@ -1,6 +1,6 @@
 /**
  * @file range.h
- * @author Gaël Gendron (gael.genron@insa-rennes.fr)
+ * @author Gaël Gendron (gael.gendron@insa-rennes.fr)
  * @brief File containing the values for the servomotor ranges
  * @version 0.1
  * @date 2019-05-31

@@ -1,6 +1,6 @@
 /**
  * @file computationerror.h
- * @author Gaël Gendron (gael.genron@insa-rennes.fr)
+ * @author Gaël Gendron (gael.gendron@insa-rennes.fr)
  * @brief Exception thrown when error occurs during a computation
  * @version 0.1
  * @date 2019-06-04

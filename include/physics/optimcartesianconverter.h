@@ -1,6 +1,6 @@
 /**
  * @file optimcartesianconverter.h
- * @author Gaël Gendron (gael.genron@insa-rennes.fr)
+ * @author Gaël Gendron (gael.gendron@insa-rennes.fr)
  * @brief File containing the OptimCartesianConverter class, inherited from CartesianConverter class
  * @version 0.1
  * @date 2019-06-07
@@ -17,6 +17,7 @@
 
 
 /**
+ * @class OptimCartesianConverter
  * @brief Class computing servomotor positions into cartesian coordinate system and reciprocally, can optimize computations if basis is cylindrical
  * 
  */

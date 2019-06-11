@@ -1,6 +1,6 @@
 /**
  * @file trajectoryerror.h
- * @author Gaël Gendron (gael.genron@insa-rennes.fr)
+ * @author Gaël Gendron (gael.gendron@insa-rennes.fr)
  * @brief Exception thrown when an error occured during the execution of a trajectory
  * @version 0.1
  * @date 2019-05-23

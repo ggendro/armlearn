@@ -1,6 +1,6 @@
 /**
  * @file connectionerror.h
- * @author Gaël Gendron (gael.genron@insa-rennes.fr)
+ * @author Gaël Gendron (gael.gendron@insa-rennes.fr)
  * @brief Exception thrown when error raised during connection establishment
  * @version 0.1
  * @date 2019-05-22

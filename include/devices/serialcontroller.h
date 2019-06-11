@@ -1,6 +1,6 @@
 /**
  * @file serialcontroller.h
- * @author Gaël Gendron (gael.genron@insa-rennes.fr)
+ * @author Gaël Gendron (gael.gendron@insa-rennes.fr)
  * @brief File containing the SerialController class, inherited from AbstractContoller, used to control hardware via serial communication
  * @version 0.1
  * @date 2019-05-28

@@ -1,6 +1,6 @@
 /**
  * @file iderror.h
- * @author Gaël Gendron (gael.genron@insa-rennes.fr)
+ * @author Gaël Gendron (gael.gendron@insa-rennes.fr)
  * @brief Exeption thrown when an incorrect id is used
  * @version 0.1
  * @date 2019-05-31
