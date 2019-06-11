@@ -34,10 +34,10 @@
 class Learner{ // TODO: Adapt for obstacles, disabled servo...
 
     protected:
-        std::map<Input, Output>* learningSet;
-        std::map<Input, Output>* testingSet;
+        std::map<Input*, Output*>* learningSet;
+        std::map<Input*, Output*>* testingSet;
 
-        std::map<Input, Output>* sets[2];
+        std::map<Input*, Output*>* sets[2];
 
         double testProportion;
 
@@ -48,15 +48,23 @@ class Learner{ // TODO: Adapt for obstacles, disabled servo...
          * @param output of the couple
          * @param test if true, adds to the testing set, otherwise to the learning set
          */
-        void addToSet(const Input& input, const Output& output, bool test = false);
+        void addToSet(Input* input, Output* output, bool test = false);
 
         /**
          * @brief Removes a couple from the learning set
          * 
-         * @param input of the couple to remove
+         * @param input of the couple to remove, Input object with the same attributes as the one wanted to be removed
          * @param test if true, removes from the testing set, otherwise from the learning set 
          */
         void removeFromSet(const Input& input, bool test = false);
+        
+        /**
+         * @brief Removes a couple from the learning set
+         * 
+         * @param input of the couple to remove, pointer to the input to remove
+         * @param test if true, removes from the testing set, otherwise from the learning set 
+         */
+        void removeFromSet(const Input* input, bool test = false);
 
 
     public:
@@ -70,6 +78,7 @@ class Learner{ // TODO: Adapt for obstacles, disabled servo...
         /**
          * @brief Destroys the Learner object
          * 
+         * Destroys all couples in the learner
          */
         virtual ~Learner();
 
@@ -102,6 +111,13 @@ class Learner{ // TODO: Adapt for obstacles, disabled servo...
          */
         int getTestingSize() const;
 
+        /**
+         * @brief Returns the state of the learner under string format
+         * 
+         * @return std::string the state of the learner
+         */
+        std::string toString() const;
+
 
         /**
          * @brief Adds an input/output couple to the learning set
@@ -109,14 +125,22 @@ class Learner{ // TODO: Adapt for obstacles, disabled servo...
          * @param input of the learning couple
          * @param output of the learning couple
          */
-        void addToLearningSet(const Input& input, const Output& output);
+        void addToLearningSet(Input* input, Output* output);
 
         /**
          * @brief Removes a couple from the learning set
          * 
-         * @param input of the couple to remove
+         * @param input of the couple to remove, Input object with the same attributes as the one wanted to be removed
          */
-        void removefromLearningSet(const Input& input);
+        void removeFromLearningSet(const Input& input);
+
+        /**
+         * @brief Removes a couple from the learning set
+         * 
+         * @param input of the couple to remove, pointer to the input to remove
+         */
+        void removeFromLearningSet(const Input* input);
+
 
         /**
          * @brief Adds an input/output couple to the testing set
@@ -124,14 +148,22 @@ class Learner{ // TODO: Adapt for obstacles, disabled servo...
          * @param input of the learning couple
          * @param output of the learning couple
          */
-        void addToTestingSet(const Input& input, const Output& output);
+        void addToTestingSet(Input* input, Output* output);
 
         /**
          * @brief Removes a couple from the testing set
          * 
-         * @param input of the couple to remove
+         * @param input of the couple to remove, Input object with the same attributes as the one wanted to be removed
          */
-        void removefromTestingSet(const Input& input);
+        void removeFromTestingSet(const Input& input);
+
+        /**
+         * @brief Removes a couple from the learning set
+         * 
+         * @param input of the couple to remove, pointer to the input to remove
+         */
+        void removeFromTestingSet(const Input* input);
+
 
         /**
          * @brief Generates a random testing set from the learning set with proportion testProportion
@@ -141,6 +173,8 @@ class Learner{ // TODO: Adapt for obstacles, disabled servo...
          * 
          */
         void generateTestingSet();
+
+
 
         /**
          * @brief Executes a learning algorithm on the learning set
@@ -164,7 +198,7 @@ class Learner{ // TODO: Adapt for obstacles, disabled servo...
          * 
          * Abstract method
          */
-        virtual Output produce(const Input& input) = 0;
+        virtual Output& produce(const Input& input) = 0;
 
 };
 

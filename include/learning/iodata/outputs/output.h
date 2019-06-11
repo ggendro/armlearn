@@ -14,26 +14,18 @@
 #ifndef OUTPUT_H
 #define OUTPUT_H
 
-#include <vector>
+#include "iovector.h"
 
 /**
  * @class Output
- * @brief Output of learning algorithms
+ * @brief Output of learning algorithms, inherited from IOvector
+ * 
+ * Does not correspond to a real output, used as mother class for other classes
  */
-class Output{ 
+class Output : public IOVector{
 
     public:
-
-        /**
-         * @brief Constructs a new Output object
-         * 
-         */
-        Output();
-
-        /**
-         * @brief Destroys the Output object
-         * 
-         */
+        using IOVector::IOVector;
         virtual ~Output();
 
 
@@ -41,10 +33,8 @@ class Output{
          * @brief Returns the output under the form of an array of intermediary positions
          * 
          * @return std::vector<std::vector<uint16_t>> the output
-         * 
-         * Pseudo virtual method, implemented in inherited classes, this one returns an empty vector
          */
-        virtual std::vector<std::vector<uint16_t>> getPositions(){ return std::vector<std::vector<uint16_t>>(); }
+        virtual std::vector<std::vector<uint16_t>> getOutput();
 };
 
 #endif

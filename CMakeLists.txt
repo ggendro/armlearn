@@ -16,6 +16,7 @@ option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 link_directories("/usr/local/lib/")
 link_libraries(serial)
 link_libraries(orocos-kdl)
+link_libraries(tensorflow)
 
 # include openmp
 find_package(OpenMP)

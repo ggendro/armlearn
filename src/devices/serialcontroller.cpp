@@ -135,7 +135,7 @@ bool SerialController::executionPattern(uint16_t id, const std::function< int(st
     auto ptr = motors->find(id);
     if(ptr == motors->end()){ // Change not valid if id is not present in the list
         std::stringstream disp;
-        disp << "ID " << (int) id <<" not found.";
+        disp << "ID " << (int) id << " not found.";
 
         if(mode >= print) output << disp.str() << std::endl;
         if(mode >= except) throw IdError(disp.str());
