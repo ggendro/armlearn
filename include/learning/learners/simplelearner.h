@@ -14,12 +14,13 @@
 #ifndef SIMPLELEARNER_H
 #define SIMPLELEARNER_H
 
-
+#include <tensorflow/c/c_api.h>
 
 #include "learner.h"
 #include "simpleinput.h"
 #include "simpleoutput.h"
-#include "optimcartesianconverter.h"
+#include "converter.h"
+#include "abstractcontroller.h"
 
 
 /**
@@ -31,6 +32,7 @@ class SimpleLearner : public Learner{
 
     protected:
         Converter* verifier;
+        AbstractController* device;
 
 
     public:
@@ -39,7 +41,7 @@ class SimpleLearner : public Learner{
          * @brief Constructs a new SimpleLearner object
          * 
          */
-        SimpleLearner(double testProp = DEFAULT_TEST_PROPORTION);
+        SimpleLearner(AbstractController* controller, Converter* converter, double testProp = DEFAULT_TEST_PROPORTION);
 
         /**
          * @brief Destroys the SimpleLearner object
@@ -70,7 +72,7 @@ class SimpleLearner : public Learner{
          * @param input
          * @return Output
          */
-        virtual Output& produce(const Input& input) override;
+        virtual Output produce(const Input& input) override;
 
 };
 

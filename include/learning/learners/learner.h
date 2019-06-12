@@ -198,7 +198,7 @@ class Learner{ // TODO: Adapt for obstacles, disabled servo...
          * 
          * Abstract method
          */
-        virtual Output& produce(const Input& input) = 0;
+        virtual Output produce(const Input& input) = 0;
 
 };
 

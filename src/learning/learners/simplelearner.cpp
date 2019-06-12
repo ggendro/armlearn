@@ -6,18 +6,17 @@
 #include "simplelearner.h"
 
 
-SimpleLearner::SimpleLearner(double testProp):Learner(testProp){
-    verifier = new OptimCartesianConverter();
-
-    // TODO: build converter object
+SimpleLearner::SimpleLearner(AbstractController* controller, Converter* converter, double testProp):Learner(testProp){
+    verifier = converter;
+    device = controller;
 }
 
 SimpleLearner::~SimpleLearner(){
-    delete verifier;
+    
 }
 
 
-void SimpleLearner::learn(){ // TODO: to do...
+void SimpleLearner::learn(){
 
 }
 
@@ -25,7 +24,7 @@ void SimpleLearner::test(){
 
 }
 
-Output& SimpleLearner::produce(const Input& input){
-    Output res;
+Output SimpleLearner::produce(const Input& input){
+    SimpleOutput res({1, 3, 5});
     return res;
 }

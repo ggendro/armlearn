@@ -1,20 +1,31 @@
 
-#include <tensorflow/c/c_api.h>
-
 #include "armsimulator.h"
 #include "serialcontroller.h"
 #include "trajectory.h"
 
 #include "simplelearner.h"
+#include "widowxbuilder.h"
+#include "optimcartesianconverter.h"
 
 
 int main(int argc, char *argv[]) {
 
-	printf("Hello from TensorFlow C library version %s\n", TF_Version());
+	OptimCartesianConverter conv;
+	ArmSimulator arbotix;
+
+	WidowXBuilder builder;
+	builder.buildConverter(conv);
+	builder.buildController(arbotix);
 
 
-	SimpleLearner learner(0.4);
+	SimpleLearner learner(&arbotix, &conv);
 
+	SimpleInput dest({1, 3, 5});
+	Output motorPositions = learner.produce(dest);
+
+	std::cout << "Output : " << motorPositions.toString() << std::endl;
+
+	/*
 	learner.addToLearningSet(new Input(), new Output());
 	learner.addToLearningSet(new Input(), new Output());
 	learner.addToLearningSet(new Input(), new Output());
@@ -24,10 +35,12 @@ int main(int argc, char *argv[]) {
 	learner.addToLearningSet(new SimpleInput({7, 8, 5}), new SimpleOutput({8, 45, }));
 	learner.addToLearningSet(new SimpleInput({24, 56, 1}), new SimpleOutput({427, 24, 23, 13}));
 	learner.addToLearningSet(new SimpleInput({3, 8, 45}), new SimpleOutput({0, 8, 2, 14}));
+	learner.addToLearningSet(new SimpleInput({1, 4, 6}), new SimpleOutput({2, 3}));
 
 	learner.generateTestingSet();
 
 	std::cout << learner.toString();
+	//*/
 
 
 
