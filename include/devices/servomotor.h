@@ -330,6 +330,8 @@ class Servomotor{
          */
         int targetPositionReached() const;
 
+
+    friend class DeviceLearner;
 };
 
 

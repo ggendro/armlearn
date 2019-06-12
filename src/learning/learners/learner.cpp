@@ -56,8 +56,6 @@ std::string Learner::toString() const{
     res << "Test set : " << "(ratio : " << testProportion << ")" << std::endl;
     for(auto ptr = testingSet->begin(); ptr != testingSet->end(); ptr++) res << ptr->first->toString() << " --> " << ptr->second->toString() << std::endl;
 
-    res << "---" << std::endl;
-
     return res.str();
 }
 

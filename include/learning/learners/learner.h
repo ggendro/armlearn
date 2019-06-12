@@ -72,6 +72,7 @@ class Learner{ // TODO: Adapt for obstacles, disabled servo...
         /**
          * @brief Constructs a new Learner object
          * 
+         * @param testProp the proportion of test couples compared to learning couples
          */
         Learner(double testProp = DEFAULT_TEST_PROPORTION);
 
@@ -116,7 +117,7 @@ class Learner{ // TODO: Adapt for obstacles, disabled servo...
          * 
          * @return std::string the state of the learner
          */
-        std::string toString() const;
+        virtual std::string toString() const;
 
 
         /**
@@ -198,7 +199,7 @@ class Learner{ // TODO: Adapt for obstacles, disabled servo...
          * 
          * Abstract method
          */
-        virtual Output produce(const Input& input) = 0;
+        virtual Output* produce(const Input& input) = 0;
 
 };
 

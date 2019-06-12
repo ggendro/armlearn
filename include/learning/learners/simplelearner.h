@@ -16,11 +16,10 @@
 
 #include <tensorflow/c/c_api.h>
 
-#include "learner.h"
-#include "simpleinput.h"
-#include "simpleoutput.h"
+#include "devicelearner.h"
+#include "input.h"
+#include "output.h"
 #include "converter.h"
-#include "abstractcontroller.h"
 
 
 /**
@@ -28,11 +27,10 @@
  * @brief Class containing a simple learner that learns how to compute servomotor positions from coordinates without obstacles or disabled servomotors
  * 
  */
-class SimpleLearner : public Learner{
+class SimpleLearner : public DeviceLearner{
 
     protected:
         Converter* verifier;
-        AbstractController* device;
 
 
     public:
@@ -72,7 +70,14 @@ class SimpleLearner : public Learner{
          * @param input
          * @return Output
          */
-        virtual Output produce(const Input& input) override;
+        virtual Output* produce(const Input& input) override;
+
+        /**
+         * @brief Returns the state of the learner under string format
+         * 
+         * @return std::string the state of the learner
+         */
+        virtual std::string toString() const override;
 
 };
 

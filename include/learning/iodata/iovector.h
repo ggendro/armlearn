@@ -70,7 +70,7 @@ class IOVector{
          * @return true if the vectors are identical
          * @return false otherwise
          */
-        virtual bool operator==(const IOVector& obj);
+        virtual bool operator==(const IOVector& obj) const;
 
 
         /**
@@ -78,7 +78,7 @@ class IOVector{
          * 
          * @return std::vector<uint16_t> the contained vector
          */
-        std::vector<uint16_t> getVector();
+        std::vector<uint16_t> getVector() const;
 
 
         /**

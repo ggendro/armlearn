@@ -17,25 +17,52 @@ int main(int argc, char *argv[]) {
 	builder.buildConverter(conv);
 	builder.buildController(arbotix);
 
+	arbotix.connect();
+	arbotix.changeSpeed(50);
+
+	std::cout << "Update servomotors information:" << std::endl;
+	arbotix.updateInfos();
 
 	SimpleLearner learner(&arbotix, &conv);
 
-	SimpleInput dest({1, 3, 5});
-	Output motorPositions = learner.produce(dest);
+	Input dest({1, 3, 5});
 
-	std::cout << "Output : " << motorPositions.toString() << std::endl;
+	Output* res = learner.produce(dest);
+	arbotix.setPosition(res->getOutput());
+
+	std::cout << "Output : " << res->toString() << std::endl;
+
+	delete res;
+	
+	std::cout << "Update servomotors information:" << std::endl;
+	arbotix.updateInfos();
+
+	while(!arbotix.goalReached()){
+
+		Output* res = learner.produce(dest);
+		arbotix.setPosition(res->getOutput());
+
+		std::cout << "Output : " << res->toString() << std::endl;
+
+		delete res;
+
+		std::cout << "Update servomotors information:" << std::endl;
+		arbotix.updateInfos();
+	}
+
+	std::cout << learner.toString();
 
 	/*
 	learner.addToLearningSet(new Input(), new Output());
 	learner.addToLearningSet(new Input(), new Output());
 	learner.addToLearningSet(new Input(), new Output());
 
-	learner.addToLearningSet(new SimpleInput({1, 4, 6}), new SimpleOutput({2, 3}));
-	learner.addToLearningSet(new SimpleInput({0, 8, 9}), new SimpleOutput({58, 24, 2, 1}));
-	learner.addToLearningSet(new SimpleInput({7, 8, 5}), new SimpleOutput({8, 45, }));
-	learner.addToLearningSet(new SimpleInput({24, 56, 1}), new SimpleOutput({427, 24, 23, 13}));
-	learner.addToLearningSet(new SimpleInput({3, 8, 45}), new SimpleOutput({0, 8, 2, 14}));
-	learner.addToLearningSet(new SimpleInput({1, 4, 6}), new SimpleOutput({2, 3}));
+	learner.addToLearningSet(new Input({1, 4, 6}), new Output({2, 3}));
+	learner.addToLearningSet(new Input({0, 8, 9}), new Output({58, 24, 2, 1}));
+	learner.addToLearningSet(new Input({7, 8, 5}), new Output({8, 45, }));
+	learner.addToLearningSet(new Input({24, 56, 1}), new Output({427, 24, 23, 13}));
+	learner.addToLearningSet(new Input({3, 8, 45}), new Output({0, 8, 2, 14}));
+	learner.addToLearningSet(new Input({1, 4, 6}), new Output({2, 3}));
 
 	learner.generateTestingSet();
 

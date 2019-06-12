@@ -33,7 +33,7 @@ class Input : public IOVector{
          * 
          * @return std::vector<uint16_t> the input
          */
-        virtual std::vector<uint16_t> getInput();
+        virtual std::vector<uint16_t> getInput() const;
 };
 
 

@@ -28,12 +28,12 @@ IOVector& IOVector::operator=(const IOVector& obj){
     return *this;
 }
 
-bool IOVector::operator==(const IOVector& obj){
+bool IOVector::operator==(const IOVector& obj) const{
     return vector == obj.vector;
 }
 
 
-std::vector<uint16_t> IOVector::getVector(){
+std::vector<uint16_t> IOVector::getVector() const{
     return vector;
 }
 

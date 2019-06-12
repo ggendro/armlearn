@@ -9,6 +9,6 @@ Input::~Input(){
 
 }
 
-std::vector<uint16_t> Input::getInput(){
+std::vector<uint16_t> Input::getInput() const{
     return vector;
 }

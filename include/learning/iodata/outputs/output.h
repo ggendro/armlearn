@@ -34,7 +34,7 @@ class Output : public IOVector{
          * 
          * @return std::vector<std::vector<uint16_t>> the output
          */
-        virtual std::vector<std::vector<uint16_t>> getOutput();
+        virtual std::vector<uint16_t> getOutput() const;
 };
 
 #endif

@@ -308,7 +308,9 @@ class AbstractController{
          * @return std::string informations contained by servomotors
          */
         std::string servosToString() const;
-    
+
+
+    friend class DeviceLearner;  
 };
 
 #endif
