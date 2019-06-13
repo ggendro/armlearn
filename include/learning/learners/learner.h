@@ -17,6 +17,7 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#include <math.h>
 
 #include "input.h"
 #include "output.h"
@@ -40,6 +41,17 @@ class Learner{ // TODO: Adapt for obstacles, disabled servo...
         std::map<Input*, Output*>* sets[2];
 
         double testProportion;
+
+
+        /**
+         * @brief 
+         * 
+         * @param target 
+         * @param real 
+         * @return double 
+         */
+        double computeSquaredError(const std::vector<uint16_t> target, const std::vector<uint16_t> real) const;
+
 
         /**
          * @brief Adds an input/output couple to the specified set

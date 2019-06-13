@@ -12,8 +12,16 @@ Developed on linux OS but is theoretically cross-platform.
 *serial* library required for port communication.
 Can be found here : <https://github.com/wjwwood/serial>
 
-*KDL* library required for Reinforcement Learning.
+*KDL* library required for physics simulations in the Reinforcement Learning.
 Can be found here : <http://www.orocos.org/kdl>
+
+*Tensorflow* library required for building DNN in the Reinforcement Learning.
+Can be found here : <https://www.tensorflow.org/>
+
+*Keras* library is also required.
+Can be found here : <https://keras.io>
+
+Python needs to be installed for the use of TensorFlow and Keras.
 
 *OpenMP* library used for computation tests.
 Can be installed by executing the fllowing line on a terminal:

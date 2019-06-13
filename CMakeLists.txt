@@ -16,7 +16,6 @@ option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 link_directories("/usr/local/lib/")
 link_libraries(serial)
 link_libraries(orocos-kdl)
-link_libraries(tensorflow)
 
 # include openmp
 find_package(OpenMP)
@@ -26,6 +25,11 @@ if (OPENMP_FOUND)
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
     set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 endif()
+
+# include python
+find_package(PythonLibs)
+include_directories(${PYTHON_INCLUDE_DIRS})
+link_libraries(${PYTHON_LIBRARIES})
 
 # add headers
 file(GLOB_RECURSE HEADERS "include/*.h")

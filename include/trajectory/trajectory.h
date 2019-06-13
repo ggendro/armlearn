@@ -18,7 +18,7 @@
 #include "abstractcontroller.h"
 #include "trajectoryerror.h"
 
-// Time to wait for servomotors to reach each position
+// Time to wait for servomotors to reach each position (in milliseconds)
 #define WAITING_TIME 5000
 
 // Error margin between current and target position
@@ -104,7 +104,7 @@ class Trajectory{
          * 
          * @throw TrajectoryError if no feedback comes from the device after execution
          */
-        void init(bool reverse = false) const; // TODO: add more flexibility for pointor choice
+        void init(bool reverse = false) const; // TODO: add more flexibility for pointer choice
 
         /**
          * @brief Executes the stored trajectory

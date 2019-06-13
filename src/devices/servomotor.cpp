@@ -53,7 +53,7 @@ uint16_t Servomotor::getCurrentPosition() const{
 }
 
 double Servomotor::getTimeSinceUpdate() const{
-    return std::chrono::duration<double, std::ratio<1, 1>>(lastUpdate - creationTime).count();
+    return std::chrono::duration<double, std::ratio<1, 1>>(std::chrono::system_clock::now() - lastUpdate).count();
 }
 
 
