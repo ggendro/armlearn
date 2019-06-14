@@ -53,7 +53,8 @@ void PyLearner::pyEnd(){
 
 
 std::vector<uint16_t> PyLearner::pyLearn(const std::vector<uint16_t> input, const std::vector<double> expectedOutput){ // TODO: add error management (as explained in .h), finish script
-    PyObject *pInput, *pExpOutput, *pValue, *pLearn, *pComp;
+    PyObject *pInput, *pExpOutput, *pLearn, *pComp, *pValue;
+    
     
     pInput = PyList_New(input.size()); // Create python input from input
     int i=0;
@@ -62,7 +63,7 @@ std::vector<uint16_t> PyLearner::pyLearn(const std::vector<uint16_t> input, cons
         i++;
     }
 
-    if(!expectedOutput.size() == 0){
+    if(expectedOutput.size() != 0){
         pExpOutput = PyList_New(expectedOutput.size()); // Create python error from error
         int j=0;
         for(auto ptr = expectedOutput.cbegin(); ptr < expectedOutput.cend(); ptr++){
@@ -72,6 +73,8 @@ std::vector<uint16_t> PyLearner::pyLearn(const std::vector<uint16_t> input, cons
 
         pLearn = PyUnicode_FromString(PY_LEARN_METHOD_LEARN);
         PyObject_CallMethodObjArgs(pLearner, pLearn, pInput, pExpOutput, NULL); // Python call for learning
+
+        Py_DECREF(pExpOutput);
     }
     
     pComp = PyUnicode_FromString(PY_LEARN_METHOD_COMPUTE);
@@ -83,10 +86,9 @@ std::vector<uint16_t> PyLearner::pyLearn(const std::vector<uint16_t> input, cons
         res.push_back(PyLong_AsLong(PyList_GetItem(pValue, j)));
     }
 
+    Py_DECREF(pValue);
     Py_DECREF(pComp);
     Py_DECREF(pLearn);
-    Py_DECREF(pValue);
-    Py_DECREF(pExpOutput);
     Py_DECREF(pInput);
 
     return res;
