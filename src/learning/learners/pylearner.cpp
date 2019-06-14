@@ -6,8 +6,7 @@
 #include "pylearner.h"
 
 
-PyLearner::PyLearner(AbstractController* controller, Converter* converter, std::string learningScript, double testProp):DeviceLearner(controller, testProp){
-    verifier = converter;
+PyLearner::PyLearner(AbstractController* controller, std::string learningScript, double testProp):DeviceLearner(controller, testProp){
     learnerFile = learningScript;
     
     pyInit();
@@ -47,24 +46,36 @@ void PyLearner::pyInit(){
 
 void PyLearner::pyEnd(){
     Py_XDECREF(pLearner);
-    Py_DECREF(pModule);
+    Py_XDECREF(pModule);
 
     Py_Finalize();
 }
 
 
-std::vector<uint16_t> PyLearner::pyLearn(std::vector<uint16_t> input){
-    PyObject *pArgs, *pValue, *pFunc;
+std::vector<uint16_t> PyLearner::pyLearn(const std::vector<uint16_t> input, const std::vector<double> expectedOutput){ // TODO: add error management (as explained in .h), finish script
+    PyObject *pInput, *pExpOutput, *pValue, *pLearn, *pComp;
     
-    pArgs = PyList_New(input.size()); // Create python input from input
+    pInput = PyList_New(input.size()); // Create python input from input
     int i=0;
     for(auto ptr = input.cbegin(); ptr < input.cend(); ptr++){
-        PyList_SetItem(pArgs, i, PyLong_FromLong(*ptr));
+        PyList_SetItem(pInput, i, PyLong_FromLong(*ptr));
         i++;
     }
+
+    if(!expectedOutput.size() == 0){
+        pExpOutput = PyList_New(expectedOutput.size()); // Create python error from error
+        int j=0;
+        for(auto ptr = expectedOutput.cbegin(); ptr < expectedOutput.cend(); ptr++){
+            PyList_SetItem(pExpOutput, j, PyLong_FromLong(*ptr));
+            j++;
+        }
+
+        pLearn = PyUnicode_FromString(PY_LEARN_METHOD_LEARN);
+        PyObject_CallMethodObjArgs(pLearner, pLearn, pInput, pExpOutput, NULL); // Python call for learning
+    }
     
-    pFunc = PyUnicode_FromString(PY_LEARN_METHOD_COMPUTE);
-    pValue = PyObject_CallMethodObjArgs(pLearner, pFunc, pArgs, NULL); // Python call
+    pComp = PyUnicode_FromString(PY_LEARN_METHOD_COMPUTE);
+    pValue = PyObject_CallMethodObjArgs(pLearner, pComp, pInput, NULL); // Python call for computation
     if (pValue == NULL) throw FileError("Error while extracting result from python learner");
 
     std::vector<uint16_t> res; // Get output from python output
@@ -72,64 +83,19 @@ std::vector<uint16_t> PyLearner::pyLearn(std::vector<uint16_t> input){
         res.push_back(PyLong_AsLong(PyList_GetItem(pValue, j)));
     }
 
-    Py_DECREF(pFunc);
+    Py_DECREF(pComp);
+    Py_DECREF(pLearn);
     Py_DECREF(pValue);
-    Py_DECREF(pArgs);
+    Py_DECREF(pExpOutput);
+    Py_DECREF(pInput);
 
     return res;
 }
 
 
-
-void PyLearner::learn(){
-
-}
-
-void PyLearner::test(){
-
-}
-
-Output* PyLearner::produce(const Input& input){
-    std::vector<uint16_t> fullInput(input.getInput()); // Create input of the DNN, add the target coordinates
-
-    auto state = DeviceLearner::getDeviceState(); // get state of servomotors
-    auto initPos = device->getPosition(); // Save current position
-
-    for(auto ptr = state.cbegin(); ptr < state.cend(); ptr++) {
-        fullInput.insert(fullInput.end(), ptr->begin(), ptr->end()); // Add the current state of the servomotors to the input
-    }
-
-    std::vector<uint16_t> output;
-    for(int nbIt = 0; nbIt < LEARN_NB_ITERATIONS; nbIt++){
-
-        std::chrono::time_point<std::chrono::system_clock> startTime = std::chrono::system_clock::now();
-        std::chrono::time_point<std::chrono::system_clock> currentTime = std::chrono::system_clock::now();
-
-        output = pyLearn(fullInput); // Computation of output
-        device->setPosition(output); // Update of servomotors
-
-        while(!device->goalReached() && std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startTime).count() < PY_LEARN_WAITING_TIME){ // Wait for end of movement
-            std::this_thread::sleep_for((std::chrono::milliseconds) PY_LEARN_WAITING_TIME / 10);
-            
-            device->updateInfos();
-            currentTime = std::chrono::system_clock::now(); // TODO: make a real passive wait
-        }
-        
-        auto finalPos = device->getPosition();
-        double error = device->positionSumSquaredError() + computeSquaredError(finalPos, initPos);
-
-        // TODO: feedback to agent
-
-        if(error < LEARN_ERROR_MARGIN) break;
-    }
-
-    return new Output(output);
-}
-
-
 std::string PyLearner::toString() const{
     std::stringstream rep;
-    rep << "Simple " << DeviceLearner::toString();
+    rep << "Py " << DeviceLearner::toString();
 
     return rep.str();
 }

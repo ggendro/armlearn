@@ -44,13 +44,25 @@ class Learner{ // TODO: Adapt for obstacles, disabled servo...
 
 
         /**
-         * @brief 
+         * @brief Template method, computes the sum of squared errors (SSE) between the two vectors
          * 
-         * @param target 
-         * @param real 
-         * @return double 
+         * @tparam R type of the values contained in the first vector, has to be countable and automatically converrtible with the second type
+         * @tparam T type of the values contained in the second vector, has to be countable and automatically converrtible with the first type
+         * @param target values of the first vector
+         * @param real values of the second vector
+         * @return double the computed SSE
          */
-        double computeSquaredError(const std::vector<uint16_t> target, const std::vector<uint16_t> real) const;
+        template<class R, class T> double computeSquaredError(const std::vector<R> target, const std::vector<T> real) const{ // Template function has to be declared and defined in .h file in order to compile
+            double sse = 0;
+
+            auto ptrR = real.cbegin();
+            for(auto ptrT=target.cbegin(); ptrT != target.cend(); ptrT++){
+                sse += std::pow(*ptrT - *ptrR, 2);
+                ptrR++;
+            }
+
+            return std::sqrt(sse);
+        }
 
 
         /**

@@ -3,7 +3,7 @@
 #include "serialcontroller.h"
 #include "trajectory.h"
 
-#include "pylearner.h"
+#include "simplepylearner.h"
 #include "widowxbuilder.h"
 #include "optimcartesianconverter.h"
 
@@ -23,16 +23,15 @@ int main(int argc, char *argv[]) {
 	std::cout << "Update servomotors information:" << std::endl;
 	arbotix.updateInfos();
 
-	PyLearner learner(&arbotix, &conv);
+	SimplePyLearner learner(&arbotix, &conv);
 
 	Input dest({1, 3, 5});
 
 	Output* res = learner.produce(dest);
-	arbotix.setPosition(res->getOutput()); // When learning implemented, use the real device here
-
 	std::cout << "Output : " << res->toString() << std::endl;
 
-	delete res;
+	arbotix.setPosition(res->getOutput()); // When learning implemented, use the real device here
+	delete res; // Do not forget
 	
 	std::cout << "Update servomotors information:" << std::endl;
 	arbotix.updateInfos();

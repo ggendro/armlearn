@@ -28,19 +28,6 @@ Learner::~Learner(){
 }
 
 
-double Learner::computeSquaredError(const std::vector<uint16_t> target, const std::vector<uint16_t> real) const{
-    double sse = 0;
-
-    auto ptrR = real.cbegin();
-    for(auto ptrT=target.cbegin(); ptrT != target.cend(); ptrT++){
-        sse += std::pow(*ptrT - *ptrR, 2);
-        ptrR++;
-    }
-
-    return std::sqrt(sse);
-}
-
-
 
 void Learner::setTestProportion(double newProp){
     testProportion = newProp;

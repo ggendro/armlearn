@@ -1,7 +1,7 @@
 /**
  * @file pylearner.h
  * @author Gaël Gendron (gael.gendron@insa-rennes.fr)
- * @brief File containing the class PyLearner, used for computing positions using AI methods
+ * @brief File containing the abstract class PyLearner, used for computing positions using AI learners implemented in python scripts
  * @version 0.1
  * @date 2019-06-11
  * 
@@ -15,12 +15,10 @@
 #define PYLEARNER_H
 
 #include <Python.h>
-#include <thread>
 
 #include "devicelearner.h"
 #include "input.h"
 #include "output.h"
-#include "converter.h"
 #include "fileerror.h"
 
 
@@ -36,24 +34,20 @@
 // Name of the python learner class
 #define PY_LEARN_OBJECT "Learner"
 // Name of the python class method used for learning
-#define PY_LEARN_METHOD_LEARN "learn"
+#define PY_LEARN_METHOD_LEARN "train"
 // Name of the python class mehod used for predicting result
 #define PY_LEARN_METHOD_COMPUTE "compute"
-// Time to wait for servomotors to reach each position (in milliseconds)
-#define PY_LEARN_WAITING_TIME 5000
 
 
 /**
  * @class PyLearner
- * @brief Class containing a simple learner that learns how to compute servomotor positions from coordinates without obstacles or disabled servomotors
+ * @brief Class containing a python script doing the learning computations
  * 
  */
 class PyLearner : public DeviceLearner{
 
     protected:
-        Converter* verifier;
         std::string learnerFile;
-
         PyObject *pModule, *pLearner;
 
         /**
@@ -72,9 +66,15 @@ class PyLearner : public DeviceLearner{
          * @brief Sends learning computation to external python script
          * 
          * @param input the input of the learning
+         * @param error vector containing the error of previous computation, in order to correct the new computation
          * @return std::vector<uint16_t> the output given by the python learner
+         * 
+         * Size of Error vector:
+         *  - if size is 0, assumes that no correction has to be made
+         *  - if size matches output size, assumes that each value is a correction value for one servomotor
+         *  - otherwise, assumes that no correction has to be made
          */
-        std::vector<uint16_t> pyLearn(std::vector<uint16_t> input);
+        std::vector<uint16_t> pyLearn(const std::vector<uint16_t> input, const std::vector<double> expectedOutput);
 
 
     public:
@@ -83,7 +83,7 @@ class PyLearner : public DeviceLearner{
          * @brief Constructs a new PyLearner object
          * 
          */
-        PyLearner(AbstractController* controller, Converter* converter, std::string learningScript = PY_LEARN_FILE, double testProp = DEFAULT_TEST_PROPORTION);
+        PyLearner(AbstractController* controller, std::string learningScript = PY_LEARN_FILE, double testProp = DEFAULT_TEST_PROPORTION);
 
         /**
          * @brief Destroys the PyLearner object
@@ -92,29 +92,6 @@ class PyLearner : public DeviceLearner{
          */
         virtual ~PyLearner();
 
-
-
-        /**
-         * @brief Executes a learning algorithm on the learning set
-         * 
-         * Abstract method
-         */
-        virtual void learn() override;
-
-        /**
-         * @brief Tests the efficiency of the learning 
-         * 
-         * Abstract method
-         */
-        virtual void test() override;
-
-        /**
-         * @brief Computes an output from an input (to use afetr learning and validation with testing)
-         * 
-         * @param input
-         * @return Output
-         */
-        virtual Output* produce(const Input& input) override;
 
         /**
          * @brief Returns the state of the learner under string format

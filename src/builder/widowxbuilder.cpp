@@ -29,5 +29,7 @@ void WidowXBuilder::buildConverter(Converter& converter){ // TODO: look for real
 	converter.addServo("shoulder", rotX, 0, -2, 5, M_PI/2, 0, M_PI); // Add 90° because of the orientation of the elbow servomotor
 	converter.addServo("elbow", rotX, 0, 0, 5);
 	converter.addServo("wristAngle", rotX, 0, 0, 3);
+	converter.addServo("wristRotate", rotZ, 0, 0, 1);
+	converter.addServo("gripper", rotZ, 0, 0, 1);
 }
 

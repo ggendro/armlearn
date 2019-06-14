@@ -20,6 +20,7 @@
  * @class DeviceLearner
  * @brief Abstract class containing a learner that learns how to compute servomotor positions from coordinates and the servomotors state
  * 
+ * Friend class of Servomotor and AbstractController classes
  */
 class DeviceLearner : public Learner{
 
