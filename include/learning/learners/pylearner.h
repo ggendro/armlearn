@@ -21,12 +21,6 @@
 #include "output.h"
 #include "fileerror.h"
 
-
-// Number of iterations of the learning
-#define LEARN_NB_ITERATIONS 200
-// Margin of error allowing to stop learning if error is below the number
-#define LEARN_ERROR_MARGIN 0.05
-
 // Directory containging the python scripts
 #define PY_LEARN_DIR "../../python/"
 // Name of the python script containing the learning algorithm

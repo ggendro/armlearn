@@ -17,10 +17,18 @@
 #include "pylearner.h"
 #include "converter.h"
 
-// Coefficient of target error (difference between the real output and the target output, to minimize)
-#define TARGET_COEFF 1
-// Coefficient of movement error (distance browsed by servomotors to reach target, to minimize)
-#define MOVEMENT_COEFF 0.4
+
+// Number of iterations of the learning
+#define LEARN_NB_ITERATIONS 2000
+// Margin of error allowing to stop learning if error is below the number
+#define LEARN_ERROR_MARGIN 0.05
+// Size of the output grid, used for discretization of the output space
+#define GRANULARITY_GRID 50
+
+// Coefficient of target error (difference between the real output and the target output, to minimize) when computing error between input and output
+#define TARGET_COEFF 0.1
+// Coefficient of movement error (distance browsed by servomotors to reach target, to minimize) when computing error between input and output
+#define MOVEMENT_COEFF 0.04
 
 
 /**
@@ -43,10 +51,10 @@ class SimplePyLearner : public PyLearner{
          * Takes into account for the computation:
          *  - the distance between the target coordinates and the coordinates resulting from the output positions, the greater it is the greater the error will be
          *  - the distance browsed by servomotors, the greater it is the greater the error will be
+         * 
+         * Template method, defined for uint16_t and double
          */
-        template<class R, class T> double intermediaryComputeError(const std::vector<R> input, const std::vector<T> output){
-            return TARGET_COEFF * computeSquaredError(input, verifier->computeServoToCoord(std::vector<uint16_t>(output.begin(), output.end()))->getCoord()) + MOVEMENT_COEFF * computeSquaredError(device->getPosition(), output);
-        }
+        template<class R, class T> double intermediaryComputeError(const std::vector<R> input, const std::vector<T> output) const;
 
         /**
          * @brief Computes error between learning output and expected output based on the input
@@ -55,7 +63,7 @@ class SimplePyLearner : public PyLearner{
          * @param output the resulting output from learner
          * @return std::vector<double> error between output given and expected output
          */
-        std::vector<double> computeExpectedOutput(const std::vector<uint16_t> input, const std::vector<uint16_t> output);
+        std::vector<double> computeExpectedOutput(const std::vector<uint16_t> input, const std::vector<uint16_t> output) const;
 
 
     public:

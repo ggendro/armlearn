@@ -52,6 +52,7 @@ class Converter{
         std::vector<double> lastCoord;
 
         KDL::Chain* device;
+        int nbServos;
 
     public:
 
@@ -124,6 +125,13 @@ class Converter{
          * @return std::vector<uint16_t> the positions
          */
         std::vector<uint16_t> getServo() const;
+
+        /**
+         * @brief Gets the number of moveable servomotors used in the computation (i.e: size of the getServo() output)
+         * 
+         * @return int the number of servomotors
+         */
+        int getNbServos() const;
 
 };
 

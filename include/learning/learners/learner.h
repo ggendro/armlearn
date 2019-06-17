@@ -51,18 +51,10 @@ class Learner{ // TODO: Adapt for obstacles, disabled servo...
          * @param target values of the first vector
          * @param real values of the second vector
          * @return double the computed SSE
+         * 
+         * Template method, defined for uint16_t and double
          */
-        template<class R, class T> double computeSquaredError(const std::vector<R> target, const std::vector<T> real) const{ // Template function has to be declared and defined in .h file in order to compile
-            double sse = 0;
-
-            auto ptrR = real.cbegin();
-            for(auto ptrT=target.cbegin(); ptrT != target.cend(); ptrT++){
-                sse += std::pow(*ptrT - *ptrR, 2);
-                ptrR++;
-            }
-
-            return std::sqrt(sse);
-        }
+        template<class R, class T> double computeSquaredError(const std::vector<R> target, const std::vector<T> real) const;
 
 
         /**

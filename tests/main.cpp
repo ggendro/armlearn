@@ -12,20 +12,25 @@ int main(int argc, char *argv[]) {
 
 	OptimCartesianConverter conv;
 	ArmSimulator arbotix;
+	//SerialController arbotix("/dev/ttyUSB0");
 
 	WidowXBuilder builder;
 	builder.buildConverter(conv);
 	builder.buildController(arbotix);
 
 	arbotix.connect();
-	arbotix.changeSpeed(250);
+
+	std::this_thread::sleep_for((std::chrono::milliseconds) 1000); // Usually, a waiting period and a second connect attempt is necessary to reach all devices
+	arbotix.connect();
+
+	arbotix.changeSpeed(50);
 
 	std::cout << "Update servomotors information:" << std::endl;
 	arbotix.updateInfos();
 
 	SimplePyLearner learner(&arbotix, &conv);
 
-	Input dest({1, 3, 5});
+	Input dest({10, 7, 5});
 
 	Output* res = learner.produce(dest);
 	std::cout << "Output : " << res->toString() << std::endl;

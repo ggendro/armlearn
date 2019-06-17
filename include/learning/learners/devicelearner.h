@@ -16,6 +16,9 @@
 #include "abstractcontroller.h"
 #include "learner.h"
 
+// Min distance to the range limits of servomotors
+#define RANGE_DISTANCE_SECURITY 10
+
 /**
  * @class DeviceLearner
  * @brief Abstract class containing a learner that learns how to compute servomotor positions from coordinates and the servomotors state
@@ -27,7 +30,22 @@ class DeviceLearner : public Learner{
     protected:
         AbstractController* device;
 
-        std::vector<std::vector<uint16_t>> getDeviceState();
+        /**
+         * @brief Returns the current state of each servomotor
+         * 
+         * @return std::vector<std::vector<uint16_t>> array containing the state of each servomotor as an array
+         */
+        std::vector<std::vector<uint16_t>> getDeviceState() const;
+
+        /**
+         * @brief Computes from a given position the closest position that is within the range ofeach servomotor, if all values are within ranges, returns the initial vector
+         * 
+         * @param position the positions to verify and modify if necessary
+         * @return std::vector<uint16_t> array of servomotor positions
+         * 
+         * Template method, defined for uint16_t and double
+         */
+        template<class T> std::vector<T> getClosestValidPosition(std::vector<T> position, T securityThreshold = RANGE_DISTANCE_SECURITY) const;
 
     public:
 

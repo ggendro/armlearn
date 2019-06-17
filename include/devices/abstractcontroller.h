@@ -47,7 +47,7 @@ enum DisplayMode{
  * @class AbstractController
  * @brief Provides an abstract interface to link servomotor classes with servomotor devices
  * Link with classes implemented
- * Link with devices (physical or simulated) to be implemnted in inherited classes
+ * Link with devices (physical or simulated) to be implemented in inherited classes
  */
 class AbstractController{
 

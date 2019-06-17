@@ -6,7 +6,7 @@
 #include "converter.h"
 
 
-Converter::Converter():lastCoord(), lastServo(){
+Converter::Converter():lastCoord(), lastServo(), nbServos(0){
     device = new KDL::Chain();
 }
 
@@ -16,6 +16,7 @@ Converter::~Converter(){
 
 
 Converter* Converter::addServo(const std::string& name, Axis axis, double lengthX, double lengthY, double lengthZ, double rotationX, double rotationY, double rotationZ){
+    nbServos++;
 
     KDL::Joint::JointType joint;
     switch (axis){
@@ -47,6 +48,7 @@ Converter* Converter::addServo(const std::string& name, Axis axis, double length
 
         default:
             joint = KDL::Joint::None;
+            nbServos--; // If servomotor not moveable, is not counted as servomotor during computation
             break;
     }
 
@@ -62,6 +64,7 @@ Converter* Converter::addServo(const std::string& name, Axis axis, double length
 Converter* Converter::removeAllServos(){
     delete device;
     device = new KDL::Chain();
+    nbServos = 0;
 
     return this;
 }
@@ -73,4 +76,8 @@ std::vector<double> Converter::getCoord() const{
 
 std::vector<uint16_t> Converter::getServo() const{
     return lastServo;
+}
+
+int Converter::getNbServos() const{
+    return nbServos;
 }
