@@ -42,7 +42,7 @@ class SimplePyLearner : public PyLearner{
         Converter* verifier;
 
         /**
-         * @brief Intermediary method used in computeExepectedOutput, computes resulting error of the output for the corresponding input and servomotor states
+         * @brief Computes resulting error of the output for the corresponding input and servomotor states
          * 
          * @param input target to reach
          * @param output servomotor positions computed, to evaluate
@@ -54,16 +54,7 @@ class SimplePyLearner : public PyLearner{
          * 
          * Template method, defined for uint16_t and double
          */
-        template<class R, class T> double intermediaryComputeError(const std::vector<R> input, const std::vector<T> output) const;
-
-        /**
-         * @brief Computes error between learning output and expected output based on the input
-         * 
-         * @param input the input coordinates
-         * @param output the resulting output from learner
-         * @return std::vector<double> error between output given and expected output
-         */
-        std::vector<double> computeExpectedOutput(const std::vector<uint16_t> input, const std::vector<uint16_t> output) const;
+        template<class R, class T> double computeError(const std::vector<R> input, const std::vector<T> output) const;
 
 
     public:

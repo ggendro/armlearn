@@ -52,7 +52,7 @@ void PyLearner::pyEnd(){
 }
 
 
-std::vector<uint16_t> PyLearner::pyLearn(const std::vector<uint16_t> input, const std::vector<double> expectedOutput){ // TODO: add error management (as explained in .h), finish script
+std::vector<uint16_t> PyLearner::pyLearn(const std::vector<uint16_t> input, const std::vector<double> error){
     PyObject *pInput, *pExpOutput, *pLearn, *pComp, *pValue;
     
     
@@ -63,10 +63,10 @@ std::vector<uint16_t> PyLearner::pyLearn(const std::vector<uint16_t> input, cons
         i++;
     }
 
-    if(expectedOutput.size() != 0){
-        pExpOutput = PyList_New(expectedOutput.size()); // Create python error from error
+    if(error.size() != 0){
+        pExpOutput = PyList_New(error.size()); // Create python error from error
         int j=0;
-        for(auto ptr = expectedOutput.cbegin(); ptr < expectedOutput.cend(); ptr++){
+        for(auto ptr = error.cbegin(); ptr < error.cend(); ptr++){
             PyList_SetItem(pExpOutput, j, PyLong_FromLong(*ptr));
             j++;
         }
