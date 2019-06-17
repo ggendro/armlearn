@@ -6,7 +6,7 @@
 #include "simplepylearner.h"
 
 
-SimplePyLearner::SimplePyLearner(AbstractController* controller, Converter* converter, std::string learningScript, double testProp):PyLearner(controller, learningScript, testProp),som(){
+SimplePyLearner::SimplePyLearner(AbstractController* controller, Converter* converter, std::string learningScript, double testProp):PyLearner(controller, learningScript, testProp){
     verifier = converter;
 }
 
