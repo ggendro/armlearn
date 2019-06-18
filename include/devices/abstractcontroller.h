@@ -16,6 +16,7 @@
 #include <map>
 #include <string>
 #include <math.h>
+#include <thread>
 
 #include "servomotor.h"
 #include "iderror.h"
@@ -23,10 +24,15 @@
 #include "outofrangeerror.h"
 
 
-// Position of the servomotors to put the arm in backhoe position
+// Position of the servomotors to put the arm in backhoe position // TODO: to correct, to have generic positions
 #define BACKHOE_POSITION {2048, 2048, 2048, 2048, 512, 256}
 // Position of the servomotors to put the arm in sleep position
 #define SLEEP_POSITION {2048, 1025, 1025, 1830, 512, 256}
+
+// Time to wait for servomotors to reach each position (in milliseconds)
+#define WAITING_TIME 5000
+// Error margin between current and target position
+#define POSITION_ERROR_MARGIN 40
 
 
 /**
@@ -282,6 +288,15 @@ class AbstractController{
          * @return double the SSE
          */
         double positionSumSquaredError() const;
+
+        /**
+         * @brief Waits for device to reach its current target position
+         * 
+         * @param allowedTime the response time allowed, returns if no answer got before this time
+         * @return true if a response occured within the allowed time
+         * @return false otherwise  
+         */
+        bool waitFeedback(int allowedTime = WAITING_TIME);
 
 
         /**

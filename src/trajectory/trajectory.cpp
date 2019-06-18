@@ -21,35 +21,6 @@ Trajectory::~Trajectory(){
 }
 
 
-bool Trajectory::waitFeedback() const{
-
-    std::chrono::time_point<std::chrono::system_clock> startTime = std::chrono::system_clock::now();
-    std::chrono::time_point<std::chrono::system_clock> currentTime = std::chrono::system_clock::now();
-
-    device->updateInfos();
-    bool response = device->goalReached();
-
-    while(!response && std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startTime).count() < WAITING_TIME){ // TODO: implement without active waiting
-        std::cout << "Movement not entirely executed at " << std::chrono::duration<double, std::ratio<1, 1>>(currentTime - startTime).count() << " s" << std::endl;
-        std::this_thread::sleep_for((std::chrono::milliseconds) WAITING_TIME/10);
-
-        device->updateInfos();
-        response = device->goalReached();
-
-        if(!response){
-            double sse = device->positionSumSquaredError();
-            std::cout << "Sum of squared errors : " << sse << std::endl;
-
-            if(sse < MARGIN_ERROR) response = true;
-        }
-        
-        currentTime = std::chrono::system_clock::now();
-        std::cout <<"Goal reached : " << response << " - New try at " << std::chrono::duration<double, std::ratio<1, 1>>(currentTime - startTime).count() << " s" << std::endl;
-	}
-
-   return response;
-}
-
 void Trajectory::move(const std::vector<uint16_t>& point) const{
     try{
         device->setPosition(point);
@@ -61,7 +32,7 @@ void Trajectory::move(const std::vector<uint16_t>& point) const{
         throw TrajectoryError(e.what());
     }
 
-    waitFeedback();
+    device->waitFeedback();
 }
 
 

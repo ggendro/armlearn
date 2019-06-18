@@ -35,15 +35,7 @@ class Trajectory{
         AbstractController* device;
         std::vector<std::vector<uint16_t>*>* trajectories;
         // TODO: add time management (pauses during execution, varying speed of servomotors, ...)
-
-
-        /**
-         * @brief Wait for a device response, used for trajectory execution
-         * 
-         * @return true if a response occured within the allowed time
-         * @return false otherwise
-         */
-        bool waitFeedback() const;
+        
 
         /**
          * @brief Move to designed point

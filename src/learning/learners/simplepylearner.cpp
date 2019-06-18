@@ -28,6 +28,12 @@ template double SimplePyLearner::computeError<uint16_t, uint16_t>(const std::vec
 
 
 void SimplePyLearner::learn(){
+    static auto lastErrors = std::vector<double>(learningSet->size(), 0); // Saves the errors
+
+    device->goToBackhoe();
+    device->waitFeedback(); // TODO: complete
+
+
 
 }
 

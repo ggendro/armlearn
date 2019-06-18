@@ -13,11 +13,14 @@
 #ifndef DEVICELEARNER_H
 #define DEVICELEARNER_H
 
+#include <thread>
+
 #include "abstractcontroller.h"
 #include "learner.h"
 
 // Min distance to the range limits of servomotors
 #define RANGE_DISTANCE_SECURITY 10
+
 
 /**
  * @class DeviceLearner
