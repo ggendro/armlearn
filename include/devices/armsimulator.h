@@ -26,6 +26,9 @@
 #define CURRENT_VOLTAGE 120
 #define INSTRUCTION_WAITING 0
 
+// Acceleration factor to pass time faster
+#define TIME_MUL 10
+
 
 
 /**

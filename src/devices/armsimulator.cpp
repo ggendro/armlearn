@@ -145,7 +145,7 @@ bool ArmSimulator::updateInfos(uint8_t id){
     uint16_t spd =  ptr->getTargetSpeed();
     double time = ptr->getTimeSinceUpdate();
     bool moving = true;
-    uint16_t distReached = spd * SPEED_UNIT * time / 60 / M_PI * 180 / MOVE_UNIT;
+    uint16_t distReached = spd * SPEED_UNIT * time * TIME_MUL / 60 / M_PI * 180 / MOVE_UNIT;
 
     // If destination is already reached
     if(std::abs(dest-start) < distReached){

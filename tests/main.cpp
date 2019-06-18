@@ -30,9 +30,12 @@ int main(int argc, char *argv[]) {
 
 	SimplePyLearner learner(&arbotix, &conv);
 
-	Input dest({10, 7, 5});
+	Input* dest = new Input({10, 7, 5});
+	Output* destMatch = new Output();
+	learner.addToLearningSet(dest, destMatch);
+	learner.learn();
 
-	Output* res = learner.produce(dest);
+	Output* res = learner.produce(*dest);
 	std::cout << "Output : " << res->toString() << std::endl;
 
 	arbotix.setPosition(res->getOutput()); // When learning implemented, use the real device here

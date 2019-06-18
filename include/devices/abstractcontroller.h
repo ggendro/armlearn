@@ -250,6 +250,15 @@ class AbstractController{
          */
         std::vector<uint16_t> getPosition() const;
 
+        /**
+         * @brief Checks whether the iven position is valid or not
+         * 
+         * @param position the position to verify
+         * @return true if the position is valid
+         * @return false otherwise
+         */
+        bool validPosition(std::vector<uint16_t> position) const;
+
 
         /**
          * @brief Enables or disables a servomotor's ability to move or hold a position (torque)

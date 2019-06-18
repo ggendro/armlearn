@@ -63,7 +63,7 @@ std::vector<uint16_t> PyLearner::pyLearn(const std::vector<uint16_t> input, cons
         i++;
     }
 
-    if(error.size() != 0){
+    if(error.size() != 0 && !(error.size() == 1 && error[0] == 0)){
         pExpOutput = PyList_New(error.size()); // Create python error from error
         int j=0;
         for(auto ptr = error.cbegin(); ptr < error.cend(); ptr++){

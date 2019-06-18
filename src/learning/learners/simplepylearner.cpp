@@ -16,9 +16,13 @@ SimplePyLearner::~SimplePyLearner(){
 
 
 template<class R, class T> double SimplePyLearner::computeError(const std::vector<R> input, const std::vector<T> output) const{
-    auto v = verifier->computeServoToCoord(std::vector<uint16_t>(output.begin(), output.end()))->getCoord();
-    std::cout << "Coordinates : "; for(auto val : v) std::cout << val << " "; std::cout << " instead of "; for(auto val : input) std::cout << val << " "; std::cout << std::endl;
-    return TARGET_COEFF * computeSquaredError(input, verifier->computeServoToCoord(std::vector<uint16_t>(output.begin(), output.end()))->getCoord()) + MOVEMENT_COEFF * computeSquaredError(device->getPosition(), output);
+    std::vector<uint16_t> formattedOutput(output.begin(), output.end());
+
+    if(!device->validPosition(formattedOutput)) return VALID_COEFF;
+    auto coords = verifier->computeServoToCoord(formattedOutput)->getCoord();
+
+    std::cout << "Coordinates : "; for(auto val : coords) std::cout << val << " "; std::cout << " instead of "; for(auto val : input) std::cout << val << " "; std::cout << std::endl;
+    return TARGET_COEFF * computeSquaredError(input, coords) + MOVEMENT_COEFF * computeSquaredError(device->getPosition(), output);
 }
 template double SimplePyLearner::computeError<double, double>(const std::vector<double> input, const std::vector<double> output) const;
 template double SimplePyLearner::computeError<double, uint16_t>(const std::vector<double> input, const std::vector<uint16_t> output) const;
@@ -26,14 +30,41 @@ template double SimplePyLearner::computeError<uint16_t, double>(const std::vecto
 template double SimplePyLearner::computeError<uint16_t, uint16_t>(const std::vector<uint16_t> input, const std::vector<uint16_t> output) const;
 
 
-
 void SimplePyLearner::learn(){
-    static auto lastErrors = std::vector<double>(learningSet->size(), 0); // Saves the errors
 
-    device->goToBackhoe();
-    device->waitFeedback(); // TODO: complete
+    for(auto lsetPtr = learningSet->cbegin(); lsetPtr != learningSet->cend(); lsetPtr++){
+        device->goToBackhoe(); // Reset position
+        device->waitFeedback();
+
+        std::vector<uint16_t> output;
+        double error = 0;
+
+        for(int nbIt = 0; nbIt < LEARN_NB_ITERATIONS; nbIt++){
+            std::cout << "Iteration " << nbIt << " : " << std::endl;
 
 
+            std::vector<uint16_t> fullInput(lsetPtr->first->getInput()); // Create input of the DNN, add the target coordinates
+            auto state = DeviceLearner::getDeviceState(); // Get state of servomotors
+
+            for(auto ptr = state.cbegin(); ptr < state.cend(); ptr++) {
+                fullInput.insert(fullInput.end(), ptr->begin(), ptr->end()); // Add the current state of the servomotors to the input
+            }
+            
+            output = pyLearn(fullInput, {error}); // Computation of output
+            error = computeError(lsetPtr->first->getInput(), output); // Computation of expected output
+            std::cout << "Error : " << error << std::endl;
+
+            if(error < VALID_COEFF){ // If position is valid (within range)
+                device->setPosition(output); // Update position
+                device->waitFeedback();
+            }else{
+                std::cout << "Error too important : movement not allowed" << std::endl;
+            }
+
+            if(error < LEARN_ERROR_MARGIN) break; // Stop learning if error is within threshold
+        }
+
+    }
 
 }
 
@@ -44,26 +75,13 @@ void SimplePyLearner::test(){
 
 Output* SimplePyLearner::produce(const Input& input){
     std::vector<uint16_t> fullInput(input.getInput()); // Create input of the DNN, add the target coordinates
-
-    auto state = DeviceLearner::getDeviceState(); // get state of servomotors
+    auto state = DeviceLearner::getDeviceState(); // Get state of servomotors
 
     for(auto ptr = state.cbegin(); ptr < state.cend(); ptr++) {
         fullInput.insert(fullInput.end(), ptr->begin(), ptr->end()); // Add the current state of the servomotors to the input
     }
 
-    std::vector<uint16_t> output;
-    double error = 0;
-
-    for(int nbIt = 0; nbIt < LEARN_NB_ITERATIONS; nbIt++){
-        std::cout << "Iteration " << nbIt << " : " << std::endl;
-        output = pyLearn(fullInput, {error}); // Computation of output
-        error = computeError(input.getInput(), output); // Computation of expected output
-        std::cout << "Error : " << error << std::endl;
-
-        if(error < LEARN_ERROR_MARGIN) break; // Stop learning if error is within threshold
-    }
-
-    return new Output(output);
+    return new Output(pyLearn(fullInput));
 }
 
 
