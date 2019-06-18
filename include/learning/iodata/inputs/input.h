@@ -22,7 +22,7 @@
  * 
  * Does not correspond to a real output, used as mother class for other classes
  */
-class Input : public IOVector{
+class Input : public IOVector<uint16_t>{
 
     public:
         using IOVector::IOVector;

@@ -22,7 +22,7 @@
  * 
  * Does not correspond to a real output, used as mother class for other classes
  */
-class Output : public IOVector{
+class Output : public IOVector<int>{
 
     public:
         using IOVector::IOVector;
@@ -34,7 +34,7 @@ class Output : public IOVector{
          * 
          * @return std::vector<std::vector<uint16_t>> the output
          */
-        virtual std::vector<uint16_t> getOutput() const;
+        virtual std::vector<int> getOutput() const;
 };
 
 #endif

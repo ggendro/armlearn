@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
 	Output* res = learner.produce(*dest);
 	std::cout << "Output : " << res->toString() << std::endl;
 
-	arbotix.setPosition(res->getOutput()); // When learning implemented, use the real device here
+	arbotix.addPosition(res->getOutput()); // When learning implemented, use the real device here
 	delete res; // Do not forget
 	
 	std::cout << "Update servomotors information:" << std::endl;

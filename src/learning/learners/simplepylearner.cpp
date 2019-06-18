@@ -16,10 +16,11 @@ SimplePyLearner::~SimplePyLearner(){
 
 
 template<class R, class T> double SimplePyLearner::computeError(const std::vector<R> input, const std::vector<T> output) const{
-    std::vector<uint16_t> formattedOutput(output.begin(), output.end());
+    std::vector<uint16_t> uintOutput(output.cbegin(), output.cend());
+    std::transform(uintOutput.begin(), uintOutput.end(), device->getPosition().begin(), uintOutput.begin(), std::plus<uint16_t>());
 
-    if(!device->validPosition(formattedOutput)) return VALID_COEFF;
-    auto coords = verifier->computeServoToCoord(formattedOutput)->getCoord();
+    if(!device->validPosition(uintOutput)) return VALID_COEFF;
+    auto coords = verifier->computeServoToCoord(uintOutput)->getCoord();
 
     std::cout << "Coordinates : "; for(auto val : coords) std::cout << val << " "; std::cout << " instead of "; for(auto val : input) std::cout << val << " "; std::cout << std::endl;
     return TARGET_COEFF * computeSquaredError(input, coords) + MOVEMENT_COEFF * computeSquaredError(device->getPosition(), output);
@@ -36,7 +37,7 @@ void SimplePyLearner::learn(){
         device->goToBackhoe(); // Reset position
         device->waitFeedback();
 
-        std::vector<uint16_t> output;
+        std::vector<int> output;
         double error = 0;
 
         for(int nbIt = 0; nbIt < LEARN_NB_ITERATIONS; nbIt++){
@@ -55,7 +56,7 @@ void SimplePyLearner::learn(){
             std::cout << "Error : " << error << std::endl;
 
             if(error < VALID_COEFF){ // If position is valid (within range)
-                device->setPosition(output); // Update position
+                device->addPosition(output); // Update position
                 device->waitFeedback();
             }else{
                 std::cout << "Error too important : movement not allowed" << std::endl;

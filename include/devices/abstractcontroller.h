@@ -240,7 +240,7 @@ class AbstractController{
          * 
          * @param dx the number to add to the servos' position
          */
-        void addPosition(const std::vector<int> dx);
+        void addPosition(const std::vector<int>& dx);
 
 
         /**

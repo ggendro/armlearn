@@ -68,7 +68,7 @@ class PyLearner : public DeviceLearner{
          *  - if size is 1, assumes that it is a global error
          *  - otherwise, assumes that each value is a correction value for one servomotor
          */
-        std::vector<uint16_t> pyLearn(const std::vector<uint16_t> input, const std::vector<double> error = {});
+        std::vector<int> pyLearn(const std::vector<uint16_t> input, const std::vector<double> error = {});
 
 
     public:

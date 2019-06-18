@@ -43,6 +43,11 @@ template double Learner::computeSquaredError<double, double>(const std::vector<d
 template double Learner::computeSquaredError<double, uint16_t>(const std::vector<double> target, const std::vector<uint16_t> real) const;
 template double Learner::computeSquaredError<uint16_t, double>(const std::vector<uint16_t> target, const std::vector<double> real) const;
 template double Learner::computeSquaredError<uint16_t, uint16_t>(const std::vector<uint16_t> target, const std::vector<uint16_t> real) const;
+template double Learner::computeSquaredError<int, uint16_t>(const std::vector<int> target, const std::vector<uint16_t> real) const;
+template double Learner::computeSquaredError<uint16_t, int>(const std::vector<uint16_t> target, const std::vector<int> real) const;;
+template double Learner::computeSquaredError<int, double>(const std::vector<int> target, const std::vector<double> real) const;
+template double Learner::computeSquaredError<double, int>(const std::vector<double> target, const std::vector<int> real) const;
+template double Learner::computeSquaredError<int, int>(const std::vector<int> target, const std::vector<int> real) const;
 
 
 

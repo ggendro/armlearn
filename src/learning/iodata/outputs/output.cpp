@@ -9,6 +9,6 @@ Output::~Output(){
     
 }
 
-std::vector<uint16_t> Output::getOutput() const{
+std::vector<int> Output::getOutput() const{
     return vector;
 }

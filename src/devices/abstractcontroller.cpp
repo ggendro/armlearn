@@ -75,7 +75,7 @@ void AbstractController::goToSleep(){
 }
 
 
-void AbstractController::addPosition(const std::vector<int> dx){
+void AbstractController::addPosition(const std::vector<int>& dx){
     auto ptrPos = dx.cbegin();
     for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){  
         addPosition(ptr->first, *ptrPos);

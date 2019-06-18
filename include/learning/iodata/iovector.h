@@ -22,10 +22,10 @@
  * @class IOVector
  * @brief Inout or Output of learning algorithms
  */
-class IOVector{
+template<class T> class IOVector{
 
     protected:
-        std::vector<uint16_t> vector;
+        std::vector<T> vector;
 
     public:
 
@@ -33,26 +33,30 @@ class IOVector{
          * @brief Constructs a new IOVector object
          * 
          */
-        IOVector();
+        IOVector(){ }
 
         /**
          * @brief Constructs a new IOVector object
          * 
          */
-        IOVector(const std::vector<uint16_t>& vect);
+        IOVector(const std::vector<T>& vect){
+            vector = vect;
+        }
 
         /**
          * @brief Constructs a new IOVector object from another
          * 
          * @param vect the vector to copy
          */
-        IOVector(const IOVector& vect);
+        IOVector(const IOVector& vect){
+            vector = vect.vector;
+        }
 
         /**
          * @brief Destroys the IOVector object
          * 
          */
-        virtual ~IOVector();
+        virtual ~IOVector(){ }
 
 
         /**
@@ -61,7 +65,11 @@ class IOVector{
          * @param out the in copied in the current object
          * @return IOVector& the current IOVector object
          */
-        virtual IOVector& operator=(const IOVector& out);
+        virtual IOVector& operator=(const IOVector& obj){
+            vector = obj.vector;
+
+            return *this;
+        }
 
         /**
          * @brief equals comparison operator
@@ -70,7 +78,9 @@ class IOVector{
          * @return true if the vectors are identical
          * @return false otherwise
          */
-        virtual bool operator==(const IOVector& obj) const;
+        virtual bool operator==(const IOVector& obj) const{
+            return vector == obj.vector;
+        }
 
 
         /**
@@ -78,7 +88,9 @@ class IOVector{
          * 
          * @return std::vector<uint16_t> the contained vector
          */
-        std::vector<uint16_t> getVector() const;
+        std::vector<T> getVector() const{
+            return vector;
+        }
 
 
         /**
@@ -86,7 +98,14 @@ class IOVector{
          * 
          * @return std::string
          */
-        virtual std::string toString() const;
+        virtual std::string toString() const{
+            std::stringstream res;
+            res << "{ ";
+            for(auto&& v : vector) res << v << " ";
+            res << "}";
+
+            return res.str();
+        }
 };
 
 #endif

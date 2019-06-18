@@ -52,7 +52,7 @@ void PyLearner::pyEnd(){
 }
 
 
-std::vector<uint16_t> PyLearner::pyLearn(const std::vector<uint16_t> input, const std::vector<double> error){
+std::vector<int> PyLearner::pyLearn(const std::vector<uint16_t> input, const std::vector<double> error){
     PyObject *pInput, *pExpOutput, *pLearn, *pComp, *pValue;
     
     
@@ -81,7 +81,7 @@ std::vector<uint16_t> PyLearner::pyLearn(const std::vector<uint16_t> input, cons
     pValue = PyObject_CallMethodObjArgs(pLearner, pComp, pInput, NULL); // Python call for computation
     if (pValue == NULL) throw FileError("Error while extracting result from python learner");
 
-    std::vector<uint16_t> res; // Get output from python output
+    std::vector<int> res; // Get output from python output
     for(int j = 0; j < PyList_Size(pValue); j++){
         res.push_back(PyLong_AsLong(PyList_GetItem(pValue, j)));
     }

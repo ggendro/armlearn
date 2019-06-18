@@ -14,12 +14,15 @@
 #ifndef SIMPLEPYLEARNER_H
 #define SIMPLEPYLEARNER_H
 
+#include <functional>
+#include <algorithm>
+
 #include "pylearner.h"
 #include "converter.h"
 
 
 // Number of iterations of the learning
-#define LEARN_NB_ITERATIONS 2000
+#define LEARN_NB_ITERATIONS 50000
 // Margin of error allowing to stop learning if error is below the number
 #define LEARN_ERROR_MARGIN 0.05
 // Size of the output grid, used for discretization of the output space
