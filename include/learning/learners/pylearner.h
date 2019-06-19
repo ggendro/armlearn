@@ -56,19 +56,53 @@ class PyLearner : public DeviceLearner{
          */
         void pyEnd();
 
+
+        /**
+         * @brief Converts vector into PyObject
+         * 
+         * @tparam T the type of the data stored (created for int)
+         * @param vect the vector to convert
+         * @return PyObject* the corresponding Python Object
+         */
+        template<class T> PyObject* toPyObject(const std::vector<T> vect) const;
+
+        /**
+         * @brief Converts PyList into vector
+         * 
+         * @tparam T the type of the data
+         * @param obj the Python List to convert
+         * @return std::vector<T> the resulting vector
+         */
+        template<class T> std::vector<T> fromPyObject(PyObject* pObj) const;
+
+
+        /**
+         * @brief Gets and prints error handled by python interpreter
+         * 
+         */
+        void pyManageError() const;
+
+
         /**
          * @brief Sends learning computation to external python script
          * 
          * @param input the input of the learning
-         * @param error vector containing the error of previous computation, in order to correct the new computation
-         * @return std::vector<uint16_t> the output given by the python learner
+         * @param error vector containing the error associated to the input, in order to correct the output given for this input
          * 
          * Size of Error vector:
          *  - if size is 0, assumes that no correction has to be made
          *  - if size is 1, assumes that it is a global error
          *  - otherwise, assumes that each value is a correction value for one servomotor
          */
-        std::vector<int> pyLearn(const std::vector<uint16_t> input, const std::vector<double> error = {});
+        void pyLearn(const std::vector<uint16_t> input, const std::vector<double> error = {}) const;
+
+        /**
+         * @brief Ask computation to external python script
+         * 
+         * @param input the input of the asked computation
+         * @return std::vector<uint16_t> the output given by the python learner
+         */
+        std::vector<int> pyCompute(const std::vector<uint16_t> input) const;
 
 
     public:
