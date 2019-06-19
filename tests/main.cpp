@@ -11,7 +11,7 @@
 int main(int argc, char *argv[]) {
 
 	OptimCartesianConverter conv;
-	ArmSimulator arbotix;
+	ArmSimulator arbotix((DisplayMode) 0);
 	//SerialController arbotix("/dev/ttyUSB0");
 
 	WidowXBuilder builder;

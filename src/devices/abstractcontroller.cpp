@@ -132,7 +132,7 @@ bool AbstractController::waitFeedback(int allowedTime){
     bool response = goalReached();
 
     while(!response && std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startTime).count() < allowedTime){ // TODO: implement without active waiting
-        std::cout << "Movement not entirely executed at " << std::chrono::duration<double, std::ratio<1, 1>>(currentTime - startTime).count() << " s" << std::endl;
+        if(mode >= print) output << "Movement not entirely executed at " << std::chrono::duration<double, std::ratio<1, 1>>(currentTime - startTime).count() << " s" << std::endl;
         std::this_thread::sleep_for((std::chrono::milliseconds) allowedTime/10);
 
         updateInfos();
@@ -140,13 +140,13 @@ bool AbstractController::waitFeedback(int allowedTime){
 
         if(!response){
             double sse = positionSumSquaredError();
-            std::cout << "Sum of squared errors : " << sse << std::endl;
+            if(mode >= print) output << "Sum of squared errors : " << sse << std::endl;
 
             if(sse < POSITION_ERROR_MARGIN) response = true;
         }
         
         currentTime = std::chrono::system_clock::now();
-        std::cout <<"Goal reached : " << response << " - New try at " << std::chrono::duration<double, std::ratio<1, 1>>(currentTime - startTime).count() << " s" << std::endl;
+        if(mode >= print) output <<"Goal reached : " << response << " - New try at " << std::chrono::duration<double, std::ratio<1, 1>>(currentTime - startTime).count() << " s" << std::endl;
 	}
 
    return response;

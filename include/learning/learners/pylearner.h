@@ -87,14 +87,14 @@ class PyLearner : public DeviceLearner{
          * @brief Sends learning computation to external python script
          * 
          * @param input the input of the learning
-         * @param error vector containing the error associated to the input, in order to correct the output given for this input
+         * @param reward vector containing the reward associated to the input, in order to correct the output given for this input
          * 
-         * Size of Error vector:
+         * Size of Reward vector:
          *  - if size is 0, assumes that no correction has to be made
-         *  - if size is 1, assumes that it is a global error
+         *  - if size is 1, assumes that it is a global reward
          *  - otherwise, assumes that each value is a correction value for one servomotor
          */
-        void pyLearn(const std::vector<uint16_t> input, const std::vector<double> error = {}) const;
+        void pyLearn(const std::vector<uint16_t> input, const std::vector<double> reward = {}) const;
 
         /**
          * @brief Ask computation to external python script

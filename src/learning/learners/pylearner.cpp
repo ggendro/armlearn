@@ -58,7 +58,7 @@ template<class T> PyObject* PyLearner::toPyObject(const std::vector<T> vect) con
     pObj = PyList_New(vect.size()); // Create python input from input vector
     int i=0;
     for(auto ptr = vect.cbegin(); ptr < vect.cend(); ptr++){
-        PyList_SetItem(pObj, i, PyLong_FromLong(*ptr));
+        PyList_SetItem(pObj, i, PyLong_FromLong(*ptr));  // TODO: better management for double
         i++;
     }
 
@@ -66,6 +66,7 @@ template<class T> PyObject* PyLearner::toPyObject(const std::vector<T> vect) con
 }
 template PyObject* PyLearner::toPyObject<uint16_t>(const std::vector<uint16_t> vect) const;
 template PyObject* PyLearner::toPyObject<int>(const std::vector<int> vect) const;
+template PyObject* PyLearner::toPyObject<double>(const std::vector<double> vect) const;
 
 template<class T> std::vector<T> PyLearner::fromPyObject(PyObject* pObj) const{
     std::vector<T> res; // Get output vector from python output
@@ -77,6 +78,7 @@ template<class T> std::vector<T> PyLearner::fromPyObject(PyObject* pObj) const{
 }
 template std::vector<uint16_t> PyLearner::fromPyObject<uint16_t>(PyObject* pObj) const;
 template std::vector<int> PyLearner::fromPyObject<int>(PyObject* pObj) const;
+template std::vector<double> PyLearner::fromPyObject<double>(PyObject* pObj) const;
 
 void PyLearner::pyManageError() const{
     PyObject *pErr = PyErr_Occurred();
@@ -88,12 +90,12 @@ void PyLearner::pyManageError() const{
 
 
 
-void PyLearner::pyLearn(const std::vector<uint16_t> input, const std::vector<double> error) const{
-    if(error.size() == 0 || (error.size() == 1 && error[0] == 0)) return;
+void PyLearner::pyLearn(const std::vector<uint16_t> input, const std::vector<double> reward) const{
+    if(reward.size() == 0 || (reward.size() == 1 && reward[0] == 0)) return;
     PyObject *pInput, *pErr, *pLearn;
     
     pInput = toPyObject(input);
-    pErr = toPyObject(error);
+    pErr = toPyObject(reward);
 
     pLearn = PyUnicode_FromString(PY_LEARN_METHOD_LEARN);
     PyObject_CallMethodObjArgs(pLearner, pLearn, pInput, pErr, NULL); // Python call for learning
