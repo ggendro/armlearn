@@ -32,7 +32,7 @@
 // Coefficient of movement error (distance browsed by servomotors to reach target, to minimize) when computing error between input and output
 #define MOVEMENT_COEFF 0.004
 // Coefficient of valid position error (returned if position is not valid)
-#define VALID_COEFF -50
+#define VALID_COEFF -30
 // Coefficient decreasing the reward for a state as the state is closer to the initial state
 #define DECREASING_REWARD 0.99
 

@@ -18,10 +18,13 @@ Can be found here : <http://www.orocos.org/kdl>
 *Tensorflow* library required for building DNN in the Reinforcement Learning.
 Can be found here : <https://www.tensorflow.org/>
 
-*Keras* library is also required.
+*Keras* library required for building DNN in the Reinforcement Learning.
 Can be found here : <https://keras.io>
 
-Python needs to be installed for the use of TensorFlow and Keras.
+*Scikitlearn* library required for building DNN in the Reinforcement Learning.
+Can be found here : <https://scikit-learn.org/>
+
+Python needs to be installed for the use of TensorFlow, Keras and ScikitLearn.
 
 *OpenMP* library used for computation tests.
 Can be installed by executing the fllowing line on a terminal:
