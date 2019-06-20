@@ -25,7 +25,7 @@ template<class R, class T> double SimplePyLearner::computeReward(const std::vect
         outPtr++;
     }
 
-    if(!device->validPosition(positionOutput)) return VALID_COEFF;
+    //if(!device->validPosition(positionOutput)) return VALID_COEFF;
     
     auto oldCoords = verifier->computeServoToCoord(position)->getCoord();
     auto newCoords = verifier->computeServoToCoord(positionOutput)->getCoord();
@@ -52,6 +52,7 @@ void SimplePyLearner::learn(){
             device->waitFeedback();
 
             bool stop = false;
+            int nbNullMove = 0;
             std::vector<State*> saves;
 
             // Attempts to reach target
@@ -78,31 +79,47 @@ void SimplePyLearner::learn(){
                 if(ptr != saves.end()){
                     delete *ptr;
                     *ptr = newState;
+
+                    nbNullMove++;
                 }else{
                     saves.push_back(newState);
                 }
-
+                
+                /*
                 if(reward > VALID_COEFF){ // If position is valid (within range)
                     device->addPosition(output); // Update position
                     device->waitFeedback();
 
                     std::cout << "Updating position..." << std::endl;
-                    //*
+
                     auto pos = device->getPosition();
                     std::cout << "Resulting position : "; for(auto v : pos) std::cout << v << " "; std::cout << std::endl;
                     auto actualCoord = verifier->computeServoToCoord(pos)->getCoord();
                     auto targetCoord = lsetPtr->first->getInput();
                     std::cout << "Actual coordinates : "; for(auto v : actualCoord) std::cout << v << " "; std::cout << " instead of "; for(auto v : targetCoord)  std::cout << v << " "; std::cout << std::endl;
-                    //*/
                 }else{
                     std::cout << "Error too important : movement not allowed" << std::endl;
                 }
+                //*/
+
+                //*
+                try{
+                    device->addPosition(output); // Update position
+                    device->waitFeedback();
+
+                    std::cout << "Updating position..." << std::endl;
+                }catch(OutOfRangeError e){
+                    std::cout << e.what() << std::endl;
+                }
+                //*/
 
                 if(abs(reward) < LEARN_ERROR_MARGIN) {  // Stop moving if error is within threshold
                     std::cout << "reward value : " << reward << "smaller than " << LEARN_ERROR_MARGIN << ". End of learning..." << std::endl;
                     stop = true;
                     break;
                 }
+
+                if(nbNullMove > MAX_NULL_MOVE) break; // Stop iteration if too many null movements
             }
 
             if(stop) break;
@@ -120,7 +137,6 @@ void SimplePyLearner::learn(){
                 i++;
             }
             std::cout << "Executed " << i << " updates..." << std::endl;
-
         }
 
     }
@@ -178,5 +194,5 @@ std::vector<double> SimplePyLearner::State::getReward() const{
 }
 
 bool SimplePyLearner::State::hasSameInput(State& s) const{
-    return this->input == s.input;
+    return *(this->input) == *(s.input);
 }

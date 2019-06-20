@@ -18,6 +18,7 @@
 
 #include "pylearner.h"
 #include "converter.h"
+#include "outofrangeerror.h"
 
 
 // Number of iterations of the learning
@@ -26,6 +27,8 @@
 #define LEARN_NB_MOVEMENTS 100
 // Margin of error allowing to stop learning if error is below the number
 #define LEARN_ERROR_MARGIN 0.05
+// Number of null movements allowed during one iteration
+#define MAX_NULL_MOVE 10
 
 // Coefficient of target error (difference between the real output and the target output, to minimize) when computing error between input and output
 #define TARGET_COEFF 0.1
