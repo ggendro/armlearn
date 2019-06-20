@@ -28,6 +28,9 @@ void PyLearner::pyInit(){
     pName = PyUnicode_FromString(learnerFile.c_str()); // Get name of the script as a py object
     pModule = PyImport_Import(pName); // Get the script itself
     Py_DECREF(pName);
+
+
+    pyManageError();
     if (pModule == NULL) throw FileError("Error while opening python learning script");
 
     pClassDict = PyModule_GetDict(pModule); // Get the list of classes contained in the module
@@ -41,6 +44,8 @@ void PyLearner::pyInit(){
 
     pLearner = PyObject_CallObject(pCallClass, NULL); // Create the instance of the class
     Py_DECREF(pCallClass);
+
+    pyManageError();
     if (pLearner == NULL) throw FileError("Error while extracting python learner from script");
 }
 

@@ -47,7 +47,7 @@ void SimplePyLearner::learn(){
     for(auto lsetPtr = learningSet->cbegin(); lsetPtr != learningSet->cend(); lsetPtr++){ // Learn trajectory for each example from the learning set
 
         for(int nbIt = 0; nbIt < LEARN_NB_ITERATIONS; nbIt++){
-            std::cout << "Reset device position...";
+            std::cout << "Reset device position..." << std::endl;
             device->goToBackhoe(); // Reset position
             device->waitFeedback();
 
