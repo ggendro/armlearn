@@ -128,10 +128,7 @@ void SimplePyLearner::learn(){
             std::cout << "Backtracking reward to learner..." << std::endl;
             int i = 0;
             for(auto ptr = saves.rbegin(); ptr < saves.rend(); ptr++){
-                auto reward = (*ptr)->getReward();
-                for(auto rewPtr = reward.begin(); rewPtr < reward.end(); rewPtr++) *rewPtr *= std::pow(DECREASING_REWARD, i); // Decrease value of reward as the state is closer to initial state
-                
-                pyLearn((*ptr)->getInput(), reward);
+                pyLearn((*ptr)->getInput(), (*ptr)->getReward(), std::pow(DECREASING_REWARD, i)); // Decrease value of reward as the state is closer to initial state
 
                 delete *ptr;
                 i++;

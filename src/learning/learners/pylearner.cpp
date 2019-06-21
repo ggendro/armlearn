@@ -57,33 +57,48 @@ void PyLearner::pyEnd(){
 }
 
 
-template<class T> PyObject* PyLearner::toPyObject(const std::vector<T> vect) const{
+template<class T> PyObject* PyLearner::vectorToPyObject(const std::vector<T> vect) const{
     PyObject *pObj;
     
     pObj = PyList_New(vect.size()); // Create python input from input vector
     int i=0;
     for(auto ptr = vect.cbegin(); ptr < vect.cend(); ptr++){
-        PyList_SetItem(pObj, i, PyLong_FromLong(*ptr));  // TODO: better management for double
+        PyList_SetItem(pObj, i, valueToPyObject(*ptr));
         i++;
     }
 
     return pObj;
 }
-template PyObject* PyLearner::toPyObject<uint16_t>(const std::vector<uint16_t> vect) const;
-template PyObject* PyLearner::toPyObject<int>(const std::vector<int> vect) const;
-template PyObject* PyLearner::toPyObject<double>(const std::vector<double> vect) const;
+template PyObject* PyLearner::vectorToPyObject<uint16_t>(const std::vector<uint16_t> vect) const;
+template PyObject* PyLearner::vectorToPyObject<int>(const std::vector<int> vect) const;
+template PyObject* PyLearner::vectorToPyObject<double>(const std::vector<double> vect) const;
 
-template<class T> std::vector<T> PyLearner::fromPyObject(PyObject* pObj) const{
+template<class T> std::vector<T> PyLearner::vectorFromPyObject(PyObject* pObj) const{
     std::vector<T> res; // Get output vector from python output
     for(int j = 0; j < PyList_Size(pObj); j++){
-        res.push_back(PyLong_AsLong(PyList_GetItem(pObj, j)));
+        res.push_back(valueFromPyObject<T>(PyList_GetItem(pObj, j)));
     }
 
     return res;
 }
-template std::vector<uint16_t> PyLearner::fromPyObject<uint16_t>(PyObject* pObj) const;
-template std::vector<int> PyLearner::fromPyObject<int>(PyObject* pObj) const;
-template std::vector<double> PyLearner::fromPyObject<double>(PyObject* pObj) const;
+template std::vector<uint16_t> PyLearner::vectorFromPyObject<uint16_t>(PyObject* pObj) const;
+template std::vector<int> PyLearner::vectorFromPyObject<int>(PyObject* pObj) const;
+template std::vector<double> PyLearner::vectorFromPyObject<double>(PyObject* pObj) const;
+
+template<class T> PyObject* PyLearner::valueToPyObject(T value) const{
+    return PyFloat_FromDouble((double) value);
+}
+template PyObject* PyLearner::valueToPyObject<uint16_t>(uint16_t value) const;
+template PyObject* PyLearner::valueToPyObject<int>(int value) const;
+template PyObject* PyLearner::valueToPyObject<double>(double value) const;
+
+template<class T> T PyLearner::valueFromPyObject(PyObject* pObj) const{
+    return (T) PyFloat_AsDouble(pObj);
+}
+template uint16_t PyLearner::valueFromPyObject<uint16_t>(PyObject* pObj) const;
+template int PyLearner::valueFromPyObject<int>(PyObject* pObj) const;
+template double PyLearner::valueFromPyObject<double>(PyObject* pObj) const;
+
 
 void PyLearner::pyManageError() const{
     PyObject *pErr = PyErr_Occurred();
@@ -95,18 +110,20 @@ void PyLearner::pyManageError() const{
 
 
 
-void PyLearner::pyLearn(const std::vector<uint16_t> input, const std::vector<double> reward) const{
+void PyLearner::pyLearn(const std::vector<uint16_t> input, const std::vector<double> reward, double reductionFactor) const{
     if(reward.size() == 0 || (reward.size() == 1 && reward[0] == 0)) return;
-    PyObject *pInput, *pErr, *pLearn;
+    PyObject *pInput, *pErr, *pRed, *pLearn;
     
-    pInput = toPyObject(input);
-    pErr = toPyObject(reward);
-
+    pInput = vectorToPyObject(input);
+    pErr = vectorToPyObject(reward);
+    pRed = valueToPyObject(reductionFactor);
+    
     pLearn = PyUnicode_FromString(PY_LEARN_METHOD_LEARN);
-    PyObject_CallMethodObjArgs(pLearner, pLearn, pInput, pErr, NULL); // Python call for learning
+    PyObject_CallMethodObjArgs(pLearner, pLearn, pInput, pErr, pRed, NULL); // Python call for learning
     pyManageError();
 
     Py_DECREF(pLearn);
+    Py_DECREF(pRed);
     Py_DECREF(pErr);
     Py_DECREF(pInput);
 }
@@ -114,7 +131,7 @@ void PyLearner::pyLearn(const std::vector<uint16_t> input, const std::vector<dou
 std::vector<int> PyLearner::pyCompute(const std::vector<uint16_t> input) const{
     PyObject *pInput, *pComp, *pValue;
     
-    pInput = toPyObject(input);
+    pInput = vectorToPyObject(input);
     
     pComp = PyUnicode_FromString(PY_LEARN_METHOD_COMPUTE);
     pValue = PyObject_CallMethodObjArgs(pLearner, pComp, pInput, NULL); // Python call for computation
@@ -122,7 +139,7 @@ std::vector<int> PyLearner::pyCompute(const std::vector<uint16_t> input) const{
 
     if (pValue == NULL) throw FileError("Error while extracting result from python learner");
 
-    auto res = fromPyObject<int>(pValue);
+    auto res = vectorFromPyObject<int>(pValue);
 
     Py_DECREF(pValue);
     Py_DECREF(pComp);

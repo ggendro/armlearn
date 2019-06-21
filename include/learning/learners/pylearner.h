@@ -60,11 +60,11 @@ class PyLearner : public DeviceLearner{
         /**
          * @brief Converts vector into PyObject
          * 
-         * @tparam T the type of the data stored (created for int)
+         * @tparam T the type of the data stored (created for int, uint16_t and double)
          * @param vect the vector to convert
          * @return PyObject* the corresponding Python Object
          */
-        template<class T> PyObject* toPyObject(const std::vector<T> vect) const;
+        template<class T> PyObject* vectorToPyObject(const std::vector<T> vect) const;
 
         /**
          * @brief Converts PyList into vector
@@ -73,7 +73,25 @@ class PyLearner : public DeviceLearner{
          * @param obj the Python List to convert
          * @return std::vector<T> the resulting vector
          */
-        template<class T> std::vector<T> fromPyObject(PyObject* pObj) const;
+        template<class T> std::vector<T> vectorFromPyObject(PyObject* pObj) const;
+
+        /**
+         * @brief Converts a numeric value into PyObject
+         * 
+         * @tparam T the type of the data stored (created for int, uint16_t and double)
+         * @param value the numeric value to convert
+         * @return PyObject* the corresponding Python Object
+         */
+        template<class T> PyObject* valueToPyObject(const T value) const;
+
+        /**
+         * @brief Converts PyList into numeric value
+         * 
+         * @tparam T the type of the data
+         * @param obj the Python Object to convert
+         * @return T the resulting value
+         */
+        template<class T> T valueFromPyObject(PyObject* pObj) const;
 
 
         /**
@@ -88,13 +106,14 @@ class PyLearner : public DeviceLearner{
          * 
          * @param input the input of the learning
          * @param reward vector containing the reward associated to the input, in order to correct the output given for this input
+         * @param reductionFactor the reduction factor of the reward
          * 
          * Size of Reward vector:
          *  - if size is 0, assumes that no correction has to be made
          *  - if size is 1, assumes that it is a global reward
          *  - otherwise, assumes that each value is a correction value for one servomotor
          */
-        void pyLearn(const std::vector<uint16_t> input, const std::vector<double> reward = {}) const;
+        void pyLearn(const std::vector<uint16_t> input, const std::vector<double> reward = {}, double reductionFactor = 1) const;
 
         /**
          * @brief Ask computation to external python script
