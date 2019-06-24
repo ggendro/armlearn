@@ -24,7 +24,7 @@
 // Number of iterations of the learning
 #define LEARN_NB_ITERATIONS 50000
 // Number of movents allowed to reach target during learning
-#define LEARN_NB_MOVEMENTS 1
+#define LEARN_NB_MOVEMENTS 50
 // Margin of error allowing to stop learning if error is below the number
 #define LEARN_ERROR_MARGIN 0.05
 // Number of invalid movements allowed during one iteration
