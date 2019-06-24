@@ -1,5 +1,5 @@
 lib/
 bin/
 build/
-**∕__pycache__/
+python/
 .vscode/
