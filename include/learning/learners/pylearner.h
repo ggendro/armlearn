@@ -15,6 +15,9 @@
 #define PYLEARNER_H
 
 #include <Python.h>
+#include <iostream>
+#include <fstream>
+#include <nlohmann/json.hpp>
 
 #include "devicelearner.h"
 #include "input.h"
@@ -24,13 +27,7 @@
 // Directory containging the python scripts
 #define PY_LEARN_DIR "../../python/"
 // Name of the python script containing the learning algorithm
-#define PY_LEARN_FILE "resplearner"
-// Name of the python learner class
-#define PY_LEARN_OBJECT "RespLearner"
-// Name of the python class method used for learning
-#define PY_LEARN_METHOD_LEARN "train"
-// Name of the python class mehod used for predicting result
-#define PY_LEARN_METHOD_COMPUTE "compute"
+#define PY_LEARN_FILE "../../files/resplearnersettings.json"
 
 
 /**
@@ -42,6 +39,10 @@ class PyLearner : public DeviceLearner{
 
     protected:
         std::string learnerFile;
+        std::string learnerClass;
+        std::string learnMethod;
+        std::string computeMethod;
+            
         PyObject *pModule, *pLearner;
 
         /**
@@ -127,10 +128,13 @@ class PyLearner : public DeviceLearner{
     public:
 
         /**
-         * @brief Constructs a new PyLearner object
+         * @brief Construct a new Py Learner object
          * 
+         * @param controller the controller to link the learner to
+         * @param learningScriptSettings the name of the json file containing the required settings of the python modules to use  
+         * @param testProp the proportion of test couples compared to learning couples
          */
-        PyLearner(AbstractController* controller, std::string learningScript = PY_LEARN_FILE, double testProp = DEFAULT_TEST_PROPORTION);
+        PyLearner(AbstractController* controller, std::string learningScriptSettings = PY_LEARN_FILE, double testProp = DEFAULT_TEST_PROPORTION);
 
         /**
          * @brief Destroys the PyLearner object

@@ -6,7 +6,7 @@
 #include "simplepylearner.h"
 
 
-SimplePyLearner::SimplePyLearner(AbstractController* controller, Converter* converter, std::string learningScript, double testProp):PyLearner(controller, learningScript, testProp){
+SimplePyLearner::SimplePyLearner(AbstractController* controller, Converter* converter, std::string learningScriptSettings, double testProp):PyLearner(controller, learningScriptSettings, testProp){
     verifier = converter;
 }
 
@@ -25,13 +25,19 @@ template<class R, class T> double SimplePyLearner::computeReward(const std::vect
         outPtr++;
     }
 
-    //if(!device->validPosition(positionOutput)) return VALID_COEFF;
+    if(!device->validPosition(positionOutput)) return VALID_COEFF;
     
-    auto oldCoords = verifier->computeServoToCoord(position)->getCoord();
+    //auto oldCoords = verifier->computeServoToCoord(position)->getCoord();
     auto newCoords = verifier->computeServoToCoord(positionOutput)->getCoord();
 
 
-    return TARGET_COEFF * (computeSquaredError(input, oldCoords) - computeSquaredError(input, newCoords)) - MOVEMENT_COEFF * computeSquaredError(device->getPosition(), output);
+    //return TARGET_COEFF * (computeSquaredError(input, oldCoords) - computeSquaredError(input, newCoords)) - MOVEMENT_COEFF * computeSquaredError(device->getPosition(), output);
+    //*
+    auto err = computeSquaredError(input, newCoords);
+    if(abs(err) < LEARN_ERROR_MARGIN) return -VALID_COEFF;
+    
+    return -TARGET_COEFF * err - MOVEMENT_COEFF * computeSquaredError(device->getPosition(), output);  
+    //*/
 }
 template double SimplePyLearner::computeReward<double, double>(const std::vector<double> input, const std::vector<double> output) const;
 template double SimplePyLearner::computeReward<double, uint16_t>(const std::vector<double> input, const std::vector<uint16_t> output) const;
@@ -112,14 +118,16 @@ void SimplePyLearner::learn(){
                     std::cout << e.what() << std::endl;
                 }
                 //*/
-
+                
+                /*
                 if(abs(reward) < LEARN_ERROR_MARGIN) {  // Stop moving if error is within threshold
                     std::cout << "reward value : " << reward << "smaller than " << LEARN_ERROR_MARGIN << ". End of learning..." << std::endl;
                     stop = true;
                     break;
                 }
+                //*/
 
-                if(nbNullMove > MAX_NULL_MOVE) break; // Stop iteration if too many null movements
+                //if(nbNullMove > MAX_NULL_MOVE) break; // Stop iteration if too many null movements
             }
 
             if(stop) break;

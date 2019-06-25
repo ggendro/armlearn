@@ -15,14 +15,21 @@ Can be found here : <https://github.com/wjwwood/serial>
 *KDL* library required for physics simulations in the Reinforcement Learning.
 Can be found here : <http://www.orocos.org/kdl>
 
-*Tensorflow* library required for building DNN in the Reinforcement Learning.
+*Nlohmann/json* library required for reading json files.
+Can be found here : <https://github.com/nlohmann/json>
+
+Several libraries a required in order to build CNN and compute RL algorithms:
+*TensorFlow* library.
 Can be found here : <https://www.tensorflow.org/>
 
-*Keras* library required for building DNN in the Reinforcement Learning.
+*Keras* library.
 Can be found here : <https://keras.io>
 
-*Scikitlearn* library required for building DNN in the Reinforcement Learning.
+*ScikitLearn* library.
 Can be found here : <https://scikit-learn.org/>
+
+*SpinningUp* library.
+Can be found here : <https://spinningup.openai.com/en/latest/index.html>
 
 Python needs to be installed for the use of TensorFlow, Keras and ScikitLearn.
 

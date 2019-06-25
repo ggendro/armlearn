@@ -6,8 +6,47 @@
 #include "pylearner.h"
 
 
-PyLearner::PyLearner(AbstractController* controller, std::string learningScript, double testProp):DeviceLearner(controller, testProp){
-    learnerFile = learningScript;
+PyLearner::PyLearner(AbstractController* controller, std::string learningScriptSettings, double testProp):DeviceLearner(controller, testProp){
+    std::ifstream f(learningScriptSettings);
+    nlohmann::json fileReader;
+    f >> fileReader;
+
+    int nbArgs = 0;
+    try{
+        learnerFile = fileReader["fileName"];
+        nbArgs++;
+
+        learnerClass = fileReader["className"];
+        nbArgs++;
+
+        learnMethod = fileReader["learnMethod"];
+        nbArgs++;
+
+        computeMethod = fileReader["computeMethod"];
+
+    }catch(nlohmann::detail::type_error){
+        std::stringstream errMsg;
+        errMsg << "Error : missing argument ";
+        switch(nbArgs){
+            case 0:
+                errMsg << "'fileName'";
+                break;
+
+            case 1:
+                errMsg << "'className'";
+                break;
+
+            case 2:
+                errMsg << "'learnMethod'";
+                break;
+
+            case 3:
+                errMsg << "'computeMethod'";
+                break;
+        }
+        throw FileError(errMsg.str());
+
+    }
     
     pyInit();
 }
@@ -34,11 +73,11 @@ void PyLearner::pyInit(){
     if (pModule == NULL) throw FileError("Error while opening python learning script");
 
     pClassDict = PyModule_GetDict(pModule); // Get the list of classes contained in the module
-    pCallClass = PyDict_GetItemString(pClassDict, PY_LEARN_OBJECT); // Get the wanted class
+    pCallClass = PyDict_GetItemString(pClassDict, learnerClass.c_str()); // Get the wanted class
     Py_DECREF(pClassDict);
     if(pCallClass == NULL || !PyCallable_Check(pCallClass)) {
         std::stringstream errMsg;
-        errMsg << "Error : learning class not found - verify that module " << PyModule_GetName(pModule) << " contains a class named " << PY_LEARN_OBJECT;
+        errMsg << "Error : learning class not found - verify that module " << PyModule_GetName(pModule) << " contains a class named " << learnerClass;
         throw FileError(errMsg.str());
     }
 
@@ -118,7 +157,7 @@ void PyLearner::pyLearn(const std::vector<uint16_t> input, const std::vector<dou
     pErr = vectorToPyObject(reward);
     pRed = valueToPyObject(reductionFactor);
     
-    pLearn = PyUnicode_FromString(PY_LEARN_METHOD_LEARN);
+    pLearn = PyUnicode_FromString(learnMethod.c_str());
     PyObject_CallMethodObjArgs(pLearner, pLearn, pInput, pErr, pRed, NULL); // Python call for learning
     pyManageError();
 
@@ -133,7 +172,7 @@ std::vector<int> PyLearner::pyCompute(const std::vector<uint16_t> input) const{
     
     pInput = vectorToPyObject(input);
     
-    pComp = PyUnicode_FromString(PY_LEARN_METHOD_COMPUTE);
+    pComp = PyUnicode_FromString(computeMethod.c_str());
     pValue = PyObject_CallMethodObjArgs(pLearner, pComp, pInput, NULL); // Python call for computation
     pyManageError();
 
