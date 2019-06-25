@@ -148,7 +148,6 @@ class SimplePyLearner : public PyLearner{
         /**
          * @brief Executes a learning algorithm on the learning set
          * 
-         * Empty method
          */
         virtual void learn() override;
 
@@ -160,7 +159,7 @@ class SimplePyLearner : public PyLearner{
         virtual void test() override;
 
          /**
-         * @brief Computes an output from an input (to use afetr learning and validation with testing)
+         * @brief Computes an output from an input (to use after learning and validation with testing)
          * 
          * @param input
          * @return Output
