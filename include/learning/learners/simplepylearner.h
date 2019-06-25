@@ -37,7 +37,7 @@
 // Coefficient of valid position error (returned if position is not valid)
 #define VALID_COEFF -30
 // Coefficient decreasing the reward for a state as the state is closer to the initial state
-#define DECREASING_REWARD 0.97
+#define DECREASING_REWARD 0.99
 
 /**
  * @class SimplePyLearner

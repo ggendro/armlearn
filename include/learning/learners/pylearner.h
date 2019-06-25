@@ -24,9 +24,9 @@
 // Directory containging the python scripts
 #define PY_LEARN_DIR "../../python/"
 // Name of the python script containing the learning algorithm
-#define PY_LEARN_FILE "learner"
+#define PY_LEARN_FILE "resplearner"
 // Name of the python learner class
-#define PY_LEARN_OBJECT "Learner"
+#define PY_LEARN_OBJECT "RespLearner"
 // Name of the python class method used for learning
 #define PY_LEARN_METHOD_LEARN "train"
 // Name of the python class mehod used for predicting result
