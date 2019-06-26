@@ -15,16 +15,16 @@ PassivePyLearner::~PassivePyLearner(){
 }
 
 
-void SimplePyLearner::learn(){
+void PassivePyLearner::learn(){
 
 }
 
-void SimplePyLearner::test(){
+void PassivePyLearner::test(){
 
 }
 
 
-std::string SimplePyLearner::toString() const{
+std::string PassivePyLearner::toString() const{
     std::stringstream rep;
     rep << "Passive " << SimplePyLearner::toString();
 

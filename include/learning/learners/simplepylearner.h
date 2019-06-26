@@ -1,7 +1,7 @@
 /**
  * @file simplepylearner.h
  * @author Gaël Gendron (gael.gendron@insa-rennes.fr)
- * @brief File containing the class SimplePyLearner, used for executing simple computation to determine positions, using python script
+ * @brief File containing the abstract class SimplePyLearner, used for executing simple computation to determine positions, using python script
  * @version 0.1
  * @date 2019-06-14
  * 
@@ -18,17 +18,6 @@
 
 #include "pylearner.h"
 #include "converter.h"
-#include "outofrangeerror.h"
-
-
-// Number of iterations of the learning
-#define LEARN_NB_ITERATIONS 50000
-// Number of movents allowed to reach target during learning
-#define LEARN_NB_MOVEMENTS 150
-// Margin of error allowing to stop learning if error is below the number
-#define LEARN_ERROR_MARGIN 0.05
-// Number of invalid movements allowed during one iteration
-#define MAX_NULL_MOVE 10
 
 // Coefficient of target error (difference between the real output and the target output, to minimize) when computing error between input and output
 #define TARGET_COEFF 0.014
@@ -36,12 +25,13 @@
 #define MOVEMENT_COEFF 0.0024
 // Coefficient of valid position error (returned if position is not valid)
 #define VALID_COEFF -30
-// Coefficient decreasing the reward for a state as the state is closer to the initial state
-#define DECREASING_REWARD 0.99
+
+// Margin of error allowing to stop learning if error is below the number
+#define LEARN_ERROR_MARGIN 0.05
 
 /**
  * @class SimplePyLearner
- * @brief Class containing a simple learner that learns how to compute servomotor positions from coordinates without obstacles or disabled servomotors, via python script
+ * @brief Class containing a simple learner based on a verifier, that learns how to compute servomotor positions from coordinates without obstacles or disabled servomotors, via python script
  * 
  */
 class SimplePyLearner : public PyLearner{
@@ -50,7 +40,7 @@ class SimplePyLearner : public PyLearner{
         Converter* verifier;
 
         /**
-         * @brief Computes resulting reward of the output for the corresponding input and servomotor states
+         * @brief Computes resulting reward of the output for the corresponding input and servomotor states, based on the converter
          * 
          * @param input target to reach
          * @param output servomotor positions computed, to evaluate
@@ -64,65 +54,6 @@ class SimplePyLearner : public PyLearner{
          * Template method, defined for uint16_t and double
          */
         template<class R, class T> double computeReward(const std::vector<R> input, const std::vector<T> output) const;
-
-        /**
-         * @class State
-         * @brief Inner class storing a state of the learner (input, output and associated reward)
-         * 
-         */
-        class State{
-
-            private:
-                std::vector<uint16_t>* input;
-                std::vector<int>* output;
-                std::vector<double>* reward;
-
-            public:
-                /**
-                 * @brief Construct a new State object
-                 * 
-                 * @param inputVector the input of the state
-                 * @param outputVector its corresponding output
-                 * @param reward its corresponding reward
-                 */
-                State(std::vector<uint16_t>& inputVector, std::vector<int>& outputVector, std::vector<double>& reward);
-
-                /**
-                 * @brief Destroy the State object
-                 * 
-                 */
-                ~State();
-
-                /**
-                 * @brief Get the Input
-                 * 
-                 * @return std::vector<uint16_t> the input
-                 */
-                std::vector<uint16_t> getInput() const;
-
-                /**
-                 * @brief Get the Output
-                 * 
-                 * @return std::vector<int> the output
-                 */
-                std::vector<int> getOutput() const;
-
-                /**
-                 * @brief Get the Reward
-                 * 
-                 * @return double the reward
-                 */
-                std::vector<double> getReward() const;
-
-                /**
-                 * @brief Checks if the input of the state is equal to the one in parameter
-                 * 
-                 * @param s the state to compare to
-                 * @return true if the two states are equal
-                 * @return false otherwise
-                 */
-                bool hasSameInput(State& s) const;
-        };
 
 
     public:
@@ -144,20 +75,6 @@ class SimplePyLearner : public PyLearner{
         virtual ~SimplePyLearner();
 
 
-
-        /**
-         * @brief Executes a learning algorithm on the learning set
-         * 
-         */
-        virtual void learn() override;
-
-        /**
-         * @brief Tests the efficiency of the learning 
-         * 
-         * Empty method
-         */
-        virtual void test() override;
-
          /**
          * @brief Computes an output from an input (to use after learning and validation with testing)
          * 
@@ -165,6 +82,7 @@ class SimplePyLearner : public PyLearner{
          * @return Output
          */
         virtual Output* produce(const Input& input) override;
+
 
         /**
          * @brief Returns the state of the learner under string format

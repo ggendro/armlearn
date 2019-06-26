@@ -3,7 +3,7 @@
 #include "serialcontroller.h"
 #include "trajectory.h"
 
-#include "simplepylearner.h"
+#include "activepylearner.h"
 #include "widowxbuilder.h"
 #include "optimcartesianconverter.h"
 
@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
 	std::cout << "Update servomotors information:" << std::endl;
 	arbotix.updateInfos();
 
-	SimplePyLearner learner(&arbotix, &conv);
+	ActivePyLearner learner(&arbotix, &conv);
 
 	Input* dest = new Input({10, 7, 5});
 	Output* destMatch = new Output();

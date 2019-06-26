@@ -1,7 +1,7 @@
 /**
  * @file passivepylearner.h
  * @author Gaël Gendron (gael.gendron@insa-rennes.fr)
- * @brief File containing the class PassivePyLearner, used for learning positions computations via python module
+ * @brief File containing the class PassivePyLearner, used for getting learned positions from computations via python module
  * @version 0.1
  * @date 2019-06-25
  * 
@@ -19,10 +19,11 @@
 
 /**
  * @class PassivePyLearner
- * @brief Class containing an interface for linking a python learning module to a device
+ * @brief Class linked to python module for simple positions computing and learning
  * 
  * The PassivePyLearner does not make any computations, it launches a python method for learning which will do all the computations
- * and answer requests from the module when interaction within the environment is required
+ * and answer requests from the module when interaction within the environment is required.
+ * Contrary to the ActivePyLearner class wich executes most of the algorithm itself.
  */
 class PassivePyLearner : public SimplePyLearner{
 
@@ -58,14 +59,7 @@ class PassivePyLearner : public SimplePyLearner{
          * Empty method
          */
         virtual void test() override;
-
-         /**
-         * @brief Computes an output from an input (to use after learning and validation with testing)
-         * 
-         * @param input
-         * @return Output
-         */
-        virtual Output* produce(const Input& input) override;
+        
 
         /**
          * @brief Returns the state of the learner under string format
