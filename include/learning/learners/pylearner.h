@@ -27,7 +27,7 @@
 // Directory containging the python scripts
 #define PY_LEARN_DIR "../../python/"
 // Name of the python script containing the learning algorithm
-#define PY_LEARN_FILE "../../files/resplearnersettings.json"
+#define PY_LEARN_FILE "../../files/ddpglearnersettings.json"
 
 
 /**

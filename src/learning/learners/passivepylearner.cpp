@@ -16,11 +16,11 @@ PassivePyLearner::~PassivePyLearner(){
 
 
 void PassivePyLearner::learn(){
-
+    // TODO: to do
 }
 
 void PassivePyLearner::test(){
-
+    // TODO: to do
 }
 
 
