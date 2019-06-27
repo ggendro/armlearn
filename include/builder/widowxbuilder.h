@@ -19,6 +19,7 @@
  * @class WidowXBuilder
  * @brief Class for building the main classes of the library (Controller, Converter, ...) for he the WidowX arm device
  * 
+ * Lengths based on the values given in the Arm Link protocol and defined here https://github.com/Interbotix/ArmLinkLibrary/blob/master/ArmLink/examples/InterbotixArmLinkSerial/GlobalArm.h
  */
 class WidowXBuilder : public Builder{
 

@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
 
 	ActivePyLearner learner(&arbotix, &conv);
 
-	Input* dest = new Input({10, 7, 5});
+	Input* dest = new Input({100, 100, 100});
 	Output* destMatch = new Output();
 	learner.addToLearningSet(dest, destMatch);
 	learner.learn();
