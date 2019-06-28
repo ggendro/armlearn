@@ -18,26 +18,56 @@ Can be found here : <http://www.orocos.org/kdl>
 *Nlohmann/json* library required for reading json files.
 Can be found here : <https://github.com/nlohmann/json>
 
-Several libraries a required in order to build CNN and compute RL algorithms:
+*OpenMP* library used for computation tests.
+Can be found here <https://www.openmp.org/> and installed by executing the following line on a terminal:
+```
+sudo apt-get install libomp-dev
+```
+
+
+Several libraries are required in order to build CNN and compute RL algorithms:
+
+Python3 needs to be installed for the use of the following libraries.
+
 *TensorFlow* library.
-Can be found here : <https://www.tensorflow.org/>
+Can be found here : <https://www.tensorflow.org/> and installed by executing the following line on a terminal:
+```
+pip install tensorflow
+```
 
 *Keras* library.
-Can be found here : <https://keras.io>
+Can be found here : <https://keras.io> and installed by executing the following line on a terminal:
+```
+pip install keras
+```
 
 *ScikitLearn* library.
-Can be found here : <https://scikit-learn.org/>
+Can be found here : <https://scikit-learn.org/> and installed by executing the following line on a terminal:
+```
+pip install scikit-learn
+```
+
+*GraphViz* library.
+Can be found here : <https://www.graphviz.org/> and installed by executing the following line on a terminal:
+```
+pip install graphviz
+```
+
+*AnnVisualizer* library.
+Can be found here : <https://pypi.org/project/ann_visualizer/> and installed by executing the following line on a terminal:
+```
+pip install ann_visualizer
+```
+
+*matplotlib* library.
+Can be found here : <https://matplotlib.org/> and installed by executing the following line on a terminal:
+```
+pip install matplotlib
+```
 
 *SpinningUp* library.
 Can be found here : <https://spinningup.openai.com/en/latest/index.html>
 
-Python needs to be installed for the use of TensorFlow, Keras and ScikitLearn.
-
-*OpenMP* library used for computation tests.
-Can be installed by executing the fllowing line on a terminal:
-```
-sudo apt-get install libomp-dev
-```
 
 ### Install
 
