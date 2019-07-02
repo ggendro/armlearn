@@ -104,8 +104,11 @@ void ActivePyLearner::learn(){
             std::cout << "Backtracking reward to learner..." << std::endl;
             int i = 0;
             for(auto ptr = saves.rbegin(); ptr < saves.rend(); ptr++){
-                pyLearn((*ptr)->getInput(), (*ptr)->getReward(), std::pow(DECREASING_REWARD, i)); // Decrease value of reward as the state is closer to initial state
+                
+                std::vector<uint16_t> nextInput = (*(ptr+((ptr+1) != saves.rend())))->getInput(); // Send input of the next state reached with the given output (if no next input, is current input)
+                pyLearn((*ptr)->getInput(), (*ptr)->getReward(), nextInput, std::pow(DECREASING_REWARD, i)); // Decrease value of reward as the state is closer to initial state
 
+                
                 delete *ptr;
                 i++;
             }

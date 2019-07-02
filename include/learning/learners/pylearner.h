@@ -114,7 +114,7 @@ class PyLearner : public DeviceLearner{
          *  - if size is 1, assumes that it is a global reward
          *  - otherwise, assumes that each value is a correction value for one servomotor
          */
-        void pyLearn(const std::vector<uint16_t> input, const std::vector<double> reward = {}, double reductionFactor = 1) const;
+        void pyLearn(const std::vector<uint16_t> input, const std::vector<double> reward = {}, const std::vector<uint16_t> nextInput = {}, double reductionFactor = 1) const;
 
         /**
          * @brief Ask computation to external python script
