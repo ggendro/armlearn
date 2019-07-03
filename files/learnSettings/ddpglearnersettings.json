@@ -2,5 +2,8 @@
     "fileName" : "ddpglearner",
     "className" : "DDPGLearner",
     "learnMethod" : "train",
-    "computeMethod" : "compute"
+    "computeMethod" : "compute",
+    "settings" : {
+        
+    }
 }
