@@ -24,7 +24,7 @@
 // Coefficient of movement error (distance browsed by servomotors to reach target, to minimize) when computing error between input and output
 #define MOVEMENT_COEFF 0.0048
 // Coefficient of valid position error (returned if position is not valid)
-#define VALID_COEFF -40
+#define VALID_COEFF -80
 
 // Margin of error allowing to stop learning if error is below the number
 #define LEARN_ERROR_MARGIN 0.05
