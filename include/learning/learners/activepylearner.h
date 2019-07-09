@@ -21,7 +21,7 @@
 
 
 // Number of iterations of the learning
-#define LEARN_NB_ITERATIONS 50000
+#define LEARN_NB_ITERATIONS 900
 // Number of movents allowed to reach target during learning
 #define LEARN_NB_MOVEMENTS 150
 // Number of invalid movements allowed during one iteration
