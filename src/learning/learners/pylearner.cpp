@@ -47,8 +47,14 @@ PyLearner::PyLearner(AbstractController* controller, std::string learningScriptS
         throw FileError(errMsg.str());
 
     }
+
+    auto settings = fileReader.find("settings");
+    if (settings != fileReader.end()){
+        pyInit(*settings);
+    }else{
+        pyInit();
+    }
     
-    pyInit();
 }
 
 PyLearner::~PyLearner(){
@@ -56,8 +62,8 @@ PyLearner::~PyLearner(){
 }
 
 
-void PyLearner::pyInit(){
-    PyObject *pName, *pClassDict, *pCallClass;
+void PyLearner::pyInit(nlohmann::json settings){
+    PyObject *pName, *pClassDict, *pCallClass, *pTupleArgs, *pTupleKwargs;
     Py_Initialize();
 
     std::stringstream addInludePath; // Append the directory containing python scripts to the path
@@ -81,7 +87,38 @@ void PyLearner::pyInit(){
         throw FileError(errMsg.str());
     }
 
-    pLearner = PyObject_CallObject(pCallClass, NULL); // Create the instance of the class
+    // Create the instance of the class
+    if(settings == NULL){
+        pLearner = PyObject_CallObject(pCallClass, NULL);
+
+    }else{
+        pTupleArgs = PyTuple_New(0);
+        pTupleKwargs = PyDict_New();
+
+        for(nlohmann::json::iterator it = settings.begin(); it != settings.end(); it++) {
+            try{
+                if (it.value()["value"].is_boolean() || it.value()["type"] == "i"){
+                    PyDict_SetItemString(pTupleKwargs, it.key().c_str(), Py_BuildValue(((std::string) it.value()["type"]).c_str(), (int) it.value()["value"]));
+                } else if(it.value()["value"].is_number() || it.value()["type"] == "f" || it.value()["type"] == "d"){
+                    PyDict_SetItemString(pTupleKwargs, it.key().c_str(), Py_BuildValue(((std::string) it.value()["type"]).c_str(), (float) it.value()["value"]));
+                }else if(it.value()["value"].is_string() || it.value()["type"] == "s"){
+                    PyDict_SetItemString(pTupleKwargs, it.key().c_str(), Py_BuildValue(((std::string) it.value()["type"]).c_str(), ((std::string) it.value()["value"]).c_str()));
+                }else{
+                    PyDict_SetItemString(pTupleKwargs, it.key().c_str(), Py_BuildValue(((std::string) it.value()["type"]).c_str(), it.value()["value"]));
+                }
+
+            }catch(nlohmann::detail::type_error){
+                std::stringstream errMsg;
+                errMsg << "Error : invalid setting format : " << *it;
+                throw FileError(errMsg.str());
+            }
+        }
+        pLearner = PyObject_Call(pCallClass, pTupleArgs, pTupleKwargs);
+
+        Py_DECREF(pTupleKwargs);
+        Py_DECREF(pTupleArgs);
+
+    }
     Py_DECREF(pCallClass);
 
     pyManageError();

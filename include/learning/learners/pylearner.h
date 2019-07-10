@@ -49,7 +49,7 @@ class PyLearner : public DeviceLearner{
          * @brief Initializes python interpreter
          * 
          */
-        void pyInit();
+        void pyInit(nlohmann::json settings = NULL);
 
         /**
          * @brief Desallocates memory used for python interpreter 

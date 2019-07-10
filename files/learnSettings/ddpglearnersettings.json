@@ -4,6 +4,13 @@
     "learnMethod" : "train",
     "computeMethod" : "compute",
     "settings" : {
-        
+        "inputSize" : {
+            "value" : 6,
+            "type" : "i"
+        },
+        "outputSize" :  {
+            "value" : 3,
+            "type" : "i"
+        }
     }
 }

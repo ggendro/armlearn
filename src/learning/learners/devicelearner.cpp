@@ -16,31 +16,31 @@ std::vector<std::vector<uint16_t>> DeviceLearner::getDeviceState() const{
     for(auto ptr = device->motors->begin(); ptr != device->motors->end(); ptr++){
         std::vector<uint16_t> vectMotor;
 
-        vectMotor.push_back((uint16_t) ptr->second->id);
-        vectMotor.push_back((uint16_t) ptr->second->status);
-        vectMotor.push_back((uint16_t) ptr->second->type);
+        //vectMotor.push_back((uint16_t) ptr->second->id);
+        //vectMotor.push_back((uint16_t) ptr->second->status);
+        //vectMotor.push_back((uint16_t) ptr->second->type);
 
-        vectMotor.push_back((uint16_t) ptr->second->posMin);
-        vectMotor.push_back((uint16_t) ptr->second->posMax);
+        //vectMotor.push_back((uint16_t) ptr->second->posMin);
+        //vectMotor.push_back((uint16_t) ptr->second->posMax);
 
-        vectMotor.push_back((uint16_t) ptr->second->modelNum);
-        vectMotor.push_back((uint16_t) ptr->second->firmware);
+        //vectMotor.push_back((uint16_t) ptr->second->modelNum);
+        //vectMotor.push_back((uint16_t) ptr->second->firmware);
 
-        vectMotor.push_back((uint16_t) ptr->second->targetSpeed);
-        vectMotor.push_back((uint16_t) ptr->second->targetPosition);
+        //vectMotor.push_back((uint16_t) ptr->second->targetSpeed);
+        //vectMotor.push_back((uint16_t) ptr->second->targetPosition);
 
 
         vectMotor.push_back((uint16_t) ptr->second->position);
-        vectMotor.push_back((uint16_t) ptr->second->speed);
-        vectMotor.push_back((uint16_t) ptr->second->load);
-        vectMotor.push_back((uint16_t) ptr->second->voltage);
-        vectMotor.push_back((uint16_t) ptr->second->temperature);
+        //vectMotor.push_back((uint16_t) ptr->second->speed);
+        //vectMotor.push_back((uint16_t) ptr->second->load);
+        //vectMotor.push_back((uint16_t) ptr->second->voltage);
+        //vectMotor.push_back((uint16_t) ptr->second->temperature);
 
 
-        vectMotor.push_back((uint16_t) ptr->second->instructionRegistered);
-        vectMotor.push_back((uint16_t) ptr->second->inMovement);
+        //vectMotor.push_back((uint16_t) ptr->second->instructionRegistered);
+        //vectMotor.push_back((uint16_t) ptr->second->inMovement);
 
-        vectMotor.push_back((uint16_t) ptr->second->activeLED);
+        //vectMotor.push_back((uint16_t) ptr->second->activeLED);
 
         motorsState.push_back(vectMotor);
     }
