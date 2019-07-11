@@ -59,24 +59,18 @@ void ActivePyLearner::learn(){
                     saves.push_back(newState);
                 }
                 
-                /*
+                //*
                 if(reward > VALID_COEFF){ // If position is valid (within range)
                     device->addPosition(output); // Update position
                     device->waitFeedback();
 
                     std::cout << "Updating position..." << std::endl;
-
-                    auto pos = device->getPosition();
-                    std::cout << "Resulting position : "; for(auto v : pos) std::cout << v << " "; std::cout << std::endl;
-                    auto actualCoord = verifier->computeServoToCoord(pos)->getCoord();
-                    auto targetCoord = lsetPtr->first->getInput();
-                    std::cout << "Actual coordinates : "; for(auto v : actualCoord) std::cout << v << " "; std::cout << " instead of "; for(auto v : targetCoord)  std::cout << v << " "; std::cout << std::endl;
                 }else{
                     std::cout << "Error too important : movement not allowed" << std::endl;
                 }
                 //*/
 
-                //*
+                /*
                 try{
                     device->addPosition(output); // Update position
                     device->waitFeedback();
@@ -86,6 +80,20 @@ void ActivePyLearner::learn(){
                     std::cout << e.what() << std::endl;
                 }
                 //*/
+
+                auto newPosition = device->getPosition(); // Display new position
+                std::cout << "Current position : ";
+                for(auto ptr = newPosition.cbegin(); ptr < newPosition.cend(); ptr++) {
+                    std::cout << *ptr << " ";
+                }
+                std::cout << std::endl;
+
+                auto newCoords = verifier->computeServoToCoord(newPosition)->getCoord(); // Display corresponding new coordinates
+                std::cout << "Current coordinates : ";
+                for(auto ptr = newCoords.cbegin(); ptr < newCoords.cend(); ptr++) {
+                    std::cout << *ptr << " ";
+                }
+                std::cout << std::endl;
                 
                 /*
                 if(abs(reward) < LEARN_ERROR_MARGIN) {  // Stop moving if error is within threshold
