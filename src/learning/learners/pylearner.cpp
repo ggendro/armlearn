@@ -99,10 +99,43 @@ void PyLearner::pyInit(nlohmann::json settings){
             try{
                 if (it.value()["value"].is_boolean() || it.value()["type"] == "i"){
                     PyDict_SetItemString(pTupleKwargs, it.key().c_str(), Py_BuildValue(((std::string) it.value()["type"]).c_str(), (int) it.value()["value"]));
+
                 } else if(it.value()["value"].is_number() || it.value()["type"] == "f" || it.value()["type"] == "d"){
                     PyDict_SetItemString(pTupleKwargs, it.key().c_str(), Py_BuildValue(((std::string) it.value()["type"]).c_str(), (float) it.value()["value"]));
+
                 }else if(it.value()["value"].is_string() || it.value()["type"] == "s"){
                     PyDict_SetItemString(pTupleKwargs, it.key().c_str(), Py_BuildValue(((std::string) it.value()["type"]).c_str(), ((std::string) it.value()["value"]).c_str()));
+                
+                }else if(it.value()["value"].is_array()){
+                    PyObject* list = PyList_New(0);
+
+                    auto strType = ((std::string) it.value()["type"]);
+                    auto ptr = 0;
+                    char arr[1];
+                    
+                    for(int i=0; i < strType.size(); i++){
+                            arr[0] = strType[i];
+
+                        switch(strType[i]){
+                            case 'i':
+                                PyList_Append(list, Py_BuildValue(arr, (int) it.value()["value"][ptr]));
+                                ptr++;
+                                break;
+                            
+                            case 'd':
+                            case 'f':
+                                PyList_Append(list, Py_BuildValue(arr, (float) it.value()["value"][ptr]));
+                                ptr++;
+                                break;
+                            
+                            case 's':
+                                PyList_Append(list, Py_BuildValue(arr, ((std::string) it.value()["value"][ptr]).c_str()));
+                                ptr++;
+                                break;
+                        }
+                    }
+                    PyDict_SetItemString(pTupleKwargs, it.key().c_str(), list);
+                    
                 }else{
                     PyDict_SetItemString(pTupleKwargs, it.key().c_str(), Py_BuildValue(((std::string) it.value()["type"]).c_str(), it.value()["value"]));
                 }

@@ -11,6 +11,18 @@
         "outputSize" :  {
             "value" : 3,
             "type" : "i"
+        },
+        "lossDiscountFactor" : {
+            "value" : 0.99,
+            "type" : "f"
+        },
+        "saveFolder" : {
+            "value" : "../../files/learnSaves/batches/armbatch_2019-07-11/models/",
+            "type" : "s"
+        },
+        "display" : {
+            "value" : ["print", "save"],
+            "type" : "[s,s]"
         }
     }
 }

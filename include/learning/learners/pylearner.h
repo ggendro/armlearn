@@ -15,6 +15,7 @@
 #define PYLEARNER_H
 
 #include <Python.h>
+#include <algorithm>
 #include <iostream>
 #include <fstream>
 #include <nlohmann/json.hpp>
@@ -30,10 +31,22 @@
 #define PY_LEARN_FILE "../../files/learnSettings/ddpglearnersettings.json"
 
 
+
 /**
  * @class PyLearner
  * @brief Class containing a python script doing the learning computations
  * 
+ * The json file containg the settings must have the following format:
+ *  - standard json containing at least the following fields: 
+ *      - "fileName" : string, name of the python module
+ *      - "className" : string, name of the python class
+ *      - "learnMethod" : string, name of the python training method
+ *      - "computeMethod" : string, name of the python compute method
+ *  - optional field "settings" containg the following:
+ *      - fields corresponding to constructor parameters of the python class matching "className"
+ *      - each field must contain two subfields:
+ *          - "value" : the parameter value
+ *          - "type" : the parameter type, using python c api syntax (https://docs.python.org/3/c-api/arg.html), only 'd', 'f', 'i', 's' or arrays of the preceding characters are allowed 
  */
 class PyLearner : public DeviceLearner{
 
