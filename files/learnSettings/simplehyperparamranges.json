@@ -1,6 +1,6 @@
 {
     "nbIterations" : {
-        "values" : [900]
+        "values" : [10000]
     },
     "nbMovements" : {
         "values" : [150]
@@ -24,13 +24,13 @@
         "values" : [0.005]
     },
     "replayBufferSize" : {
-        "values" : [1000]
+        "values" : [5000]
     },
     "sampleSize" : {
         "values" : [64]
     },
     "lossDiscountFactor" : {
-        "values" : [0.09]
+        "values" : [0.49]
     },
     "targetUpdateFactor" : {
         "values" : [0.001]

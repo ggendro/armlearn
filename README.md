@@ -1,6 +1,7 @@
-# WidowX Arm communication
+# WidowX Arm communication and learning
 
 API for a high level communication between an user and an Interbotix WidowX robotic arm, composed of 6 MX-64T Dynamixel servomotors and an Arbotix-m microcontroller.
+Includes framework to simulate the arm, compute kinematics and learn IK using Reinforcement Learning. 
 Developed on linux OS but is theoretically cross-platform.
 
 
@@ -163,6 +164,32 @@ Run a code example giving a (very) simple interface to control the arm by giving
     sudo ./example_cartesianMode
 ```
 
+#### Run python learning tests
+
+Run a python script testing the learning algorithm for simpler version of the arm.
+
+```
+    cd python
+    ./tester
+```
+You can also run the following command to access command arguments, these can be used to modify your testing parameters.
+```
+    ./tester -h
+```
+
+It is possible to run several tests simultaneously using the following script, and as for the tester it is possible to modify learning settings.
+```
+    ./multitester -h
+    ./multitester
+```
+
+Finally, you can extract results and compare al your learnings. By default, test files are created and saved at files/learnSaves/testers/.
+Run the following to visualize evolution of reward for your tests. Once again, command arguments are provided to change visualization parameters.
+```
+    ./multitester -h
+    ./resultextractor
+```
+
 #### Run main
 
 Run the main file. 
@@ -175,6 +202,10 @@ Run the main file.
 ## C++ Version
 
 C++11 required for compilation of the project
+
+## Pytjon Version
+
+Python3 required for executing learning scripts
 
 
 ## License
