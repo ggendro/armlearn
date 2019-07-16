@@ -1,0 +1,38 @@
+{
+    "nbIterations" : {
+        "values" : [5000]
+    },
+    "nbMovements" : {
+        "values" : [150]
+    },
+    "noiseVariance" : {
+        "values" : [0.1]
+    },
+    "nbEpochsCritic" : {
+        "values" : [1, 10, 100]
+    },
+    "nbEpochsActor" : {
+        "values" : [1, 10]
+    },
+    "learningRateCritic" : {
+        "values" : [10e-3]
+    },
+    "learningRateActor" : {
+        "values" : [10e-4]
+    },
+    "actorInitDeviation" : {
+        "values" : [0.005]
+    },
+    "replayBufferSize" : {
+        "values" : [5000]
+    },
+    "sampleSize" : {
+        "values" : [64]
+    },
+    "lossDiscountFactor" : {
+        "values" : [0.99]
+    },
+    "targetUpdateFactor" : {
+        "values" : [0.001]
+    }
+}

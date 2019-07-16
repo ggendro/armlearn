@@ -1,5 +1,6 @@
 lib/
 bin/
 build/
+files/learnSaves/
 **/__pycache__/
 .vscode/
