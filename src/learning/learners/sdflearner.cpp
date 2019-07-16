@@ -1,4 +1,160 @@
+/**
+ * @copyright Copyright (c) 2019
+ */
 
 
 #include "sdflearner.h"
 
+
+
+
+
+SdfLearner::SdfLearner(AbstractController* controller, Converter* converter):DeviceLearner(controller), rewards(LEARN_NB_MOVEMENTS), nbMoves(0){
+    verifier = converter;
+}
+
+SdfLearner::~SdfLearner(){
+    
+}
+
+
+double SdfLearner::computeReward(const std::vector<float> target, const std::vector<int> action) const{
+    std::vector<uint16_t> positionOutput;
+    auto position = device->getPosition();
+
+    auto outPtr = action.cbegin();
+    for(auto posPtr = position.cbegin(); posPtr < position.cend(); posPtr++) {
+        positionOutput.push_back((uint16_t)(*posPtr + *outPtr));
+        outPtr++;
+    }
+
+    if(!device->validPosition(positionOutput)) return VALID_COEFF;
+    
+    auto newCoords = verifier->computeServoToCoord(positionOutput)->getCoord();
+
+    auto err = computeSquaredError(target, newCoords);
+    if(abs(err) < LEARN_ERROR_MARGIN) return -VALID_COEFF;
+    
+    return -TARGET_COEFF * err - MOVEMENT_COEFF * computeSquaredError(device->getPosition(), action);
+}
+
+
+void SdfLearner::init(float *state_angular, int state_angular_size, float *state_observation, int state_space_size, float x_target, float y_target){
+    state_observation[0] = x_target;
+    state_observation[1] = y_target;
+
+    std::cout << "Reset device position..." << std::endl;
+    device->goToBackhoe(); // Reset position
+    device->waitFeedback();
+
+    auto state = DeviceLearner::getDeviceState(); // Get state of servomotors
+
+    int i=0;
+    for(auto ptr = state.cbegin(); ptr < state.cend(); ptr++) {
+        for(auto ptr2 = ptr->cbegin(); ptr2 < ptr->cend(); ptr2++){
+            state_angular[i] = *ptr2;
+            state_observation[i+2] = *ptr2;
+            i++;
+        }
+    }
+}
+
+void SdfLearner::step(int state_space_size, int action_space_size, int state_angular_size, float x_target, float y_target,
+                            float *state_angular_in, float *state_angular_out, float *input_actions, float *state_observation, float *reward){
+    
+    
+    // Computation of position
+    std::vector<int> newPos;
+    for(int i=0; i < action_space_size; i++) newPos.push_back(input_actions[i]);
+
+    
+    // Computation of reward
+    float stepReward = computeReward({x_target, y_target}, newPos);
+    rewards[nbMoves % LEARN_NB_MOVEMENTS] = stepReward;
+    reward[0] = stepReward;
+
+
+    if(stepReward > VALID_COEFF){ // If position is valid (within range)
+        device->addPosition(newPos); // Update position
+        device->waitFeedback();
+
+        std::cout << "Updating position..." << std::endl;
+    }else{
+        std::cout << "Error too important : movement not allowed" << std::endl;
+    }
+
+    // Update position for learner
+    state_observation[0] = x_target;
+    state_observation[1] = y_target;
+
+    auto state = getDeviceState();
+    int i=0;
+    for(auto ptr = state.cbegin(); ptr < state.cend(); ptr++) {
+        for(auto ptr2 = ptr->cbegin(); ptr2 < ptr->cend(); ptr2++){
+            state_angular_out[i] = *ptr2;
+            state_observation[i+2] = *ptr2;
+            i++;
+        }
+    }
+
+
+    nbMoves++;
+}
+
+
+
+void SdfLearner::learn(){
+    // TODO: to do
+}
+
+void SdfLearner::test(){
+    // TODO: to do
+}
+
+Output* SdfLearner::produce(const Input& input){
+    // TODO: to do
+}
+
+
+std::string SdfLearner::toString() const{
+    std::stringstream rep;
+    rep << "SDF " << DeviceLearner::toString();
+
+    return rep.str();
+}
+
+
+
+extern "C" SdfLearner* initWrapper(float *state_angular, int state_angular_size, float *state_observation, int state_space_size, float x_target, float y_target) {
+	Converter* conv = new OptimCartesianConverter();
+	AbstractController* arbotix = new ArmSimulator((DisplayMode) 0);
+	//AbstractController* arbotix = new SerialController("/dev/ttyUSB0");
+
+	WidowXBuilder builder;
+	builder.buildConverter(*conv);
+	builder.buildController(*arbotix);
+
+	arbotix->connect();
+	arbotix->updateInfos();
+
+    SdfLearner* learner = new SdfLearner(arbotix, conv);
+    learner->init(state_angular, state_angular_size, state_observation, state_space_size, x_target, y_target);
+
+    return learner;
+}
+
+extern "C" void stepWrapper(SdfLearner* env, 
+                            int state_space_size, int action_space_size, int state_angular_size, float x_target, float y_target,
+                            float *state_angular_in, float *state_angular_out, float *input_actions, float *state_observation, float *reward) {
+
+    env->step(state_space_size, action_space_size, state_angular_size, x_target, y_target,state_angular_in, state_angular_out, input_actions, state_observation, reward);
+}
+
+extern "C" void endWrapper(SdfLearner* env) {
+    Converter* conv = env->verifier;
+    AbstractController* arbotix = env->device;
+
+    delete env;
+    delete arbotix;
+    delete conv;
+}

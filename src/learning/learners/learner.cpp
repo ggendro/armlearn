@@ -48,6 +48,9 @@ template double Learner::computeSquaredError<uint16_t, int>(const std::vector<ui
 template double Learner::computeSquaredError<int, double>(const std::vector<int> target, const std::vector<double> real) const;
 template double Learner::computeSquaredError<double, int>(const std::vector<double> target, const std::vector<int> real) const;
 template double Learner::computeSquaredError<int, int>(const std::vector<int> target, const std::vector<int> real) const;
+template double Learner::computeSquaredError<float, float>(const std::vector<float> target, const std::vector<float> real) const;
+template double Learner::computeSquaredError<double, float>(const std::vector<double> target, const std::vector<float> real) const;
+template double Learner::computeSquaredError<float, double>(const std::vector<float> target, const std::vector<double> real) const;
 
 
 

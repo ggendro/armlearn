@@ -25,6 +25,9 @@ Can be found here <https://www.openmp.org/> and installed by executing the follo
 sudo apt-get install libomp-dev
 ```
 
+*Preesm* tool is required for in order to build an run learners based on SDF graphs.
+Can be found here : <https://preesm.github.io/>
+
 
 Several libraries are required in order to build CNN and compute RL algorithms:
 
