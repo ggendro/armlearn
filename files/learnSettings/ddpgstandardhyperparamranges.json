@@ -1,6 +1,6 @@
 {
     "nbIterations" : {
-        "values" : [5000]
+        "values" : [3000]
     },
     "nbMovements" : {
         "values" : [150]
@@ -9,10 +9,10 @@
         "values" : [0.1]
     },
     "nbEpochsCritic" : {
-        "values" : [1, 10, 100]
+        "values" : [10]
     },
     "nbEpochsActor" : {
-        "values" : [1, 10]
+        "values" : [1]
     },
     "learningRateCritic" : {
         "values" : [10e-3]
@@ -21,7 +21,7 @@
         "values" : [10e-4]
     },
     "actorInitDeviation" : {
-        "values" : [0.005]
+        "values" : [0.01]
     },
     "replayBufferSize" : {
         "values" : [5000]

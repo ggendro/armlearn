@@ -13,8 +13,6 @@
 #ifndef DEVICELEARNER_H
 #define DEVICELEARNER_H
 
-#include <thread>
-
 #include "abstractcontroller.h"
 #include "learner.h"
 

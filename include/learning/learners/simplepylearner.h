@@ -18,16 +18,7 @@
 
 #include "pylearner.h"
 #include "converter.h"
-
-// Coefficient of target error (difference between the real output and the target output, to minimize) when computing error between input and output
-#define TARGET_COEFF 0.028
-// Coefficient of movement error (distance browsed by servomotors to reach target, to minimize) when computing error between input and output
-#define MOVEMENT_COEFF 0.0048
-// Coefficient of valid position error (returned if position is not valid)
-#define VALID_COEFF -80
-
-// Margin of error allowing to stop learning if error is below the number
-#define LEARN_ERROR_MARGIN 0.05
+#include "learnsettings.h"
 
 /**
  * @class SimplePyLearner

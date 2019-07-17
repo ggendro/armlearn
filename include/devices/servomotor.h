@@ -78,7 +78,7 @@ enum Status{
  * @brief Enum representing the type of the servomotor, used for range setting
  * 
  */
-enum Type{ // TODO: make a comparison between current switch implementation and the one using range.json parsing and static array
+enum Type{
     base,
     shoulder, 
     elbow, 

@@ -20,19 +20,6 @@
 #include "outofrangeerror.h"
 
 
-// Number of iterations of the learning
-#define LEARN_NB_ITERATIONS 5000
-// Number of movents allowed to reach target during learning
-#define LEARN_NB_MOVEMENTS 150
-// Number of invalid movements allowed during one iteration
-#define MAX_NULL_MOVE 10
-
-// Coefficient decreasing the reward for a state as the state is closer to the initial state
-#define DECREASING_REWARD 0.99
-
-
-
-
 /**
  * @class ActivePyLearner
  * @brief Class linked to python module for simple positions computing and learning

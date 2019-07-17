@@ -12,17 +12,33 @@
             "value" : 3,
             "type" : "i"
         },
+        "nbEpochsCritic" : {
+            "value" : 10,
+            "type" : "i"
+        },
+        "nbEpochsActor" : {
+            "value" : 1,
+            "type" : "i"
+        },
         "lossDiscountFactor" : {
             "value" : 0.99,
             "type" : "f"
         },
+        "learningRateCritic" : {
+            "value" : 10e-4,
+            "type" : "f"
+        },
+        "learningRateActor" : {
+            "value" : 10e-5,
+            "type" : "f"
+        },
         "saveFolder" : {
-            "value" : "../../files/learnSaves/batches/armbatch_2019-07-11/models/",
+            "value" : "../../files/learnSaves/batches/armbatch/models/",
             "type" : "s"
         },
         "display" : {
-            "value" : ["print", "save"],
-            "type" : "[s,s]"
+            "value" : ["print"],
+            "type" : "[s]"
         }
     }
 }

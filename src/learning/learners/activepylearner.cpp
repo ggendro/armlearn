@@ -49,15 +49,22 @@ void ActivePyLearner::learn(){
                 std::vector<double> rewardVector = {reward};
 
                 State* newState = new State(fullInput, output, rewardVector);  // Save state
-                auto ptr = std::find_if(saves.begin(), saves.end(), [newState](State* s){ return (*s).hasSameInput(*newState); });
-                if(ptr != saves.end()){
-                    delete *ptr;
+                auto ptr = std::find_if(saves.begin(), saves.end(), [newState](State* s){ return (*s).hasSameInput(*newState); }); 
+                /*
+                if(ptr != saves.end()){ // Replace existing save if same input already saved
+                    delete *ptr;  
                     *ptr = newState;
 
                     nbNullMove++;
                 }else{
                     saves.push_back(newState);
                 }
+                //*/
+                
+                //*
+                if(ptr != saves.end()) nbNullMove++;
+                saves.push_back(newState);
+                //*/
                 
                 //*
                 if(reward > VALID_COEFF){ // If position is valid (within range)

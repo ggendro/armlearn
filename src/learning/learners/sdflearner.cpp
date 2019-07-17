@@ -39,6 +39,15 @@ double SdfLearner::computeReward(const std::vector<float> target, const std::vec
 }
 
 
+Converter* SdfLearner::getVerifier() const{
+    return verifier;
+}
+
+AbstractController* SdfLearner::getDevice() const{
+    return device;
+}
+
+
 void SdfLearner::init(float *state_angular, int state_angular_size, float *state_observation, int state_space_size, float x_target, float y_target){
     state_observation[0] = x_target;
     state_observation[1] = y_target;
@@ -150,9 +159,9 @@ extern "C" void stepWrapper(SdfLearner* env,
     env->step(state_space_size, action_space_size, state_angular_size, x_target, y_target,state_angular_in, state_angular_out, input_actions, state_observation, reward);
 }
 
-extern "C" void endWrapper(SdfLearner* env) {
-    Converter* conv = env->verifier;
-    AbstractController* arbotix = env->device;
+extern "C" void endWrapper(SdfLearner* env) { // TODO: add call to this function in step when necessary
+    Converter* conv = env->getVerifier();
+    AbstractController* arbotix = env->getDevice();
 
     delete env;
     delete arbotix;
