@@ -123,7 +123,7 @@ double AbstractController::positionSumSquaredError() const{
     return std::sqrt(sse);
 }
 
-bool AbstractController::waitFeedback(int allowedTime){
+bool AbstractController::waitFeedback(int sleepTime, int allowedTime){
 
     std::chrono::time_point<std::chrono::system_clock> startTime = std::chrono::system_clock::now();
     std::chrono::time_point<std::chrono::system_clock> currentTime = std::chrono::system_clock::now();
@@ -133,7 +133,7 @@ bool AbstractController::waitFeedback(int allowedTime){
 
     while(!response && std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startTime).count() < allowedTime){ // TODO: implement without active waiting
         if(mode >= print) output << "Movement not entirely executed at " << std::chrono::duration<double, std::ratio<1, 1>>(currentTime - startTime).count() << " s" << std::endl;
-        std::this_thread::sleep_for((std::chrono::milliseconds) allowedTime/10);
+        std::this_thread::sleep_for((std::chrono::milliseconds) sleepTime);
 
         updateInfos();
         response = goalReached();

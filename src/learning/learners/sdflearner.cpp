@@ -81,7 +81,7 @@ void SdfLearner::step(int state_space_size, int action_space_size, int state_ang
         std::cout << std::endl;
     }
 
-    std::cout << "Step " << nbMoves / LEARN_NB_MOVEMENTS << " - Move " << nbMoves % LEARN_NB_MOVEMENTS << std::endl;
+    std::cout << "Iteration " << nbMoves / LEARN_NB_MOVEMENTS << " - Move " << nbMoves % LEARN_NB_MOVEMENTS << std::endl;
     
     // Computation of position
     std::vector<int> newPos;
@@ -153,7 +153,7 @@ std::string SdfLearner::toString() const{
 
 extern "C" SdfLearner* initWrapper(float *state_angular, int state_angular_size, float *state_observation, int state_space_size, float x_target, float y_target) {
 	Converter* conv = new OptimCartesianConverter();
-	AbstractController* arbotix = new ArmSimulator((DisplayMode) 0);
+	AbstractController* arbotix = new NoWaitArmSimulator((DisplayMode) 0);
 	//AbstractController* arbotix = new SerialController("/dev/ttyUSB0");
 
 	WidowXBuilder builder;

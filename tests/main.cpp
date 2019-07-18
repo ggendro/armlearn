@@ -1,5 +1,5 @@
 
-#include "armsimulator.h"
+#include "nowaitarmsimulator.h"
 #include "serialcontroller.h"
 #include "trajectory.h"
 
@@ -11,7 +11,7 @@
 int main(int argc, char *argv[]) {
 
 	OptimCartesianConverter conv;
-	ArmSimulator arbotix((DisplayMode) 0);
+	NoWaitArmSimulator arbotix((DisplayMode) 0);
 	//SerialController arbotix("/dev/ttyUSB0");
 
 	WidowXBuilder builder;

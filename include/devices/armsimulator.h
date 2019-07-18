@@ -1,6 +1,6 @@
 /**
  * @file armsimulator.h
- * @author d
+ * @author Gaël Gendron
  * @brief File containing the ArmSimulator class, inherited from AbstractContoller, used to control a simulation of the hardware
  * @version 0.1
  * @date 2019-06-07
@@ -38,7 +38,7 @@
  */
 class ArmSimulator : public AbstractController{
 
-    private:
+    protected:
         Converter* physicalSolver;
 
         /**

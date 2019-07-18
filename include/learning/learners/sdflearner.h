@@ -21,7 +21,7 @@
 #include "learnsettings.h"
 
 #include "optimcartesianconverter.h"
-#include "armsimulator.h"
+#include "nowaitarmsimulator.h"
 #include "widowxbuilder.h"
 
 

@@ -305,7 +305,7 @@ class AbstractController{
          * @return true if a response occured within the allowed time
          * @return false otherwise  
          */
-        bool waitFeedback(int allowedTime = WAITING_TIME);
+        bool waitFeedback(int sleepTime = WAITING_TIME / 10, int allowedTime = WAITING_TIME);
 
 
         /**
