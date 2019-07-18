@@ -27,7 +27,7 @@ double SdfLearner::computeReward(const std::vector<float> target, const std::vec
         positionOutput.push_back((uint16_t)(*posPtr + *outPtr));
         outPtr++;
     }
-
+    
     if(!device->validPosition(positionOutput)) return VALID_COEFF;
     
     auto newCoords = verifier->computeServoToCoord(positionOutput)->getCoord();
@@ -57,7 +57,7 @@ void SdfLearner::init(float *state_angular, int state_angular_size, float *state
     device->waitFeedback();
 
     auto state = DeviceLearner::getDeviceState(); // Get state of servomotors
-
+    
     int i=0;
     for(auto ptr = state.cbegin(); ptr < state.cend(); ptr++) {
         for(auto ptr2 = ptr->cbegin(); ptr2 < ptr->cend(); ptr2++){
@@ -71,6 +71,17 @@ void SdfLearner::init(float *state_angular, int state_angular_size, float *state
 void SdfLearner::step(int state_space_size, int action_space_size, int state_angular_size, float x_target, float y_target,
                             float *state_angular_in, float *state_angular_out, float *input_actions, float *state_observation, float *reward){
     
+    if(nbMoves % LEARN_NB_MOVEMENTS == 0){
+        float mean = 0;
+        for(auto r : rewards) mean += r;
+        mean /= LEARN_NB_MOVEMENTS;
+        std::cout << "Mean reward : " << mean << std::endl;
+
+        init(state_angular_out, state_angular_size, state_observation, state_space_size, x_target, y_target);
+        std::cout << std::endl;
+    }
+
+    std::cout << "Step " << nbMoves / LEARN_NB_MOVEMENTS << " - Move " << nbMoves % LEARN_NB_MOVEMENTS << std::endl;
     
     // Computation of position
     std::vector<int> newPos;
@@ -82,7 +93,6 @@ void SdfLearner::step(int state_space_size, int action_space_size, int state_ang
     rewards[nbMoves % LEARN_NB_MOVEMENTS] = stepReward;
     reward[0] = stepReward;
 
-
     if(stepReward > VALID_COEFF){ // If position is valid (within range)
         device->addPosition(newPos); // Update position
         device->waitFeedback();
@@ -91,6 +101,12 @@ void SdfLearner::step(int state_space_size, int action_space_size, int state_ang
     }else{
         std::cout << "Error too important : movement not allowed" << std::endl;
     }
+
+    std::cout << "Action : "; for(auto v : newPos) std::cout << v << " "; std::cout << std::endl;
+    std::cout << "Reward : " << stepReward << std::endl;
+    auto position = device->getPosition();
+    std::cout << "Position : "; for(auto v : position) std::cout << v << " "; std::cout << std::endl;
+    std::cout << "Coordinates : "; for(auto v : verifier->computeServoToCoord(position)->getCoord()) std::cout << v << " "; std::cout << std::endl;
 
     // Update position for learner
     state_observation[0] = x_target;
@@ -108,6 +124,7 @@ void SdfLearner::step(int state_space_size, int action_space_size, int state_ang
 
 
     nbMoves++;
+    std::cout << std::endl;
 }
 
 
@@ -144,6 +161,7 @@ extern "C" SdfLearner* initWrapper(float *state_angular, int state_angular_size,
 	builder.buildController(*arbotix);
 
 	arbotix->connect();
+    arbotix->changeSpeed(50);
 	arbotix->updateInfos();
 
     SdfLearner* learner = new SdfLearner(arbotix, conv);
