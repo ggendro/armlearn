@@ -31,6 +31,7 @@ find_package(PythonLibs)
 include_directories(${PYTHON_INCLUDE_DIRS})
 link_libraries(${PYTHON_LIBRARIES})
 
+
 # add headers
 file(GLOB_RECURSE HEADERS "include/*.h")
 set (INCLUDE_DIRS "")
@@ -44,13 +45,15 @@ include_directories(${INCLUDE_DIRS})
 # add source code
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 
+
 # create examples
 add_subdirectory(examples)
 
 # create test
 add_subdirectory(tests)
 
-
+# create preesm target
+add_subdirectory(preesm/org.ietr.preesm.reinforcement_learning/Code)
 
 
 include(InstallRequiredSystemLibraries)
