@@ -219,23 +219,25 @@ void PyLearner::pyManageError() const{
 
 
 
-void PyLearner::pyLearn(const std::vector<uint16_t> input, const std::vector<double> reward, const std::vector<uint16_t> nextInput, double reductionFactor) const{
+void PyLearner::pyLearn(const std::vector<uint16_t> input, const std::vector<int> output, const std::vector<double> reward, const std::vector<uint16_t> nextInput, double reductionFactor) const{
     if(reward.size() == 0 || (reward.size() == 1 && reward[0] == 0)) return;
-    PyObject *pInput, *pErr, *pNextInput, *pRed, *pLearn;
+    PyObject *pInput, *pOutput, *pErr, *pNextInput, *pRed, *pLearn;
     
     pInput = vectorToPyObject(input);
+    pOutput = vectorToPyObject(output);
     pErr = vectorToPyObject(reward);
     pNextInput = vectorToPyObject(nextInput);
     pRed = valueToPyObject(reductionFactor);
     
     pLearn = PyUnicode_FromString(learnMethod.c_str());
-    PyObject_CallMethodObjArgs(pLearner, pLearn, pInput, pErr, pNextInput, pRed, NULL); // Python call for learning
+    PyObject_CallMethodObjArgs(pLearner, pLearn, pInput, pOutput, pErr, pNextInput, pRed, NULL); // Python call for learning
     pyManageError();
 
     Py_DECREF(pLearn);
     Py_DECREF(pRed);
     Py_DECREF(pNextInput);
     Py_DECREF(pErr);
+    Py_DECREF(pOutput);
     Py_DECREF(pInput);
 }
 

@@ -49,8 +49,8 @@ void ActivePyLearner::learn(){
                 std::vector<double> rewardVector = {reward};
 
                 State* newState = new State(fullInput, output, rewardVector);  // Save state
-                auto ptr = std::find_if(saves.begin(), saves.end(), [newState](State* s){ return (*s).hasSameInput(*newState); }); 
                 /*
+                auto ptr = std::find_if(saves.begin(), saves.end(), [newState](State* s){ return (*s).hasSameInput(*newState); }); 
                 if(ptr != saves.end()){ // Replace existing save if same input already saved
                     delete *ptr;  
                     *ptr = newState;
@@ -60,9 +60,9 @@ void ActivePyLearner::learn(){
                     saves.push_back(newState);
                 }
                 //*/
-                
+
                 //*
-                if(ptr != saves.end()) nbNullMove++;
+                if(reward <= VALID_COEFF) nbNullMove++;
                 saves.push_back(newState);
                 //*/
                 
@@ -110,7 +110,7 @@ void ActivePyLearner::learn(){
                 }
                 //*/
 
-                //if(nbNullMove > MAX_NULL_MOVE) break; // Stop iteration if too many null movements
+                if(nbNullMove > MAX_NULL_MOVE) break; // Stop iteration if too many null movements
             }
 
             if(stop) break;
@@ -121,7 +121,7 @@ void ActivePyLearner::learn(){
             for(auto ptr = saves.rbegin(); ptr < saves.rend(); ptr++){
                 
                 std::vector<uint16_t> nextInput = (*(ptr+((ptr+1) != saves.rend())))->getInput(); // Send input of the next state reached with the given output (if no next input, is current input)
-                pyLearn((*ptr)->getInput(), (*ptr)->getReward(), nextInput, std::pow(DECREASING_REWARD, i)); // Decrease value of reward as the state is closer to initial state
+                pyLearn((*ptr)->getInput(), (*ptr)->getOutput(), (*ptr)->getReward(), nextInput, std::pow(DECREASING_REWARD, i)); // Decrease value of reward as the state is closer to initial state
 
                 
                 delete *ptr;
