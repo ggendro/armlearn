@@ -37,8 +37,8 @@
             "type" : "s"
         },
         "display" : {
-            "value" : ["print"],
-            "type" : "[s]"
+            "value" : ["print", "save"],
+            "type" : "[s,s]"
         }
     }
 }
