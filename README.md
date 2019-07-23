@@ -10,22 +10,22 @@ Developed on linux OS but is theoretically cross-platform.
 
 ### Dependencies
 
-*serial* library required for port communication.
+*serial* library v1.2.1 required for port communication.
 Can be found here : <https://github.com/wjwwood/serial>
 
-*KDL* library required for physics simulations in the Reinforcement Learning.
+*KDL* library v1.4.0 required for physics simulations in the Reinforcement Learning.
 Can be found here : <http://www.orocos.org/kdl>
 
-*Nlohmann/json* library required for reading json files.
+*Nlohmann/json* library v3.6.1 required for reading json files.
 Can be found here : <https://github.com/nlohmann/json>
 
-*OpenMP* library used for computation tests.
+*OpenMP* library version amd64/bionic 5.0.1-1 used for computation tests.
 Can be found here <https://www.openmp.org/> and installed by executing the following line on a terminal:
 ```
 sudo apt-get install libomp-dev
 ```
 
-*Preesm* tool is required for in order to build an run learners based on SDF graphs.
+*Preesm* tool v3.11.0 is required for in order to build an run learners based on SDF graphs.
 Can be found here : <https://preesm.github.io/>
 
 
@@ -33,44 +33,41 @@ Several libraries are required in order to build CNN and compute RL algorithms:
 
 Python3 needs to be installed for the use of the following libraries.
 
-*TensorFlow* library.
+*TensorFlow* library v1.14.0.
 Can be found here : <https://www.tensorflow.org/> and installed by executing the following line on a terminal:
 ```
 pip install tensorflow
 ```
 
-*Keras* library.
+*Keras* library v2.2.4.
 Can be found here : <https://keras.io> and installed by executing the following line on a terminal:
 ```
 pip install keras
 ```
 
-*ScikitLearn* library.
+*ScikitLearn* library v0.21.2.
 Can be found here : <https://scikit-learn.org/> and installed by executing the following line on a terminal:
 ```
 pip install scikit-learn
 ```
 
-*GraphViz* library.
+*GraphViz* library v0.11.
 Can be found here : <https://www.graphviz.org/> and installed by executing the following line on a terminal:
 ```
 pip install graphviz
 ```
 
-*AnnVisualizer* library.
+*AnnVisualizer* library v2.5.
 Can be found here : <https://pypi.org/project/ann_visualizer/> and installed by executing the following line on a terminal:
 ```
 pip install ann_visualizer
 ```
 
-*matplotlib* library.
+*matplotlib* library v3.0.3.
 Can be found here : <https://matplotlib.org/> and installed by executing the following line on a terminal:
 ```
 pip install matplotlib
 ```
-
-*SpinningUp* library.
-Can be found here : <https://spinningup.openai.com/en/latest/index.html>
 
 
 ### Install
@@ -206,7 +203,7 @@ Run the main file.
 
 C++11 required for compilation of the project
 
-## Pytjon Version
+## Python Version
 
 Python3 required for executing learning scripts
 
