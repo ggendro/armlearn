@@ -14,6 +14,7 @@ option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 
 # specify link directory
 link_directories("/usr/local/lib/")
+link_libraries(serial)
 link_libraries(orocos-kdl)
 
 # include openmp
