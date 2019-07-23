@@ -26,7 +26,6 @@ add_executable(" ${ex_name} " " ${ex_name} ".cpp \${SOURCES})
     add_subdirectory("${ex_path}")
 endforeach()
 
-
 #add_subdirectory("device_communication/example_id")
 #add_subdirectory("device_communication/example_led")
 #add_subdirectory("device_communication/example_movement")
