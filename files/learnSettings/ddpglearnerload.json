@@ -5,11 +5,11 @@
     "computeMethod" : "compute",
     "settings" : {
         "inputSize" : {
-            "value" : 9,
+            "value" : 6,
             "type" : "i"
         },
         "outputSize" :  {
-            "value" : 6,
+            "value" : 3,
             "type" : "i"
         },
         "nbEpochsCritic" : {
@@ -32,13 +32,18 @@
             "value" : 10e-5,
             "type" : "f"
         },
-        "saveFolder" : {
-            "value" : "../../files/learnSaves/batches/armbatch_full_2019-07-24/models/",
-            "type" : "s"
+        "loadSave" : {
+            "value" : [
+                        "../../files/learnSaves/batches/armbatch_early_termination_2019-07-19/models/DDPG_model_actor_0.h5",
+                        "../../files/learnSaves/batches/armbatch_early_termination_2019-07-19/models/DDPG_model_critic_0.h5",
+                        "../../files/learnSaves/batches/armbatch_early_termination_2019-07-19/models/DDPG_model_targetActor_0.h5",
+                        "../../files/learnSaves/batches/armbatch_early_termination_2019-07-19/models/DDPG_model_targetCritic_0.h5"
+                      ],
+            "type" : "[s,s,s,s]"
         },
         "display" : {
-            "value" : ["print", "save"],
-            "type" : "[s,s]"
+            "value" : ["print"],
+            "type" : "[s]"
         }
     }
 }

@@ -60,7 +60,7 @@ void AbstractController::changeSpeed(uint16_t newSpeed){
 
 void AbstractController::setPosition(const std::vector<uint16_t>& newPosition){
     auto ptrPos = newPosition.cbegin();
-    for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){ 
+    for(auto ptr=motors->begin(); ptr != motors->end() && ptrPos != newPosition.cend(); ptr++){ 
         setPosition(ptr->first, *ptrPos);
         ptrPos++;
     }
@@ -77,7 +77,7 @@ void AbstractController::goToSleep(){
 
 void AbstractController::addPosition(const std::vector<int>& dx){
     auto ptrPos = dx.cbegin();
-    for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){  
+    for(auto ptr=motors->begin(); ptr != motors->end() && ptrPos != dx.end(); ptr++){  
         addPosition(ptr->first, *ptrPos);
         ptrPos++;
     }
