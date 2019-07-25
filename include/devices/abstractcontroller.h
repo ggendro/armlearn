@@ -30,9 +30,9 @@
 #define SLEEP_POSITION {2048, 1025, 1025, 1830, 512, 256}
 
 // Time to wait for servomotors to reach each position (in milliseconds)
-#define WAITING_TIME 5000
+#define WAITING_TIME 500
 // Error margin between current and target position
-#define POSITION_ERROR_MARGIN 40
+#define POSITION_ERROR_MARGIN 60
 
 
 /**

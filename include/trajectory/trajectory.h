@@ -18,12 +18,6 @@
 #include "abstractcontroller.h"
 #include "trajectoryerror.h"
 
-// Time to wait for servomotors to reach each position (in milliseconds)
-#define WAITING_TIME 5000
-
-// Error margin between current and target position
-#define MARGIN_ERROR 40
-
 /**
  * @class Trajectory
  * @brief class Trajectory
