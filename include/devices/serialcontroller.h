@@ -106,7 +106,7 @@ class SerialController : public AbstractController{
          * 
          * If controller display mode is superior or equal to print, will display the received packet in the output stream
          */
-        int receive(std::vector<uint8_t>& buffer, bool readAll = false, bool wait = false, int bytesExpected = RESPONSE_BYTES, int timeout = RESPONSE_DELAY);
+        int receive(std::vector<uint8_t>& buffer, bool readAll = false, bool wait = false, int bytesExpected = RESPONSE_BYTES, int sleepTime = RESPONSE_DELAY / 10, int timeout = RESPONSE_DELAY);
 
 
         /**

@@ -74,14 +74,14 @@ int SerialController::send(const std::vector<uint8_t>& buffer){
     return res;
 }
 
-int SerialController::receive(std::vector<uint8_t>& buffer, bool readAll, bool wait, int bytesExpected, int timeout){
+int SerialController::receive(std::vector<uint8_t>& buffer, bool readAll, bool wait, int bytesExpected, int sleepTime, int timeout){
 
     if(wait){
         std::chrono::time_point<std::chrono::system_clock> startTime = std::chrono::system_clock::now();
         std::chrono::time_point<std::chrono::system_clock> currentTime = std::chrono::system_clock::now();
 
         while(serialPort->available() < bytesExpected && std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startTime).count() < timeout){ // TODO: Implement without active waiting
-            std::this_thread::sleep_for((std::chrono::milliseconds) timeout/10); // Will check every timeout/10 milliseconds
+            std::this_thread::sleep_for((std::chrono::milliseconds) sleepTime); // Will check every sleepTime milliseconds
             currentTime = std::chrono::system_clock::now();
         }
     }
