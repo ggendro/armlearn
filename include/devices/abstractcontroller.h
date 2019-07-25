@@ -30,9 +30,9 @@
 #define SLEEP_POSITION {2048, 1025, 1025, 1830, 512, 256}
 
 // Time to wait for servomotors to reach each position (in milliseconds)
-#define WAITING_TIME 500
+#define WAITING_TIME 5000
 // Error margin between current and target position
-#define POSITION_ERROR_MARGIN 60
+#define POSITION_ERROR_MARGIN 40
 
 
 /**
@@ -305,7 +305,7 @@ class AbstractController{
          * @return true if a response occured within the allowed time
          * @return false otherwise  
          */
-        bool waitFeedback(int sleepTime = WAITING_TIME / 10, int allowedTime = WAITING_TIME);
+        bool waitFeedback(int sleepTime = WAITING_TIME / 100, int allowedTime = WAITING_TIME);
 
 
         /**

@@ -43,9 +43,9 @@ int main(int argc, char *argv[]) {
     arbotix.changeSpeed(100);
 
     Trajectory init(&arbotix);
-	init.addPoint({2500, 1800, 1800, 2100, 200, 500});
-	init.addPoint({2500, 1800, 1800, 2100, 200, 500});
-	init.addPoint({2500, 1800, 1800, 2100, 200, 5});
+	init.addPoint({2500, 1800, 1800, 2100, 815, 500});
+	init.addPoint({2500, 1800, 1800, 2100, 815, 500});
+	init.addPoint({2500, 1800, 1800, 2100, 815, 5});
 
 	init.printTrajectory();
 
@@ -55,8 +55,8 @@ int main(int argc, char *argv[]) {
 
     Trajectory loop(&arbotix);
 
-	loop.addPoint({2500, 1800, 1600, 2100, 200, 5});
-	loop.addPoint({2500, 1800, 2000, 2100, 200, 5});
+	loop.addPoint({2500, 1800, 1600, 2100, 815, 5});
+	loop.addPoint({2500, 1800, 2000, 2100, 815, 5});
 
 	loop.printTrajectory();
 
