@@ -53,7 +53,7 @@ add_subdirectory(examples)
 add_subdirectory(tests)
 
 # create preesm target
-add_subdirectory(preesm/org.ietr.preesm.reinforcement_learning/Code)
+add_subdirectory(preesm/org.ietr.preesm.reinforcement_learning/Spider)
 
 
 include(InstallRequiredSystemLibraries)
