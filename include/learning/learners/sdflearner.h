@@ -49,9 +49,10 @@ class SdfLearner : public DeviceLearner{
         AbstractController* getDevice() const;
 
 
-        void init(float *state_angular, int state_angular_size, float *state_observation, int state_space_size, float x_target, float y_target);
-        void step(int state_space_size, int action_space_size, int state_angular_size, float x_target, float y_target,
-                            float *state_angular_in, float *state_angular_out, float *input_actions, float *state_observation, float *reward);
+        void init(float *state_observation, int state_space_size, float x_target, float y_target, float z_target);
+
+        void step(int state_space_size, int action_space_size, float x_target, float y_target, float z_target,
+                            float *input_actions, float *state_observation, float *reward);
 
 
         /**
@@ -85,10 +86,10 @@ class SdfLearner : public DeviceLearner{
 };
 
 
-extern "C" SdfLearner* initWrapper(float *state_angular, int state_angular_size, float *state_observation, int state_space_size, float x_target, float y_target);
+extern "C" SdfLearner* initWrapper(float *state_observation, int state_space_size, float x_target, float y_target, float z_target);
 extern "C" void stepWrapper(SdfLearner* env, 
-                        int state_space_size, int action_space_size, int state_angular_size, float x_target, float y_target,
-                        float *state_angular_in, float *state_angular_out, float *input_actions, float *state_observation, float *reward);
+                        int state_space_size, int action_space_size, float x_target, float y_target, float z_target,
+                        float *input_actions, float *state_observation, float *reward);
 extern "C" void endWrapper(SdfLearner* env);
 
 
