@@ -1,6 +1,8 @@
 bin/
 build/
 files/learnSaves/
+lib/*
+!lib/cmake_modules/
 **/__pycache__/
 .vscode/
 preesm/.metadata/
