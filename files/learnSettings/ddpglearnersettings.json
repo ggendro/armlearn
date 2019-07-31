@@ -33,7 +33,7 @@
             "type" : "f"
         },
         "saveFolder" : {
-            "value" : "../../files/learnSaves/batches/armbatch_full_2019-07-24/models/",
+            "value" : "../../files/learnSaves/batches/armbatch_early_termination_last_reward_2019-07-31/models/",
             "type" : "s"
         },
         "display" : {
