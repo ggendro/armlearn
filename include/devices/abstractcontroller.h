@@ -257,7 +257,7 @@ class AbstractController{
          * @return true if the position is valid
          * @return false otherwise
          */
-        bool validPosition(std::vector<uint16_t> position) const;
+        bool validPosition(const std::vector<uint16_t>& position) const;
 
 
         /**
