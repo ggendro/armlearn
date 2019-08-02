@@ -148,9 +148,9 @@ std::string ActivePyLearner::toString() const{
 
 
 
-ActivePyLearner::State::State(std::vector<uint16_t>& inputVector, std::vector<int>& outputVector, std::vector<double>& reward){
+ActivePyLearner::State::State(std::vector<uint16_t>& inputVector, std::vector<double>& outputVector, std::vector<double>& reward){
     this->input = new std::vector<uint16_t>(inputVector);
-    this->output = new std::vector<int>(outputVector);
+    this->output = new std::vector<double>(outputVector);
     this->reward = new std::vector<double>(reward);
 }
 
@@ -165,8 +165,8 @@ std::vector<uint16_t> ActivePyLearner::State::getInput() const{
     return std::vector<uint16_t>(*input);
 }
 
-std::vector<int> ActivePyLearner::State::getOutput() const{
-    return std::vector<int>(*output);
+std::vector<double> ActivePyLearner::State::getOutput() const{
+    return std::vector<double>(*output);
 }
 
 std::vector<double> ActivePyLearner::State::getReward() const{

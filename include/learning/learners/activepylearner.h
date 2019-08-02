@@ -41,7 +41,7 @@ class ActivePyLearner : public SimplePyLearner{
 
             private:
                 std::vector<uint16_t>* input;
-                std::vector<int>* output;
+                std::vector<double>* output;
                 std::vector<double>* reward;
 
             public:
@@ -52,7 +52,7 @@ class ActivePyLearner : public SimplePyLearner{
                  * @param outputVector its corresponding output
                  * @param reward its corresponding reward
                  */
-                State(std::vector<uint16_t>& inputVector, std::vector<int>& outputVector, std::vector<double>& reward);
+                State(std::vector<uint16_t>& inputVector, std::vector<double>& outputVector, std::vector<double>& reward);
 
                 /**
                  * @brief Destroy the State object
@@ -70,9 +70,9 @@ class ActivePyLearner : public SimplePyLearner{
                 /**
                  * @brief Get the Output
                  * 
-                 * @return std::vector<int> the output
+                 * @return std::vector<double> the output
                  */
-                std::vector<int> getOutput() const;
+                std::vector<double> getOutput() const;
 
                 /**
                  * @brief Get the Reward
