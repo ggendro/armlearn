@@ -33,6 +33,8 @@ class SimplePyLearner : public PyLearner{
         /**
          * @brief Computes resulting reward of the output for the corresponding input and servomotor states, based on the converter
          * 
+         * @tparam R class of target values
+         * @tparam T class of position values
          * @param input target to reach
          * @param output servomotor positions computed, to evaluate
          * @return double output reward
@@ -42,9 +44,22 @@ class SimplePyLearner : public PyLearner{
          *  - the distance browsed by servomotors, the greater it is the greater the error will be
          *  - if the distance to the target increased or decreased after output applied
          * 
-         * Template method, defined for uint16_t and double
+         * Template method, defined for int, uint16_t and double
          */
-        template<class R, class T> double computeReward(const std::vector<R> input, const std::vector<T> output) const;
+        template<class R, class T> double computeReward(const std::vector<R>& input, const std::vector<T>& output) const;
+
+        /**
+         * @brief Applies a funcion to each element of a vector
+         * 
+         * @tparam R class of inital vector values
+         * @tparam T class of resulting vector values
+         * @param vect initial vector
+         * @param func funcion to apply to each value of initial vector
+         * @return std::vector<T> resulting vector
+         * 
+         * Template method, defined for int and double
+         */
+        template<class R, class T> std::vector<T> apply(const std::vector<R>& vect, const std::function< T(R) >& func) const;
 
 
     public:

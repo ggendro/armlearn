@@ -219,7 +219,7 @@ void PyLearner::pyManageError() const{
 
 
 
-void PyLearner::pyLearn(const std::vector<uint16_t> input, const std::vector<int> output, const std::vector<double> reward, const std::vector<uint16_t> nextInput, double reductionFactor) const{
+void PyLearner::pyLearn(const std::vector<uint16_t> input, const std::vector<double> output, const std::vector<double> reward, const std::vector<uint16_t> nextInput, double reductionFactor) const{
     if(reward.size() == 0 || (reward.size() == 1 && reward[0] == 0)) return;
     PyObject *pInput, *pOutput, *pErr, *pNextInput, *pRed, *pLearn;
     
@@ -241,7 +241,7 @@ void PyLearner::pyLearn(const std::vector<uint16_t> input, const std::vector<int
     Py_DECREF(pInput);
 }
 
-std::vector<int> PyLearner::pyCompute(const std::vector<uint16_t> input) const{
+std::vector<double> PyLearner::pyCompute(const std::vector<uint16_t> input) const{
     PyObject *pInput, *pComp, *pValue;
     
     pInput = vectorToPyObject(input);
@@ -252,7 +252,7 @@ std::vector<int> PyLearner::pyCompute(const std::vector<uint16_t> input) const{
 
     if (pValue == NULL) throw FileError("Error while extracting result from python learner");
 
-    auto res = vectorFromPyObject<int>(pValue);
+    auto res = vectorFromPyObject<double>(pValue);
 
     Py_DECREF(pValue);
     Py_DECREF(pComp);
