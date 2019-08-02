@@ -68,7 +68,7 @@ void ActivePyLearner::learn(){
                 
                 //*
                 if(reward > VALID_COEFF){ // If position is valid (within range)
-                    device->addPosition(output); // Update position
+                    device->addPosition(apply<double, int>(output, [](double x){return x;})); // Update position
                     device->waitFeedback();
 
                     std::cout << "Updating position..." << std::endl;
