@@ -251,13 +251,21 @@ class AbstractController{
         std::vector<uint16_t> getPosition() const;
 
         /**
-         * @brief Checks whether the iven position is valid or not
+         * @brief Checks whether the given position is valid or not
          * 
          * @param position the position to verify
          * @return true if the position is valid
          * @return false otherwise
          */
         bool validPosition(const std::vector<uint16_t>& position) const;
+
+        /**
+         * @brief Checks whether the given position is valid or not and set it valid
+         * 
+         * @param position the position to modify
+         * @return std::vector<uint16_t> the new valid position
+         */
+        std::vector<uint16_t> toValidPosition(const std::vector<uint16_t>& position) const;
 
 
         /**

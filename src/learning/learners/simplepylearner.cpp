@@ -58,6 +58,7 @@ template<class R, class T> std::vector<T> SimplePyLearner::apply(const std::vect
 template std::vector<int> SimplePyLearner::apply<int, int>(const std::vector<int>& vect, const std::function< int(int) >& func) const;
 template std::vector<int> SimplePyLearner::apply<double, int>(const std::vector<double>& vect, const std::function< int(double) >& func) const;
 template std::vector<double> SimplePyLearner::apply<int, double>(const std::vector<int>& vect, const std::function< double(int) >& func) const;
+template std::vector<uint16_t> SimplePyLearner::apply<double, uint16_t>(const std::vector<double>& vect, const std::function< uint16_t(double) >& func) const;
 
 
 

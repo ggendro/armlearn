@@ -43,37 +43,23 @@ void ActivePyLearner::learn(){
                 
                 std::cout << "Computing output..." << std::endl;
                 auto output = pyCompute(fullInput); // Computation of output
+                auto scaledOutput = device->toValidPosition(apply<double, uint16_t>(output, [](double x){return x;})); // Scale output
 
-                auto reward = computeReward(lsetPtr->first->getInput(), output); // Computation of reward
+                auto reward = computeReward(lsetPtr->first->getInput(), scaledOutput); // Computation of reward
                 std::cout << "Reward : " << reward << std::endl;
+                
                 std::vector<double> rewardVector = {reward};
-
-                State* newState = new State(fullInput, output, rewardVector);  // Save state
-                /*
-                auto ptr = std::find_if(saves.begin(), saves.end(), [newState](State* s){ return (*s).hasSameInput(*newState); }); 
-                if(ptr != saves.end()){ // Replace existing save if same input already saved
-                    delete *ptr;  
-                    *ptr = newState;
-
-                    nbNullMove++;
-                }else{
-                    saves.push_back(newState);
-                }
-                //*/
-
-                //*
-                if(reward <= VALID_COEFF) nbNullMove++;
-                saves.push_back(newState);
-                //*/
+                saves.push_back(new State(fullInput, output, rewardVector));  // Save state
                 
                 //*
                 if(reward > VALID_COEFF){ // If position is valid (within range)
-                    device->addPosition(apply<double, int>(output, [](double x){return x;})); // Update position
+                    device->setPosition(scaledOutput); // Update position
                     device->waitFeedback();
 
                     std::cout << "Updating position..." << std::endl;
                 }else{
                     std::cout << "Error too important : movement not allowed" << std::endl;
+                    nbNullMove++;
                 }
                 //*/
 

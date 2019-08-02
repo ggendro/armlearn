@@ -97,12 +97,25 @@ bool AbstractController::validPosition(const std::vector<uint16_t>& position) co
     if(position.size() < motors->size()) return false;
 
     auto posPtr = position.cbegin(); 
-    for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){  
+    for(auto ptr=motors->cbegin(); ptr != motors->cend(); ptr++){  
         if(!ptr->second->validPosition(*posPtr)) return false;
         posPtr++;
     }
 
     return true;
+}
+
+std::vector<uint16_t> AbstractController::toValidPosition(const std::vector<uint16_t>& position) const{
+    std::vector<uint16_t> validPos;
+    auto posPtr = position.cbegin();
+
+    for(auto ptr=motors->cbegin(); ptr != motors->cend(); ptr++){ 
+        if(posPtr == position.cend()) validPos.push_back(ptr->second->getCurrentPosition());
+        else validPos.push_back(ptr->second->toValidPosition(*posPtr));
+        posPtr++;
+    }
+
+    return validPos;
 }
 
 

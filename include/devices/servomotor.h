@@ -314,6 +314,13 @@ class Servomotor{
          */
         bool validPosition(uint16_t position) const;
 
+        /**
+         * @brief Checks if the postion is within the boundaries of the servomotor and if not not set it to the closest boundary
+         * 
+         * @return uint16_t the scaled position
+         */
+        uint16_t toValidPosition(uint16_t position) const;
+
 
         /**
          * @brief Cheks if the servomotor is currently moving
