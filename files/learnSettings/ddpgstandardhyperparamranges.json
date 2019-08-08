@@ -1,6 +1,6 @@
 {
     "nbIterations" : {
-        "values" : [10000]
+        "values" : [400]
     },
     "nbMovements" : {
         "values" : [150]
