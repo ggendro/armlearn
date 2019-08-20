@@ -25,15 +25,15 @@
             "type" : "f"
         },
         "learningRateCritic" : {
-            "value" : 10e-4,
+            "value" : 10e-3,
             "type" : "f"
         },
         "learningRateActor" : {
-            "value" : 10e-5,
+            "value" : 10e-4,
             "type" : "f"
         },
         "saveFolder" : {
-            "value" : "../../files/learnSaves/batches/armbatch_early_termination_last_reward_2019-07-31/models/",
+            "value" : "../../files/learnSaves/armModels/",
             "type" : "s"
         },
         "display" : {

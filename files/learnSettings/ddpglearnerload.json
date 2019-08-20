@@ -5,11 +5,11 @@
     "computeMethod" : "compute",
     "settings" : {
         "inputSize" : {
-            "value" : 6,
+            "value" : 9,
             "type" : "i"
         },
         "outputSize" :  {
-            "value" : 3,
+            "value" : 6,
             "type" : "i"
         },
         "nbEpochsCritic" : {
@@ -29,7 +29,7 @@
             "type" : "f"
         },
         "learningRateActor" : {
-            "value" : 10e-5,
+            "value" : 10e-3,
             "type" : "f"
         },
         "loadSave" : {
