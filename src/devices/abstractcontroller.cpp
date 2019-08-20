@@ -118,6 +118,20 @@ std::vector<uint16_t> AbstractController::toValidPosition(const std::vector<uint
     return validPos;
 }
 
+std::vector<uint16_t> AbstractController::scalePosition(const std::vector<double>& position, double oldMin, double oldMax) const{
+    std::vector<uint16_t> scaledPos;
+    auto posPtr = position.cbegin();
+
+    for(auto ptr=motors->cbegin(); ptr != motors->cend(); ptr++){ 
+        if(posPtr == position.cend()) scaledPos.push_back(ptr->second->getCurrentPosition());
+        else scaledPos.push_back(ptr->second->scalePosition(*posPtr, oldMin, oldMax));
+        posPtr++;
+    }
+
+    return scaledPos;
+}
+
+
 
 bool AbstractController::goalReached() const{
     for(auto ptr=motors->cbegin(); ptr != motors->cend(); ptr++){

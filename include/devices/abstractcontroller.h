@@ -269,6 +269,18 @@ class AbstractController{
 
 
         /**
+         * @brief Rescale the position to match the boundaries of the servomotors
+         * 
+         * @param position the positions to scale
+         * @param oldMin the min value of the positions
+         * @param oldMax the max value of the positions
+         * @return std::vector<uint16_t> the scaled position
+         */
+        std::vector<uint16_t> scalePosition(const std::vector<double>& position, double oldMin=-1, double oldMax=1) const;
+
+
+
+        /**
          * @brief Enables or disables a servomotor's ability to move or hold a position (torque)
          * 
          * @param enable if true, enables the torque, otherwise, disables it

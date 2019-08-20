@@ -170,6 +170,11 @@ uint16_t Servomotor::toValidPosition(uint16_t position) const{
     return std::max(std::min(position, (uint16_t)(posMax-1)), (uint16_t)(posMin+1));
 }
 
+uint16_t Servomotor::scalePosition(double position, double oldMin, double oldMax) const{
+    return (uint16_t) ((std::max(std::min(position, oldMax), oldMin) - oldMin) * (posMax - posMin) / (oldMax - oldMin) + posMin);
+}
+
+
 bool Servomotor::motorMoving() const{
     return inMovement;
 }

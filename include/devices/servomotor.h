@@ -307,7 +307,7 @@ class Servomotor{
         bool validSpeed(uint16_t speed) const;
 
         /**
-         * @brief Checks if the postion is within the boundaries of the servomotor
+         * @brief Checks if the position is within the boundaries of the servomotor
          * 
          * @return true if it is
          * @return false otherwise
@@ -315,11 +315,22 @@ class Servomotor{
         bool validPosition(uint16_t position) const;
 
         /**
-         * @brief Checks if the postion is within the boundaries of the servomotor and if not not set it to the closest boundary
+         * @brief Checks if the position is within the boundaries of the servomotor and if not not set it to the closest boundary
          * 
          * @return uint16_t the scaled position
          */
         uint16_t toValidPosition(uint16_t position) const;
+        
+        /**
+         * @brief Rescale the position to match the boundaries of the servomotor
+         * 
+         * @param position the position to scale
+         * @param oldMin the min value of the position
+         * @param oldMax the max value of the position
+         * @return uint16_t the scaled position
+         */
+        uint16_t scalePosition(double position, double oldMin=-1, double oldMax=1) const;
+
 
 
         /**
