@@ -16,28 +16,17 @@ SimplePyLearner::~SimplePyLearner(){
 
 
 template<class R, class T> double SimplePyLearner::computeReward(const std::vector<R>& input, const std::vector<T>& output) const{
-    std::vector<uint16_t> positionOutput;
-    auto position = device->getPosition();
 
-    auto outPtr = output.cbegin();
-    for(auto posPtr = position.cbegin(); posPtr < position.cend(); posPtr++) {
-        positionOutput.push_back((uint16_t)(*posPtr + *outPtr));
-        outPtr++;
-    }
-
+    std::vector<uint16_t> positionOutput = apply<T, uint16_t>(output, [](T x){return x;});
     if(!device->validPosition(positionOutput)) return VALID_COEFF;
     
-    //auto oldCoords = verifier->computeServoToCoord(position)->getCoord();
     auto newCoords = verifier->computeServoToCoord(positionOutput)->getCoord();
 
-
-    //return TARGET_COEFF * (computeSquaredError(input, oldCoords) - computeSquaredError(input, newCoords)) - MOVEMENT_COEFF * computeSquaredError(device->getPosition(), output);
-    //*
     auto err = computeSquaredError(input, newCoords);
     if(abs(err) < LEARN_ERROR_MARGIN) return -VALID_COEFF;
-    
+
+    //return TARGET_COEFF * (computeSquaredError(input, oldCoords) - computeSquaredError(input, newCoords)) - MOVEMENT_COEFF * computeSquaredError(device->getPosition(), positionOutput);
     return -TARGET_COEFF * err - MOVEMENT_COEFF * computeSquaredError(device->getPosition(), output);  
-    //*/
 }
 template double SimplePyLearner::computeReward<double, double>(const std::vector<double> &input, const std::vector<double>& output) const;
 template double SimplePyLearner::computeReward<double, uint16_t>(const std::vector<double>& input, const std::vector<uint16_t>& output) const;

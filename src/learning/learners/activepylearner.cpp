@@ -43,11 +43,11 @@ void ActivePyLearner::learn(){
                 
                 std::cout << "Computing output..." << std::endl;
                 auto output = pyCompute(fullInput); // Computation of output
-                auto scaledOutput = device->toValidPosition(apply<double, uint16_t>(output, [](double x){return x;})); // Scale output
+                auto scaledOutput = device->toValidPosition(apply<double, uint16_t>(output, [](double x){return x;})); // Format output for shipment to device
 
                 auto reward = computeReward(lsetPtr->first->getInput(), scaledOutput); // Computation of reward
                 std::cout << "Reward : " << reward << std::endl;
-                
+
                 std::vector<double> rewardVector = {reward};
                 saves.push_back(new State(fullInput, output, rewardVector));  // Save state
                 

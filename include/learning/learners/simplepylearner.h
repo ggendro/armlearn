@@ -57,7 +57,7 @@ class SimplePyLearner : public PyLearner{
          * @param func funcion to apply to each value of initial vector
          * @return std::vector<T> resulting vector
          * 
-         * Template method, defined for int and double
+         * Template method, defined for int, uint16_t and double
          */
         template<class R, class T> std::vector<T> apply(const std::vector<R>& vect, const std::function< T(R) >& func) const;
 
