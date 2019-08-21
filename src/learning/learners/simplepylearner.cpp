@@ -50,8 +50,13 @@ template std::vector<double> SimplePyLearner::apply<int, double>(const std::vect
 template std::vector<uint16_t> SimplePyLearner::apply<double, uint16_t>(const std::vector<double>& vect, const std::function< uint16_t(double) >& func) const;
 
 
+std::vector<uint16_t> SimplePyLearner::formatOutput(const std::vector<double>& output) const{
+    return device->toValidPosition(device->scalePosition(output, -M_PI, M_PI));
+}
 
-Output* SimplePyLearner::produce(const Input& input){
+
+
+Output<uint16_t>* SimplePyLearner::produce(const Input<uint16_t>& input){
     std::vector<uint16_t> fullInput(input.getInput()); // Create input of the DNN, add the target coordinates
     auto state = DeviceLearner::getDeviceState(); // Get state of servomotors
 
@@ -59,7 +64,7 @@ Output* SimplePyLearner::produce(const Input& input){
         fullInput.insert(fullInput.end(), ptr->begin(), ptr->end()); // Add the current state of the servomotors to the input
     }
 
-    return new Output(apply<double, int>(pyCompute(fullInput),[](double x){return x;}));
+    return new Output<uint16_t>(formatOutput(pyCompute(fullInput)));
 }
 
 

@@ -51,8 +51,8 @@ class SimplePyLearner : public PyLearner{
         /**
          * @brief Applies a funcion to each element of a vector
          * 
-         * @tparam R class of inital vector values
-         * @tparam T class of resulting vector values
+         * @param R class of inital vector values
+         * @param T class of resulting vector values
          * @param vect initial vector
          * @param func funcion to apply to each value of initial vector
          * @return std::vector<T> resulting vector
@@ -60,6 +60,14 @@ class SimplePyLearner : public PyLearner{
          * Template method, defined for int, uint16_t and double
          */
         template<class R, class T> std::vector<T> apply(const std::vector<R>& vect, const std::function< T(R) >& func) const;
+
+        /**
+         * @brief Formats the computation output for the device
+         * 
+         * @param output te output to format
+         * @return std::vector<uint16_t> the formatted output
+         */
+        std::vector<uint16_t> formatOutput(const std::vector<double>& output) const;
 
 
     public:
@@ -87,7 +95,7 @@ class SimplePyLearner : public PyLearner{
          * @param input
          * @return Output
          */
-        virtual Output* produce(const Input& input) override;
+        virtual Output<uint16_t>* produce(const Input<uint16_t>& input) override;
 
 
         /**

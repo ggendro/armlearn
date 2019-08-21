@@ -22,18 +22,20 @@
  * 
  * Does not correspond to a real output, used as mother class for other classes
  */
-class Input : public IOVector<uint16_t>{
+template<class T> class Input : public IOVector<T>{
 
     public:
-        using IOVector::IOVector;
-        virtual ~Input();
+        using IOVector<T>::IOVector;
+        virtual ~Input(){}
 
         /**
          * @brief Returns the input under the form of a vector useable for most of classifiers or learning structures
          * 
-         * @return std::vector<uint16_t> the input
+         * @return std::vector<T> the input
          */
-        virtual std::vector<uint16_t> getInput() const;
+        virtual std::vector<T> getInput() const{
+            return IOVector<T>::vector;
+        }
 };
 
 

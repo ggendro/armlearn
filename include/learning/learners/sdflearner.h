@@ -72,7 +72,7 @@ class SdfLearner : public DeviceLearner{
          * @param input
          * @return Output
          */
-        virtual Output* produce(const Input& input) override;
+        virtual Output<uint16_t>* produce(const Input<uint16_t>& input) override;
 
 
         /**

@@ -43,7 +43,7 @@ void ActivePyLearner::learn(){
                 
                 std::cout << "Computing output..." << std::endl;
                 auto output = pyCompute(fullInput); // Computation of output
-                auto scaledOutput = device->toValidPosition(device->scalePosition(output, -M_PI, M_PI)); // Format output for shipment to device
+                auto scaledOutput = formatOutput(output); // Format output for shipment to device
 
                 std::cout << "Scaled output : [";
                 for(auto ptr = scaledOutput.cbegin(); ptr < scaledOutput.cend(); ptr++) {

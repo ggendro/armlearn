@@ -22,19 +22,21 @@
  * 
  * Does not correspond to a real output, used as mother class for other classes
  */
-class Output : public IOVector<int>{
+template<class T> class Output : public IOVector<T>{
 
     public:
-        using IOVector::IOVector;
-        virtual ~Output();
+        using IOVector<T>::IOVector;
+        virtual ~Output(){}
 
 
         /**
          * @brief Returns the output under the form of an array of intermediary positions
          * 
-         * @return std::vector<std::vector<uint16_t>> the output
+         * @return std::vector<std::vector<T>> the output
          */
-        virtual std::vector<int> getOutput() const;
+        virtual std::vector<T> getOutput() const{
+            return IOVector<T>::vector;
+        }
 };
 
 #endif

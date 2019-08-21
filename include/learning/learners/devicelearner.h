@@ -26,7 +26,7 @@
  * 
  * Friend class of Servomotor and AbstractController classes
  */
-class DeviceLearner : public Learner{
+class DeviceLearner : public Learner<uint16_t, uint16_t>{
 
     protected:
         AbstractController* device;
