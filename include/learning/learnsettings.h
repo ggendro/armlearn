@@ -21,7 +21,7 @@
 #define VALID_COEFF -1
 
 // Margin of error allowing to stop learning if error is below the number
-#define LEARN_ERROR_MARGIN 0.05
+#define LEARN_ERROR_MARGIN 0.01
 
 // Number of iterations of the learning
 #define LEARN_NB_ITERATIONS 1000

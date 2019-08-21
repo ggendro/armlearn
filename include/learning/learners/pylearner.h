@@ -42,7 +42,7 @@
  *      - "className" : string, name of the python class
  *      - "learnMethod" : string, name of the python training method
  *      - "computeMethod" : string, name of the python compute method
- *  - optional field "settings" containg the following:
+ *  - optional field "settings" containing the following:
  *      - fields corresponding to constructor parameters of the python class matching "className"
  *      - each field must contain two subfields:
  *          - "value" : the parameter value

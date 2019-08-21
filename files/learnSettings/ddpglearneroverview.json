@@ -1,0 +1,49 @@
+{
+    "fileName" : "ddpglearner",
+    "className" : "DDPGLearner",
+    "learnMethod" : "train",
+    "computeMethod" : "compute",
+    "settings" : {
+        "inputSize" : {
+            "value" : 9,
+            "type" : "i"
+        },
+        "outputSize" :  {
+            "value" : 6,
+            "type" : "i"
+        },
+        "nbEpochsCritic" : {
+            "value" : 10,
+            "type" : "i"
+        },
+        "nbEpochsActor" : {
+            "value" : 1,
+            "type" : "i"
+        },
+        "lossDiscountFactor" : {
+            "value" : 0.99,
+            "type" : "f"
+        },
+        "learningRateCritic" : {
+            "value" : 10e-3,
+            "type" : "f"
+        },
+        "learningRateActor" : {
+            "value" : 10e-4,
+            "type" : "f"
+        },
+        "loadSave" : {
+            "value" : [
+                        "../../files/learnSaves/batches/armbatch_linear_set_mode_2019-08-21/models/DDPG_model_actor_0.h5",
+                        "../../files/learnSaves/batches/armbatch_linear_set_mode_2019-08-21/models/DDPG_model_critic_0.h5",
+                        "../../files/learnSaves/batches/armbatch_linear_set_mode_2019-08-21/models/DDPG_model_targetActor_0.h5",
+                        "../../files/learnSaves/batches/armbatch_linear_set_mode_2019-08-21/models/DDPG_model_targetCritic_0.h5"
+                      ],
+            "type" : "[s,s,s,s]"
+        },
+        "display" : {
+            "value" : ["print"],
+            "type" : "[s]"
+        }
+    }
+}

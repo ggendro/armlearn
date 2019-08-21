@@ -18,7 +18,7 @@ ActivePyLearner::~ActivePyLearner(){
 
 void ActivePyLearner::learn(){
 
-    for(auto lsetPtr = learningSet->cbegin(); lsetPtr != learningSet->cend(); lsetPtr++){ // Learn trajectory for each example from the learning set
+    for(auto lsetPtr = learningSet->begin(); lsetPtr != learningSet->end(); lsetPtr++){ // Learn trajectory for each example from the learning set
 
         for(int nbIt = 0; nbIt < LEARN_NB_ITERATIONS; nbIt++){
             std::cout << "Reset device position..." << std::endl;
@@ -43,7 +43,14 @@ void ActivePyLearner::learn(){
                 
                 std::cout << "Computing output..." << std::endl;
                 auto output = pyCompute(fullInput); // Computation of output
-                auto scaledOutput = device->toValidPosition(apply<double, uint16_t>(output, [](double x){return x;})); // Format output for shipment to device
+                auto scaledOutput = device->toValidPosition(device->scalePosition(output, -M_PI, M_PI)); // Format output for shipment to device
+
+                std::cout << "Scaled output : [";
+                for(auto ptr = scaledOutput.cbegin(); ptr < scaledOutput.cend(); ptr++) {
+                    std::cout << *ptr << ", ";
+                }
+                std::cout << "]" << std::endl;
+
 
                 auto reward = computeReward(lsetPtr->first->getInput(), scaledOutput); // Computation of reward
                 std::cout << "Reward : " << reward << std::endl;
@@ -88,7 +95,7 @@ void ActivePyLearner::learn(){
                 }
                 std::cout << std::endl;
                 
-                /*
+                //*
                 if(abs(reward) < LEARN_ERROR_MARGIN) {  // Stop moving if error is within threshold
                     std::cout << "reward value : " << reward << "smaller than " << LEARN_ERROR_MARGIN << ". End of learning..." << std::endl;
                     stop = true;
@@ -115,6 +122,9 @@ void ActivePyLearner::learn(){
             }
             std::cout << "Executed " << i << " updates..." << std::endl;
         }
+
+        delete lsetPtr->second;
+        lsetPtr->second = produce(*(lsetPtr->first));
 
     }
 }

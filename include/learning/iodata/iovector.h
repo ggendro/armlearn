@@ -20,7 +20,7 @@
 
 /**
  * @class IOVector
- * @brief Inout or Output of learning algorithms
+ * @brief Input or Output of learning algorithms
  */
 template<class T> class IOVector{
 
