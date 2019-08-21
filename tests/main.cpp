@@ -32,23 +32,38 @@ int main(int argc, char *argv[]) {
 	arbotix_sim.updateInfos();
 	arbotix.updateInfos();
 
-	ActivePyLearner learner(&arbotix, &conv);
+	ActivePyLearner learner(&arbotix_sim, &conv);
 
-	auto dest = new Input<uint16_t>({100, 100, 100});
-	auto destMatch = new Output<uint16_t>();
-	learner.addToLearningSet(dest, destMatch);
-	learner.learn();
+	auto targets = { // Inputs of learning
+		new Input<uint16_t>({500, 10, 300}),
+	};
+	for(auto& dest : targets) learner.addToLearningSet(dest, new Output<std::vector<uint16_t>>()); // Empty label for learning
 
-	auto res = learner.produce(*dest);
-	std::cout << "Output : " << res->toString() << std::endl;
 
-	arbotix.setPosition(res->getOutput());
-	delete res; // Do not forget
-	
-	std::cout << "Update servomotors information:" << std::endl;
-	arbotix.updateInfos();
-	
-
+	learner.learn(); // Execute learning
 	std::cout << learner.toString();
+
+
+	for(auto& dest : targets) {
+
+		auto res = learner.produce(*dest);
+		std::cout << "Input : " << dest->toString() << " - Output : " << res->toString() << std::endl;
+
+		arbotix.goToBackhoe(); // Reset position
+		arbotix.waitFeedback();
+
+		auto moves = res->getOutput();
+		for(auto ptr = moves.begin(); ptr < moves.end(); ptr++){
+			arbotix.setPosition(*ptr);
+			arbotix.waitFeedback();
+		}
+
+		delete res; // Do not forget
+		
+		std::cout << "Update servomotors information:" << std::endl;
+		arbotix.updateInfos();
+
+	}
+
 
 }

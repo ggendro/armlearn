@@ -23,7 +23,7 @@
  * 
  * The PassivePyLearner does not make any computations, it launches a python method for learning which will do all the computations
  * and answer requests from the module when interaction within the environment is required.
- * Contrary to the ActivePyLearner class wich executes most of the algorithm itself.
+ * Contrary to the ActivePyLearner class wich executes most of the algorithm by itself.
  */
 class PassivePyLearner : public SimplePyLearner{
 

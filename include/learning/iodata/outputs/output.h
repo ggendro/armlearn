@@ -1,7 +1,7 @@
 /**
  * @file output.h
  * @author Gaël Gendron (gael.gendron@insa-rennes.fr)
- * @brief File containing the abstract class Output, output used by learners classes
+ * @brief File containing the class Output, output used by learners classes
  * @version 0.1
  * @date 2019-06-11
  * 
@@ -19,12 +19,14 @@
 /**
  * @class Output
  * @brief Output of learning algorithms, inherited from IOvector
- * 
- * Does not correspond to a real output, used as mother class for other classes
  */
 template<class T> class Output : public IOVector<T>{
 
     public:
+        /**
+         * @brief Destroy the Output object
+         * 
+         */
         using IOVector<T>::IOVector;
         virtual ~Output(){}
 

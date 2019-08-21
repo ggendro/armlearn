@@ -21,12 +21,12 @@
 #define VALID_COEFF -1
 
 // Margin of error allowing to stop learning if error is below the number
-#define LEARN_ERROR_MARGIN 0.01
+#define LEARN_ERROR_MARGIN 0.005
 
 // Number of iterations of the learning
-#define LEARN_NB_ITERATIONS 1000
+#define LEARN_NB_ITERATIONS 500
 // Number of movents allowed to reach target during learning
-#define LEARN_NB_MOVEMENTS 150
+#define LEARN_NB_MOVEMENTS 15
 // Number of invalid movements allowed during one iteration
 #define MAX_NULL_MOVE 0
 

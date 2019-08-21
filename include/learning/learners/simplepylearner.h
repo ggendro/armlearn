@@ -22,7 +22,7 @@
 
 /**
  * @class SimplePyLearner
- * @brief Class containing a simple learner based on a verifier, that learns how to compute servomotor positions from coordinates without obstacles or disabled servomotors, via python script
+ * @brief Class containing a simple learner based on a verifier, that learns how to compute servomotor positions from coordinates, via python script
  * 
  */
 class SimplePyLearner : public PyLearner{
@@ -95,7 +95,7 @@ class SimplePyLearner : public PyLearner{
          * @param input
          * @return Output
          */
-        virtual Output<uint16_t>* produce(const Input<uint16_t>& input) override;
+        virtual Output<std::vector<uint16_t>>* produce(const Input<uint16_t>& input) override;
 
 
         /**

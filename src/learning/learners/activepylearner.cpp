@@ -46,9 +46,7 @@ void ActivePyLearner::learn(){
                 auto scaledOutput = formatOutput(output); // Format output for shipment to device
 
                 std::cout << "Scaled output : [";
-                for(auto ptr = scaledOutput.cbegin(); ptr < scaledOutput.cend(); ptr++) {
-                    std::cout << *ptr << ", ";
-                }
+                for(auto ptr = scaledOutput.cbegin(); ptr < scaledOutput.cend(); ptr++) std::cout << *ptr << ", ";
                 std::cout << "]" << std::endl;
 
 
@@ -72,7 +70,7 @@ void ActivePyLearner::learn(){
 
                 /*
                 try{
-                    device->addPosition(output); // Update position
+                    device->setPosition(scaledOutput); // Update position
                     device->waitFeedback();
 
                     std::cout << "Updating position..." << std::endl;
@@ -95,9 +93,9 @@ void ActivePyLearner::learn(){
                 }
                 std::cout << std::endl;
                 
-                //*
+                /*
                 if(abs(reward) < LEARN_ERROR_MARGIN) {  // Stop moving if error is within threshold
-                    std::cout << "reward value : " << reward << "smaller than " << LEARN_ERROR_MARGIN << ". End of learning..." << std::endl;
+                    std::cout << "reward value : " << reward << " smaller than " << LEARN_ERROR_MARGIN << ". End of learning..." << std::endl;
                     stop = true;
                     break;
                 }
@@ -123,6 +121,10 @@ void ActivePyLearner::learn(){
             std::cout << "Executed " << i << " updates..." << std::endl;
         }
 
+        std::cout << "Reset device position..." << std::endl;
+        device->goToBackhoe(); // Reset position
+        device->waitFeedback();
+        
         delete lsetPtr->second;
         lsetPtr->second = produce(*(lsetPtr->first));
 

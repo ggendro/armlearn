@@ -56,15 +56,32 @@ std::vector<uint16_t> SimplePyLearner::formatOutput(const std::vector<double>& o
 
 
 
-Output<uint16_t>* SimplePyLearner::produce(const Input<uint16_t>& input){
-    std::vector<uint16_t> fullInput(input.getInput()); // Create input of the DNN, add the target coordinates
-    auto state = DeviceLearner::getDeviceState(); // Get state of servomotors
+Output<std::vector<uint16_t>>* SimplePyLearner::produce(const Input<uint16_t>& input){
+    std::cout << "Reset device position..." << std::endl;
+    
+    device->goToBackhoe(); // Reset position
+    device->waitFeedback();
 
-    for(auto ptr = state.cbegin(); ptr < state.cend(); ptr++) {
-        fullInput.insert(fullInput.end(), ptr->begin(), ptr->end()); // Add the current state of the servomotors to the input
+    auto outputVector = std::vector<std::vector<uint16_t>>();
+
+    for(int nbIt = 0; nbIt < LEARN_NB_MOVEMENTS; nbIt++){
+        std::vector<uint16_t> fullInput(input.getInput()); // Create input of the DNN, add the target coordinates
+
+        auto state = DeviceLearner::getDeviceState(); // Get state of servomotors
+
+        for(auto ptr = state.cbegin(); ptr < state.cend(); ptr++) {
+            fullInput.insert(fullInput.end(), ptr->begin(), ptr->end()); // Add the current state of the servomotors to the input
+        }
+        auto output = formatOutput(pyCompute(fullInput));
+
+        std::cout << "Output " << nbIt << ": ";
+        for(auto ptr = output.cbegin(); ptr < output.cend(); ptr++) std::cout << *ptr << ", ";
+        std::cout << std::endl;
+
+        outputVector.push_back(output);
     }
 
-    return new Output<uint16_t>(formatOutput(pyCompute(fullInput)));
+    return new Output<std::vector<uint16_t>>(outputVector);
 }
 
 
