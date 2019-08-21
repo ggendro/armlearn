@@ -33,7 +33,7 @@
             "type" : "f"
         },
         "saveFolder" : {
-            "value" : "../../files/learnSaves/armModels/",
+            "value" : "../../files/learnSaves/models_arm",
             "type" : "s"
         },
         "display" : {
