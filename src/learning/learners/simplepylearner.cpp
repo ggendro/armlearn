@@ -50,11 +50,6 @@ template std::vector<double> SimplePyLearner::apply<int, double>(const std::vect
 template std::vector<uint16_t> SimplePyLearner::apply<double, uint16_t>(const std::vector<double>& vect, const std::function< uint16_t(double) >& func) const;
 
 
-std::vector<uint16_t> SimplePyLearner::formatOutput(const std::vector<double>& output) const{
-    return device->toValidPosition(device->scalePosition(output, -M_PI, M_PI));
-}
-
-
 
 Output<std::vector<uint16_t>>* SimplePyLearner::produce(const Input<uint16_t>& input){
     std::cout << "Reset device position..." << std::endl;
@@ -72,7 +67,28 @@ Output<std::vector<uint16_t>>* SimplePyLearner::produce(const Input<uint16_t>& i
         for(auto ptr = state.cbegin(); ptr < state.cend(); ptr++) {
             fullInput.insert(fullInput.end(), ptr->begin(), ptr->end()); // Add the current state of the servomotors to the input
         }
-        auto output = formatOutput(pyCompute(fullInput));
+        auto output = formatOutput(pyCompute(fullInput, false));
+        
+        try{
+            device->setPosition(output); // Update position
+            device->waitFeedback();
+
+            std::cout << "Updating position..." << std::endl;
+        }catch(OutOfRangeError e){
+            std::cout << e.what() << std::endl;
+        }
+
+        auto newPosition = device->getPosition(); // Display new position
+        auto newCoords = verifier->computeServoToCoord(newPosition)->getCoord();
+        std::cout << "Position [ ";
+        for(auto ptr = newPosition.cbegin(); ptr < newPosition.cend(); ptr++) {
+            std::cout << *ptr << " ";
+        }
+        std::cout << "] --> {";
+        for(auto ptr = newCoords.cbegin(); ptr < newCoords.cend(); ptr++) {
+            std::cout << *ptr << " ";
+        }
+        std::cout << "}" << std::endl;
 
         std::cout << "Output " << nbIt << ": ";
         for(auto ptr = output.cbegin(); ptr < output.cend(); ptr++) std::cout << *ptr << ", ";

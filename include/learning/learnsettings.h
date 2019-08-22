@@ -13,10 +13,12 @@
 #ifndef LEARNSETTINGS_H
 #define LEARNSETTINGS_H
 
+// Proportion of target error in the reward
+#define TARGET_PROP 0.2
 // Coefficient of target error (difference between the real output and the target output, to minimize) when computing error between input and output
-#define TARGET_COEFF 8e-4
+#define TARGET_COEFF (TARGET_PROP / (2 * 613)) 
 // Coefficient of movement error (distance browsed by servomotors to reach target, to minimize) when computing error between input and output
-#define MOVEMENT_COEFF 3.467e-6
+#define MOVEMENT_COEFF ((1 - TARGET_PROP) / 5537)
 // Coefficient of valid position error (returned if position is not valid)
 #define VALID_COEFF -1
 
@@ -24,9 +26,9 @@
 #define LEARN_ERROR_MARGIN 0.005
 
 // Number of iterations of the learning
-#define LEARN_NB_ITERATIONS 500
+#define LEARN_NB_ITERATIONS 300
 // Number of movents allowed to reach target during learning
-#define LEARN_NB_MOVEMENTS 15
+#define LEARN_NB_MOVEMENTS 85
 // Number of invalid movements allowed during one iteration
 #define MAX_NULL_MOVE 0
 

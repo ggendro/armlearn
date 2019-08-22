@@ -3,16 +3,16 @@
 #include "serialcontroller.h"
 #include "trajectory.h"
 
-#include "activepylearner.h"
+#include "setmodepylearner.h"
 #include "widowxbuilder.h"
 #include "optimcartesianconverter.h"
 
 
 int main(int argc, char *argv[]) {
 
-	OptimCartesianConverter conv;
-	NoWaitArmSimulator arbotix_sim((DisplayMode) 0);
-	SerialController arbotix("/dev/ttyUSB0");
+	OptimCartesianConverter conv; // Create kinematics calculator
+	NoWaitArmSimulator arbotix_sim((DisplayMode) 0); // Create robot simulator 
+	SerialController arbotix("/dev/ttyUSB0"); // Create device connection
 
 	WidowXBuilder builder;
 	builder.buildConverter(conv);
@@ -32,10 +32,10 @@ int main(int argc, char *argv[]) {
 	arbotix_sim.updateInfos();
 	arbotix.updateInfos();
 
-	ActivePyLearner learner(&arbotix_sim, &conv);
+	SetModePyLearner learner(&arbotix_sim, &conv); // Create learner
 
-	auto targets = { // Inputs of learning
-		new Input<uint16_t>({500, 10, 300}),
+	auto targets = { // Inputs of learning, positions to ask to the robot
+		new Input<uint16_t>({5, 50, 300}),
 	};
 	for(auto& dest : targets) learner.addToLearningSet(dest, new Output<std::vector<uint16_t>>()); // Empty label for learning
 
@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
 	std::cout << learner.toString();
 
 
-	for(auto& dest : targets) {
+	for(auto& dest : targets) { // Move robot to each position asked
 
 		auto res = learner.produce(*dest);
 		std::cout << "Input : " << dest->toString() << " - Output : " << res->toString() << std::endl;

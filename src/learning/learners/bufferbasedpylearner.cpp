@@ -3,20 +3,20 @@
  */
 
 
-#include "activepylearner.h"
+#include "bufferbasedpylearner.h"
 
 
-ActivePyLearner::ActivePyLearner(AbstractController* controller, Converter* converter, std::string learningScriptSettings, double testProp):SimplePyLearner(controller, converter, learningScriptSettings, testProp){
+BufferBasedPyLearner::BufferBasedPyLearner(AbstractController* controller, Converter* converter, std::string learningScriptSettings, double testProp):SimplePyLearner(controller, converter, learningScriptSettings, testProp){
     
 }
 
-ActivePyLearner::~ActivePyLearner(){
+BufferBasedPyLearner::~BufferBasedPyLearner(){
     
 }
 
 
 
-void ActivePyLearner::learn(){
+void BufferBasedPyLearner::learn(){
 
     for(auto lsetPtr = learningSet->begin(); lsetPtr != learningSet->end(); lsetPtr++){ // Learn trajectory for each example from the learning set
 
@@ -56,28 +56,21 @@ void ActivePyLearner::learn(){
                 std::vector<double> rewardVector = {reward};
                 saves.push_back(new State(fullInput, output, rewardVector));  // Save state
                 
-                //*
+                
                 if(reward > VALID_COEFF){ // If position is valid (within range)
-                    device->setPosition(scaledOutput); // Update position
-                    device->waitFeedback();
+                    try{
+                        device->setPosition(scaledOutput); // Update position
+                        device->waitFeedback();
 
-                    std::cout << "Updating position..." << std::endl;
+                        std::cout << "Updating position..." << std::endl;
+                    }catch(OutOfRangeError e){
+                        std::cout << e.what() << std::endl;
+                        nbNullMove++;
+                    }
                 }else{
                     std::cout << "Error too important : movement not allowed" << std::endl;
                     nbNullMove++;
                 }
-                //*/
-
-                /*
-                try{
-                    device->setPosition(scaledOutput); // Update position
-                    device->waitFeedback();
-
-                    std::cout << "Updating position..." << std::endl;
-                }catch(OutOfRangeError e){
-                    std::cout << e.what() << std::endl;
-                }
-                //*/
 
                 auto newPosition = device->getPosition(); // Display new position
                 std::cout << "Current position : ";
@@ -131,46 +124,46 @@ void ActivePyLearner::learn(){
     }
 }
 
-void ActivePyLearner::test(){
+void BufferBasedPyLearner::test(){
 
 }
 
 
 
-std::string ActivePyLearner::toString() const{
+std::string BufferBasedPyLearner::toString() const{
     std::stringstream rep;
-    rep << "Active " << SimplePyLearner::toString();
+    rep << "BufferBased " << SimplePyLearner::toString();
 
     return rep.str();
 }
 
 
 
-ActivePyLearner::State::State(std::vector<uint16_t>& inputVector, std::vector<double>& outputVector, std::vector<double>& reward){
+BufferBasedPyLearner::State::State(std::vector<uint16_t>& inputVector, std::vector<double>& outputVector, std::vector<double>& reward){
     this->input = new std::vector<uint16_t>(inputVector);
     this->output = new std::vector<double>(outputVector);
     this->reward = new std::vector<double>(reward);
 }
 
-ActivePyLearner::State::~State(){
+BufferBasedPyLearner::State::~State(){
     delete reward;
     delete output;
     delete input;
 }
 
 
-std::vector<uint16_t> ActivePyLearner::State::getInput() const{
+std::vector<uint16_t> BufferBasedPyLearner::State::getInput() const{
     return std::vector<uint16_t>(*input);
 }
 
-std::vector<double> ActivePyLearner::State::getOutput() const{
+std::vector<double> BufferBasedPyLearner::State::getOutput() const{
     return std::vector<double>(*output);
 }
 
-std::vector<double> ActivePyLearner::State::getReward() const{
+std::vector<double> BufferBasedPyLearner::State::getReward() const{
     return std::vector<double>(*reward);
 }
 
-bool ActivePyLearner::State::hasSameInput(State& s) const{
+bool BufferBasedPyLearner::State::hasSameInput(State& s) const{
     return *(this->input) == *(s.input);
 }

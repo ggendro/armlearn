@@ -22,7 +22,7 @@
 
 /**
  * @class SimplePyLearner
- * @brief Class containing a simple learner based on a verifier, that learns how to compute servomotor positions from coordinates, via python script
+ * @brief Class containing the basics methods for a simple learner based on a verifier, that learns how to compute servomotor positions from coordinates, via python script
  * 
  */
 class SimplePyLearner : public PyLearner{
@@ -64,16 +64,19 @@ class SimplePyLearner : public PyLearner{
         /**
          * @brief Formats the computation output for the device
          * 
-         * @param output te output to format
+         * 
+         * @param output the output to format
          * @return std::vector<uint16_t> the formatted output
+         * 
+         * Abstract method
          */
-        std::vector<uint16_t> formatOutput(const std::vector<double>& output) const;
+        virtual std::vector<uint16_t> formatOutput(const std::vector<double>& output) const=0;
 
 
     public:
 
         /**
-         * @brief Constructs a new PyLearner object
+         * @brief Constructs a new SimplePyLearner object
          * 
          * @param controller the controller to link the learner to
          * @param learningScriptSettings the name of the json file containing the required settings of the python modules to use  
@@ -82,7 +85,7 @@ class SimplePyLearner : public PyLearner{
         SimplePyLearner(AbstractController* controller, Converter* converter, std::string learningScriptSettings = PY_LEARN_FILE, double testProp = DEFAULT_TEST_PROPORTION);
 
         /**
-         * @brief Destroys the PyLearner object
+         * @brief Destroys the SimplePyLearner object
          * 
          * Destroys all the registered inputs and outputs
          */
