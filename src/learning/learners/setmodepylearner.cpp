@@ -19,7 +19,7 @@ std::vector<uint16_t> SetModePyLearner::formatOutput(const std::vector<double>& 
 
 std::string SetModePyLearner::toString() const{
     std::stringstream rep;
-    rep << "SetMode " << BufferBasedPyLearner::toString();
+    rep << "Set-Mode " << BufferBasedPyLearner::toString();
 
     return rep.str();
 }

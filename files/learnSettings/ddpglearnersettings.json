@@ -25,11 +25,15 @@
             "type" : "f"
         },
         "learningRateCritic" : {
-            "value" : 10e-4,
+            "value" : 10e-3,
             "type" : "f"
         },
         "learningRateActor" : {
-            "value" : 10e-5,
+            "value" : 10e-4,
+            "type" : "f"
+        },
+        "actorInitDeviation" : {
+            "value" : 0.5,
             "type" : "f"
         },
         "saveFolder" : {

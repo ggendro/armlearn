@@ -16,20 +16,17 @@ AddModePyLearner::~AddModePyLearner(){
 std::vector<uint16_t> AddModePyLearner::formatOutput(const std::vector<double>& output) const{
         auto incr = device->scalePosition(output, 0, 2*M_PI);
         auto decr = device->scalePosition(output, -2*M_PI, 0);
+        auto currentPos = device->getPosition();
 
         std::vector<uint16_t> res;
-        for(int i=0; i < incr.size(); i++) res.push_back(output[i] > 0 ? incr[i] : decr[i]);
-
-        //*
-        std::cout << "output : " << output << std::endl << "resulting : " << res << std::endl; 
-        //*/
+        for(int i=0; i < incr.size(); i++) res.push_back(std::max(0, currentPos[i] + (output[i] > 0 ? incr[i] : -decr[i])));
 
         return device->toValidPosition(res);
 }
 
 std::string AddModePyLearner::toString() const{
     std::stringstream rep;
-    rep << "AddMode " << BufferBasedPyLearner::toString();
+    rep << "Add-Mode " << BufferBasedPyLearner::toString();
 
     return rep.str();
 }

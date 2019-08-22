@@ -132,7 +132,7 @@ void BufferBasedPyLearner::test(){
 
 std::string BufferBasedPyLearner::toString() const{
     std::stringstream rep;
-    rep << "BufferBased " << SimplePyLearner::toString();
+    rep << "Buffer-Based " << SimplePyLearner::toString();
 
     return rep.str();
 }

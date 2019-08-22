@@ -4,6 +4,7 @@
 #include "trajectory.h"
 
 #include "setmodepylearner.h"
+#include "smalladdmodepylearner.h"
 #include "widowxbuilder.h"
 #include "optimcartesianconverter.h"
 
@@ -32,7 +33,7 @@ int main(int argc, char *argv[]) {
 	arbotix_sim.updateInfos();
 	arbotix.updateInfos();
 
-	SetModePyLearner learner(&arbotix_sim, &conv); // Create learner
+	SmallAddModePyLearner learner(&arbotix_sim, &conv); // Create learner
 
 	auto targets = { // Inputs of learning, positions to ask to the robot
 		new Input<uint16_t>({5, 50, 300}),
