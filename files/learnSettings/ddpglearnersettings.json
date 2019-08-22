@@ -32,10 +32,6 @@
             "value" : 10e-4,
             "type" : "f"
         },
-        "actorInitDeviation" : {
-            "value" : 0.5,
-            "type" : "f"
-        },
         "saveFolder" : {
             "value" : "../../files/learnSaves/models_arm/",
             "type" : "s"
