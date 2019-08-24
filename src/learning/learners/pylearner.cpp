@@ -200,6 +200,7 @@ template<class T> PyObject* PyLearner::valueToPyObject(T value) const{
 template PyObject* PyLearner::valueToPyObject<uint16_t>(uint16_t value) const;
 template PyObject* PyLearner::valueToPyObject<int>(int value) const;
 template PyObject* PyLearner::valueToPyObject<double>(double value) const;
+template PyObject* PyLearner::valueToPyObject<bool>(bool value) const;
 
 template<class T> T PyLearner::valueFromPyObject(PyObject* pObj) const{
     return (T) PyFloat_AsDouble(pObj);
@@ -241,13 +242,14 @@ void PyLearner::pyLearn(const std::vector<uint16_t> input, const std::vector<dou
     Py_DECREF(pInput);
 }
 
-std::vector<double> PyLearner::pyCompute(const std::vector<uint16_t> input) const{
-    PyObject *pInput, *pComp, *pValue;
+std::vector<double> PyLearner::pyCompute(const std::vector<uint16_t> input, bool noise) const{
+    PyObject *pInput, *pComp, *pValue, *pNoise;
     
     pInput = vectorToPyObject(input);
+    pNoise = valueToPyObject(noise);
     
     pComp = PyUnicode_FromString(computeMethod.c_str());
-    pValue = PyObject_CallMethodObjArgs(pLearner, pComp, pInput, NULL); // Python call for computation
+    pValue = PyObject_CallMethodObjArgs(pLearner, pComp, pInput, pNoise, NULL); // Python call for computation
     pyManageError();
 
     if (pValue == NULL) throw FileError("Error while extracting result from python learner");

@@ -42,7 +42,7 @@
  *      - "className" : string, name of the python class
  *      - "learnMethod" : string, name of the python training method
  *      - "computeMethod" : string, name of the python compute method
- *  - optional field "settings" containg the following:
+ *  - optional field "settings" containing the following:
  *      - fields corresponding to constructor parameters of the python class matching "className"
  *      - each field must contain two subfields:
  *          - "value" : the parameter value
@@ -134,9 +134,10 @@ class PyLearner : public DeviceLearner{
          * @brief Ask computation to external python script
          * 
          * @param input the input of the asked computation
+         * @param noise if true returns noisy output 
          * @return std::vector<double> the output given by the python learner
          */
-        std::vector<double> pyCompute(const std::vector<uint16_t> input) const;
+        std::vector<double> pyCompute(const std::vector<uint16_t> input, bool noise = true) const;
 
 
     public:

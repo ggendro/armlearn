@@ -3,22 +3,22 @@
  */
 
 
-#include "activepylearner.h"
+#include "bufferbasedpylearner.h"
 
 
-ActivePyLearner::ActivePyLearner(AbstractController* controller, Converter* converter, std::string learningScriptSettings, double testProp):SimplePyLearner(controller, converter, learningScriptSettings, testProp){
+BufferBasedPyLearner::BufferBasedPyLearner(AbstractController* controller, Converter* converter, std::string learningScriptSettings, double testProp):SimplePyLearner(controller, converter, learningScriptSettings, testProp){
     
 }
 
-ActivePyLearner::~ActivePyLearner(){
+BufferBasedPyLearner::~BufferBasedPyLearner(){
     
 }
 
 
 
-void ActivePyLearner::learn(){
+void BufferBasedPyLearner::learn(){
 
-    for(auto lsetPtr = learningSet->cbegin(); lsetPtr != learningSet->cend(); lsetPtr++){ // Learn trajectory for each example from the learning set
+    for(auto lsetPtr = learningSet->begin(); lsetPtr != learningSet->end(); lsetPtr++){ // Learn trajectory for each example from the learning set
 
         for(int nbIt = 0; nbIt < LEARN_NB_ITERATIONS; nbIt++){
             std::cout << "Reset device position..." << std::endl;
@@ -43,50 +43,34 @@ void ActivePyLearner::learn(){
                 
                 std::cout << "Computing output..." << std::endl;
                 auto output = pyCompute(fullInput); // Computation of output
+                auto scaledOutput = formatOutput(output); // Format output for shipment to device
 
-                auto reward = computeReward(lsetPtr->first->getInput(), output); // Computation of reward
+                std::cout << "Scaled output : [";
+                for(auto ptr = scaledOutput.cbegin(); ptr < scaledOutput.cend(); ptr++) std::cout << *ptr << ", ";
+                std::cout << "]" << std::endl;
+
+
+                auto reward = computeReward(lsetPtr->first->getInput(), scaledOutput); // Computation of reward
                 std::cout << "Reward : " << reward << std::endl;
+
                 std::vector<double> rewardVector = {reward};
-
-                State* newState = new State(fullInput, output, rewardVector);  // Save state
-                /*
-                auto ptr = std::find_if(saves.begin(), saves.end(), [newState](State* s){ return (*s).hasSameInput(*newState); }); 
-                if(ptr != saves.end()){ // Replace existing save if same input already saved
-                    delete *ptr;  
-                    *ptr = newState;
-
-                    nbNullMove++;
-                }else{
-                    saves.push_back(newState);
-                }
-                //*/
-
-                //*
-                if(reward <= VALID_COEFF) nbNullMove++;
-                saves.push_back(newState);
-                //*/
+                saves.push_back(new State(fullInput, output, rewardVector));  // Save state
                 
-                //*
+                
                 if(reward > VALID_COEFF){ // If position is valid (within range)
-                    device->addPosition(apply<double, int>(output, [](double x){return x;})); // Update position
-                    device->waitFeedback();
+                    try{
+                        device->setPosition(scaledOutput); // Update position
+                        device->waitFeedback();
 
-                    std::cout << "Updating position..." << std::endl;
+                        std::cout << "Updating position..." << std::endl;
+                    }catch(OutOfRangeError e){
+                        std::cout << e.what() << std::endl;
+                        nbNullMove++;
+                    }
                 }else{
                     std::cout << "Error too important : movement not allowed" << std::endl;
+                    nbNullMove++;
                 }
-                //*/
-
-                /*
-                try{
-                    device->addPosition(output); // Update position
-                    device->waitFeedback();
-
-                    std::cout << "Updating position..." << std::endl;
-                }catch(OutOfRangeError e){
-                    std::cout << e.what() << std::endl;
-                }
-                //*/
 
                 auto newPosition = device->getPosition(); // Display new position
                 std::cout << "Current position : ";
@@ -104,7 +88,7 @@ void ActivePyLearner::learn(){
                 
                 /*
                 if(abs(reward) < LEARN_ERROR_MARGIN) {  // Stop moving if error is within threshold
-                    std::cout << "reward value : " << reward << "smaller than " << LEARN_ERROR_MARGIN << ". End of learning..." << std::endl;
+                    std::cout << "reward value : " << reward << " smaller than " << LEARN_ERROR_MARGIN << ". End of learning..." << std::endl;
                     stop = true;
                     break;
                 }
@@ -130,49 +114,56 @@ void ActivePyLearner::learn(){
             std::cout << "Executed " << i << " updates..." << std::endl;
         }
 
+        std::cout << "Reset device position..." << std::endl;
+        device->goToBackhoe(); // Reset position
+        device->waitFeedback();
+        
+        delete lsetPtr->second;
+        lsetPtr->second = produce(*(lsetPtr->first));
+
     }
 }
 
-void ActivePyLearner::test(){
+void BufferBasedPyLearner::test(){
 
 }
 
 
 
-std::string ActivePyLearner::toString() const{
+std::string BufferBasedPyLearner::toString() const{
     std::stringstream rep;
-    rep << "Active " << SimplePyLearner::toString();
+    rep << "Buffer-Based " << SimplePyLearner::toString();
 
     return rep.str();
 }
 
 
 
-ActivePyLearner::State::State(std::vector<uint16_t>& inputVector, std::vector<double>& outputVector, std::vector<double>& reward){
+BufferBasedPyLearner::State::State(std::vector<uint16_t>& inputVector, std::vector<double>& outputVector, std::vector<double>& reward){
     this->input = new std::vector<uint16_t>(inputVector);
     this->output = new std::vector<double>(outputVector);
     this->reward = new std::vector<double>(reward);
 }
 
-ActivePyLearner::State::~State(){
+BufferBasedPyLearner::State::~State(){
     delete reward;
     delete output;
     delete input;
 }
 
 
-std::vector<uint16_t> ActivePyLearner::State::getInput() const{
+std::vector<uint16_t> BufferBasedPyLearner::State::getInput() const{
     return std::vector<uint16_t>(*input);
 }
 
-std::vector<double> ActivePyLearner::State::getOutput() const{
+std::vector<double> BufferBasedPyLearner::State::getOutput() const{
     return std::vector<double>(*output);
 }
 
-std::vector<double> ActivePyLearner::State::getReward() const{
+std::vector<double> BufferBasedPyLearner::State::getReward() const{
     return std::vector<double>(*reward);
 }
 
-bool ActivePyLearner::State::hasSameInput(State& s) const{
+bool BufferBasedPyLearner::State::hasSameInput(State& s) const{
     return *(this->input) == *(s.input);
 }

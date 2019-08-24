@@ -5,11 +5,11 @@
     "computeMethod" : "compute",
     "settings" : {
         "inputSize" : {
-            "value" : 6,
+            "value" : 9,
             "type" : "i"
         },
         "outputSize" :  {
-            "value" : 3,
+            "value" : 6,
             "type" : "i"
         },
         "nbEpochsCritic" : {
@@ -25,25 +25,29 @@
             "type" : "f"
         },
         "learningRateCritic" : {
-            "value" : 10e-4,
+            "value" : 10e-3,
             "type" : "f"
         },
         "learningRateActor" : {
-            "value" : 10e-5,
+            "value" : 10e-4,
             "type" : "f"
         },
         "loadSave" : {
             "value" : [
-                        "../../files/learnSaves/batches/armbatch_early_termination_2019-07-19/models/DDPG_model_actor_0.h5",
-                        "../../files/learnSaves/batches/armbatch_early_termination_2019-07-19/models/DDPG_model_critic_0.h5",
-                        "../../files/learnSaves/batches/armbatch_early_termination_2019-07-19/models/DDPG_model_targetActor_0.h5",
-                        "../../files/learnSaves/batches/armbatch_early_termination_2019-07-19/models/DDPG_model_targetCritic_0.h5"
+                        "../../files/learnSaves/batches/armbatch_linear_set_mode_test_continuation_2019-08-21/initial_models/ddpg_model_scaledSet_mode_actor_0.h5",
+                        "../../files/learnSaves/batches/armbatch_linear_set_mode_test_continuation_2019-08-21/initial_models/ddpg_model_scaledSet_mode_critic_0.h5",
+                        "../../files/learnSaves/batches/armbatch_linear_set_mode_test_continuation_2019-08-21/initial_models/ddpg_model_scaledSet_mode_targetActor_0.h5",
+                        "../../files/learnSaves/batches/armbatch_linear_set_mode_test_continuation_2019-08-21/initial_models/ddpg_model_scaledSet_mode_targetCritic_0.h5"
                       ],
             "type" : "[s,s,s,s]"
         },
+        "saveFolder" : {
+            "value" : "../../files/learnSaves/batches/armbatch_linear_set_mode_test_continuation_2019-08-21/models/",
+            "type" : "s"
+        },
         "display" : {
-            "value" : ["print"],
-            "type" : "[s]"
+            "value" : ["print", "save"],
+            "type" : "[s,s]"
         }
     }
 }

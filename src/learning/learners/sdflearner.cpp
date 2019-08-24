@@ -137,7 +137,7 @@ void SdfLearner::test(){
     // TODO: to do
 }
 
-Output* SdfLearner::produce(const Input& input){
+Output<std::vector<uint16_t>>* SdfLearner::produce(const Input<uint16_t>& input){
     // TODO: to do
 }
 
