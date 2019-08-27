@@ -48,9 +48,10 @@ AbstractController* SdfLearner::getDevice() const{
 }
 
 
-void SdfLearner::init(float *state_angular, int state_angular_size, float *state_observation, int state_space_size, float x_target, float y_target){
+void SdfLearner::init(float *state_observation, int state_space_size, float x_target, float y_target, float z_target){
     state_observation[0] = x_target;
     state_observation[1] = y_target;
+    state_observation[2] = y_target;
 
     std::cout << "Reset device position..." << std::endl;
     device->goToBackhoe(); // Reset position
@@ -61,15 +62,14 @@ void SdfLearner::init(float *state_angular, int state_angular_size, float *state
     int i=0;
     for(auto ptr = state.cbegin(); ptr < state.cend(); ptr++) {
         for(auto ptr2 = ptr->cbegin(); ptr2 < ptr->cend(); ptr2++){
-            state_angular[i] = *ptr2;
-            state_observation[i+2] = *ptr2;
+            state_observation[i+3] = *ptr2;
             i++;
         }
     }
 }
 
-void SdfLearner::step(int state_space_size, int action_space_size, int state_angular_size, float x_target, float y_target,
-                            float *state_angular_in, float *state_angular_out, float *input_actions, float *state_observation, float *reward){
+void SdfLearner::step(int state_space_size, int action_space_size, float x_target, float y_target, float z_target,
+                            float *input_actions, float *state_observation, float *reward){
     
     if(nbMoves % LEARN_NB_MOVEMENTS == 0){
         float mean = 0;
@@ -77,7 +77,7 @@ void SdfLearner::step(int state_space_size, int action_space_size, int state_ang
         mean /= LEARN_NB_MOVEMENTS;
         std::cout << "Mean reward : " << mean << std::endl;
 
-        init(state_angular_out, state_angular_size, state_observation, state_space_size, x_target, y_target);
+        init(state_observation, state_space_size, x_target, y_target, z_target);
         std::cout << std::endl;
     }
 
@@ -89,7 +89,7 @@ void SdfLearner::step(int state_space_size, int action_space_size, int state_ang
 
     
     // Computation of reward
-    float stepReward = computeReward({x_target, y_target}, newPos);
+    float stepReward = computeReward({x_target, y_target, z_target}, newPos);
     rewards[nbMoves % LEARN_NB_MOVEMENTS] = stepReward;
     reward[0] = stepReward;
 
@@ -111,12 +111,12 @@ void SdfLearner::step(int state_space_size, int action_space_size, int state_ang
     // Update position for learner
     state_observation[0] = x_target;
     state_observation[1] = y_target;
+    state_observation[2] = z_target;
 
     auto state = getDeviceState();
     int i=0;
     for(auto ptr = state.cbegin(); ptr < state.cend(); ptr++) {
         for(auto ptr2 = ptr->cbegin(); ptr2 < ptr->cend(); ptr2++){
-            state_angular_out[i] = *ptr2;
             state_observation[i+2] = *ptr2;
             i++;
         }
@@ -151,7 +151,7 @@ std::string SdfLearner::toString() const{
 
 
 
-extern "C" SdfLearner* initWrapper(float *state_angular, int state_angular_size, float *state_observation, int state_space_size, float x_target, float y_target) {
+extern "C" SdfLearner* initWrapper(float *state_observation, int state_space_size, float x_target, float y_target, float z_target) {
 	Converter* conv = new OptimCartesianConverter();
 	AbstractController* arbotix = new NoWaitArmSimulator((DisplayMode) 0);
 	//AbstractController* arbotix = new SerialController("/dev/ttyUSB0");
@@ -165,16 +165,16 @@ extern "C" SdfLearner* initWrapper(float *state_angular, int state_angular_size,
 	arbotix->updateInfos();
 
     SdfLearner* learner = new SdfLearner(arbotix, conv);
-    learner->init(state_angular, state_angular_size, state_observation, state_space_size, x_target, y_target);
+    learner->init(state_observation, state_space_size, x_target, y_target, z_target);
 
     return learner;
 }
 
 extern "C" void stepWrapper(SdfLearner* env, 
-                            int state_space_size, int action_space_size, int state_angular_size, float x_target, float y_target,
-                            float *state_angular_in, float *state_angular_out, float *input_actions, float *state_observation, float *reward) {
+                            int state_space_size, int action_space_size, float x_target, float y_target,float z_target,
+                            float *input_actions, float *state_observation, float *reward) {
 
-    env->step(state_space_size, action_space_size, state_angular_size, x_target, y_target,state_angular_in, state_angular_out, input_actions, state_observation, reward);
+    env->step(state_space_size, action_space_size, x_target, y_target, z_target, input_actions, state_observation, reward);
 }
 
 extern "C" void endWrapper(SdfLearner* env) { // TODO: add call to this function in step when necessary
