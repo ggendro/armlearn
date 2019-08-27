@@ -1,7 +1,7 @@
 /**
  * @file iovector.h
  * @author Gaël Gendron (gael.gendron@insa-rennes.fr)
- * @brief File containing the abstract class IOvector, representing input or output vectors from learning
+ * @brief File containing the class IOvector, representing input or output vectors from learning
  * @version 0.1
  * @date 2019-06-11
  * 
@@ -20,7 +20,7 @@
 
 /**
  * @class IOVector
- * @brief Inout or Output of learning algorithms
+ * @brief Input or Output of learning algorithms
  */
 template<class T> class IOVector{
 
@@ -107,5 +107,21 @@ template<class T> class IOVector{
             return res.str();
         }
 };
+
+
+/**
+ * @brief Redefinition of operator<< for vector
+ * 
+ * @tparam U type of the vector content
+ * @param os the stream to print the vector
+ * @param vect the vector to print
+ * @return std::ostream& the stream with the printed vector
+ */
+template <typename U> std::ostream& operator<<(std::ostream& os, const std::vector<U>& vect){ 
+    os << "{";
+    for(auto&& v : vect) os << v << " ";
+    os << "}"; 
+    return os; 
+}
 
 #endif

@@ -3,114 +3,67 @@
 #include "serialcontroller.h"
 #include "trajectory.h"
 
-#include "activepylearner.h"
+#include "setmodepylearner.h"
 #include "widowxbuilder.h"
 #include "optimcartesianconverter.h"
 
 
 int main(int argc, char *argv[]) {
 
-	OptimCartesianConverter conv;
-	NoWaitArmSimulator arbotix((DisplayMode) 0);
-	//SerialController arbotix("/dev/ttyUSB0");
+	OptimCartesianConverter conv; // Create kinematics calculator
+	NoWaitArmSimulator arbotix_sim((DisplayMode) 0); // Create robot simulator 
+	SerialController arbotix("/dev/ttyUSB0"); // Create device connection
 
 	WidowXBuilder builder;
 	builder.buildConverter(conv);
 	builder.buildController(arbotix);
+	builder.buildController(arbotix_sim);
 
 	arbotix.connect();
 
 	std::this_thread::sleep_for((std::chrono::milliseconds) 1000); // Usually, a waiting period and a second connect attempt is necessary to reach all devices
+	arbotix_sim.connect();
 	arbotix.connect();
 
+	arbotix_sim.changeSpeed(50);
 	arbotix.changeSpeed(50);
 
 	std::cout << "Update servomotors information:" << std::endl;
+	arbotix_sim.updateInfos();
 	arbotix.updateInfos();
 
-	ActivePyLearner learner(&arbotix, &conv);
+	SetModePyLearner learner(&arbotix_sim, &conv); // Create learner
 
-	Input* dest = new Input({100, 100, 100});
-	Output* destMatch = new Output();
-	learner.addToLearningSet(dest, destMatch);
-	learner.learn();
+	auto targets = { // Inputs of learning, positions to ask to the robot
+		new Input<uint16_t>({5, 50, 300}),
+	};
+	for(auto& dest : targets) learner.addToLearningSet(dest, new Output<std::vector<uint16_t>>()); // Empty label for learning
 
-	Output* res = learner.produce(*dest);
-	std::cout << "Output : " << res->toString() << std::endl;
 
-	arbotix.addPosition(res->getOutput()); // When learning implemented, use the real device here
-	delete res; // Do not forget
-	
-	std::cout << "Update servomotors information:" << std::endl;
-	arbotix.updateInfos();
-	
-
+	learner.learn(); // Execute learning
 	std::cout << learner.toString();
 
-	/*
-	learner.addToLearningSet(new Input(), new Output());
-	learner.addToLearningSet(new Input(), new Output());
-	learner.addToLearningSet(new Input(), new Output());
 
-	learner.addToLearningSet(new Input({1, 4, 6}), new Output({2, 3}));
-	learner.addToLearningSet(new Input({0, 8, 9}), new Output({58, 24, 2, 1}));
-	learner.addToLearningSet(new Input({7, 8, 5}), new Output({8, 45, }));
-	learner.addToLearningSet(new Input({24, 56, 1}), new Output({427, 24, 23, 13}));
-	learner.addToLearningSet(new Input({3, 8, 45}), new Output({0, 8, 2, 14}));
-	learner.addToLearningSet(new Input({1, 4, 6}), new Output({2, 3}));
+	for(auto& dest : targets) { // Move robot to each position asked
 
-	learner.generateTestingSet();
+		auto res = learner.produce(*dest);
+		std::cout << "Input : " << dest->toString() << " - Output : " << res->toString() << std::endl;
 
-	std::cout << learner.toString();
-	//*/
+		arbotix.goToBackhoe(); // Reset position
+		arbotix.waitFeedback();
 
+		auto moves = res->getOutput();
+		for(auto ptr = moves.begin(); ptr < moves.end(); ptr++){
+			arbotix.setPosition(*ptr);
+			arbotix.waitFeedback();
+		}
 
+		delete res; // Do not forget
+		
+		std::cout << "Update servomotors information:" << std::endl;
+		arbotix.updateInfos();
 
-	/*
-    //ArmSimulator arbotix;
-	SerialController arbotix("/dev/ttyUSB0");
-
-	arbotix.addMotor(1, "base ", base);
-	arbotix.addMotor(2, "shoulder", shoulder);
-	arbotix.addMotor(3, "elbow", elbow);
-	arbotix.addMotor(4, "wristAngle", wristAngle);
-	arbotix.addMotor(5, "wristRotate", wristRotate);
-	arbotix.addMotor(6, "gripper", gripper);
-	
-	arbotix.connect();
-	std::cout << arbotix.servosToString();
-
-	arbotix.changeSpeed(50);
-
-	std::cout << "Update servomotors information:" << std::endl;
-	arbotix.updateInfos();
-
-    Trajectory path(&arbotix);
-
-	path.addPoint(BACKHOE_POSITION);
-	path.addPoint({1024, 2200, 2200, 1025, 512, 511});
-	path.addPoint({1024, 2400, 2200, 1200, 512, 511});
-	path.addPoint({1024, 2400, 2200, 1200, 512, 135});
-	path.addPoint({1024, 2200, 2200, 1025, 512, 135});
-	path.addPoint({2048, 2200, 2200, 1025, 512, 135});
-	path.addPoint({2048, 2400, 2200, 1200, 512, 135});
-	path.addPoint({2048, 2400, 2200, 1200, 512, 511});
-	path.addPoint({2048, 2200, 2200, 1025, 512, 511});
-	path.addPoint(SLEEP_POSITION);
-
-	path.printTrajectory();
-    
-    // Variable stating the begin of calculations
-    std::chrono::time_point<std::chrono::system_clock> startTime = std::chrono::system_clock::now();
-
-
-	path.init();
-	path.executeTrajectory();
-
-	// variable stating the end of calculations
-    std::chrono::time_point<std::chrono::system_clock> endTime = std::chrono::system_clock::now();
-    std::cout << "Execution finished in " << std::chrono::duration<double, std::ratio<1, 1>>(endTime - startTime).count() << " s" << std::endl;
-	//*/
+	}
 
 
 }

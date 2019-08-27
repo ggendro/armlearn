@@ -22,7 +22,7 @@
 
 /**
  * @class SimplePyLearner
- * @brief Class containing a simple learner based on a verifier, that learns how to compute servomotor positions from coordinates without obstacles or disabled servomotors, via python script
+ * @brief Class containing the basics methods for a simple learner based on a verifier, that learns how to compute servomotor positions from coordinates, via python script
  * 
  */
 class SimplePyLearner : public PyLearner{
@@ -51,21 +51,32 @@ class SimplePyLearner : public PyLearner{
         /**
          * @brief Applies a funcion to each element of a vector
          * 
-         * @tparam R class of inital vector values
-         * @tparam T class of resulting vector values
+         * @param R class of inital vector values
+         * @param T class of resulting vector values
          * @param vect initial vector
          * @param func funcion to apply to each value of initial vector
          * @return std::vector<T> resulting vector
          * 
-         * Template method, defined for int and double
+         * Template method, defined for int, uint16_t and double
          */
         template<class R, class T> std::vector<T> apply(const std::vector<R>& vect, const std::function< T(R) >& func) const;
+
+        /**
+         * @brief Formats the computation output for the device
+         * 
+         * 
+         * @param output the output to format
+         * @return std::vector<uint16_t> the formatted output
+         * 
+         * Abstract method
+         */
+        virtual std::vector<uint16_t> formatOutput(const std::vector<double>& output) const=0;
 
 
     public:
 
         /**
-         * @brief Constructs a new PyLearner object
+         * @brief Constructs a new SimplePyLearner object
          * 
          * @param controller the controller to link the learner to
          * @param learningScriptSettings the name of the json file containing the required settings of the python modules to use  
@@ -74,7 +85,7 @@ class SimplePyLearner : public PyLearner{
         SimplePyLearner(AbstractController* controller, Converter* converter, std::string learningScriptSettings = PY_LEARN_FILE, double testProp = DEFAULT_TEST_PROPORTION);
 
         /**
-         * @brief Destroys the PyLearner object
+         * @brief Destroys the SimplePyLearner object
          * 
          * Destroys all the registered inputs and outputs
          */
@@ -87,7 +98,7 @@ class SimplePyLearner : public PyLearner{
          * @param input
          * @return Output
          */
-        virtual Output* produce(const Input& input) override;
+        virtual Output<std::vector<uint16_t>>* produce(const Input<uint16_t>& input) override;
 
 
         /**

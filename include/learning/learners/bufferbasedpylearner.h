@@ -1,7 +1,7 @@
 /**
  * @file simplepylearner.h
  * @author Gaël Gendron (gael.gendron@insa-rennes.fr)
- * @brief File containing the class ActivePyLearner, used for computing positions via python module
+ * @brief File containing the abstract class BufferBasedPyLearner, used for computing positions via python module
  * @version 0.1
  * @date 2019-06-26
  * 
@@ -11,8 +11,8 @@
 
 
 
-#ifndef ACTIVEPYLEARNER_H
-#define ACTIVEPYLEARNER_H
+#ifndef BUFFERBASEDPYLEARNER_H
+#define BUFFERBASEDPYLEARNER_H
 
 #include <algorithm>
 
@@ -21,14 +21,14 @@
 
 
 /**
- * @class ActivePyLearner
- * @brief Class linked to python module for simple positions computing and learning
+ * @class BufferBasedPyLearner
+ * @brief Class containing a buffer based algorithm linked to python module for simple positions computing and learning
  * 
  * Most of the learning algorithm is executed on C++ side. The computations are driven from this class, which asks
  * the python learner to execute the desired functions.
  * Contrary to the PassivePyLearner class wich does not make any computations on C++ side.
  */
-class ActivePyLearner : public SimplePyLearner{
+class BufferBasedPyLearner : public SimplePyLearner{
 
     protected:
 
@@ -95,20 +95,20 @@ class ActivePyLearner : public SimplePyLearner{
     public:
 
         /**
-         * @brief Constructs a new PyLearner object
+         * @brief Constructs a new BufferBasedPyLearner object
          * 
          * @param controller the controller to link the learner to
          * @param learningScriptSettings the name of the json file containing the required settings of the python modules to use  
          * @param testProp the proportion of test couples compared to learning couples
          */
-        ActivePyLearner(AbstractController* controller, Converter* converter, std::string learningScriptSettings = PY_LEARN_FILE, double testProp = DEFAULT_TEST_PROPORTION);
+        BufferBasedPyLearner(AbstractController* controller, Converter* converter, std::string learningScriptSettings = PY_LEARN_FILE, double testProp = DEFAULT_TEST_PROPORTION);
 
         /**
-         * @brief Destroys the PyLearner object
+         * @brief Destroys the BufferBasedPyLearner object
          * 
          * Destroys all the registered inputs and outputs
          */
-        virtual ~ActivePyLearner();
+        virtual ~BufferBasedPyLearner();
 
 
 
