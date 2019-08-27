@@ -25,7 +25,7 @@ Can be found here <https://www.openmp.org/> and installed by executing the follo
 sudo apt-get install libomp-dev
 ```
 
-*Preesm* tool v3.11.0 is required for in order to build an run learners based on SDF graphs.
+*Preesm* tool v3.14.1 is required for in order to build an run learners based on SDF graphs.
 Can be found here : <https://preesm.github.io/>
 
 
@@ -92,9 +92,8 @@ Build:
     make
 ```
 
-<div class="note">
-Note that the previous command will generate all possible executable files.
-</div>
+**Note:** The previous command will generate all possible executable files.
+{: .note}
 
 To generate only the executable you want, run the following:
 ```
@@ -188,8 +187,9 @@ Run a code example executing a Reinforcement Learning algorithm to control a sim
 
 #### Run python learning tests
 
-Run a python script testing the learning algorithm. It is possible to run several tests simultaneously using the following script, and it is possible to modify learning settings. The first command displays the help.
+Run a python script testing the learning algorithm. It is possible to run several tests simultaneously using the following script, and it is possible to modify learning settings. The second command displays the help.
 ```
+    cd ../python/
     ./multitester -h
     ./multitester
 ```
@@ -205,6 +205,44 @@ Run the following to visualize evolution of reward for your tests. Once again, c
     ./multitester
     ./resultextractor
 ```
+
+#### Run preesm
+
+```
+    ../preesm/org.ietr.preesm.reinforcement_learning/Spider/correctCodegen.py ../preesm/org.ietr.preesm.reinforcement_learning/Spider/generated/pi_ddpg.cpp
+    cd Debug/
+    ./reinforcement-learning
+```
+
+**Note:** The Makefile is not located in the same folder than the executable. Running the following commands will compile only the Preesm application.
+{: .note}
+
+```
+    cd preesm/org.ietr.preesm.reinforcement_learning/Spider/
+    make
+```
+
+<div class="panel panel-warning">
+**Warning**
+{: .panel-heading}
+<div class="panel-body">
+
+The Preesm application is not currently working (v3.41.1 of Preesm). Wait for a new version of the Preesm tool.
+
+</div>
+</div>
+
+<div class="panel panel-danger">
+**Danger**
+{: .panel-heading}
+<div class="panel-body">
+
+The current Preesm application generates a huge number of actors when parameters values are great. Memory may be entirely filled.
+
+</div>
+</div>
+
+
 
 #### Run main
 

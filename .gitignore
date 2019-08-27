@@ -5,5 +5,5 @@ lib/
 !lib/cmake_modules/
 **/__pycache__/
 .vscode/
-preesm/.metadata/
+.metadata/
 preesm/org.ietr.preesm.reinforcement_learning/.project
