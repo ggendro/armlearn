@@ -34,10 +34,10 @@
         },
         "loadSave" : {
             "value" : [
-                        "../../files/learnSaves/batches/armbatch_linear_set_mode_2019-08-21/models/DDPG_model_actor_0.h5",
-                        "../../files/learnSaves/batches/armbatch_linear_set_mode_2019-08-21/models/DDPG_model_critic_0.h5",
-                        "../../files/learnSaves/batches/armbatch_linear_set_mode_2019-08-21/models/DDPG_model_targetActor_0.h5",
-                        "../../files/learnSaves/batches/armbatch_linear_set_mode_2019-08-21/models/DDPG_model_targetCritic_0.h5"
+                        "../../files/learnSaves/models_arm/DDPG_model_actor_0.h5",
+                        "../../files/learnSaves/models_arm/DDPG_model_critic_0.h5",
+                        "../../files/learnSaves/models_arm/DDPG_model_targetActor_0.h5",
+                        "../../files/learnSaves/models_arm/DDPG_model_targetCritic_0.h5"
                       ],
             "type" : "[s,s,s,s]"
         },

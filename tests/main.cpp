@@ -32,11 +32,10 @@ int main(int argc, char *argv[]) {
 	arbotix_sim.updateInfos();
 	arbotix.updateInfos();
 
-	SetModePyLearner learner(&arbotix_sim, &conv); // Create learner
+	SetModePyLearner learner(&arbotix_sim, &conv, "../../files/learnSettings/ddpglearnersettings.json"); // Create learner
 
 	auto targets = { // Inputs of learning, positions to ask to the robot
-		new Input<uint16_t>({5, 50, 300}),
-		new Input<uint16_t>({100, 100, 100})
+		new Input<uint16_t>({5, 50, 300})
 	};
 	for(auto& dest : targets) learner.addToLearningSet(dest, new Output<std::vector<uint16_t>>()); // Empty label for learning
 
