@@ -36,6 +36,7 @@ int main(int argc, char *argv[]) {
 
 	auto targets = { // Inputs of learning, positions to ask to the robot
 		new Input<uint16_t>({5, 50, 300}),
+		new Input<uint16_t>({100, 100, 100})
 	};
 	for(auto& dest : targets) learner.addToLearningSet(dest, new Output<std::vector<uint16_t>>()); // Empty label for learning
 
