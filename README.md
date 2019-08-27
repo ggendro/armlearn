@@ -170,29 +170,39 @@ Run a code example giving a (very) simple interface to control the arm by giving
     sudo ./example_cartesianMode
 ```
 
+#### Run learn example
+
+Run a code example executing a Reinforcement Learning algorithm to control a simulation of the arm.
+```
+    cd examples/learning/example_learn
+    ./example_learn
+```
+
+#### Run learn device example
+
+Run a code example executing a Reinforcement Learning algorithm to control a simulation of the arm and testing it on a real arm.
+```
+    cd examples/learning/example_learn_device
+    sudo ./example_learn_device
+```
+
 #### Run python learning tests
 
-Run a python script testing the learning algorithm for simpler version of the arm.
-
-```
-    cd python
-    ./tester
-```
-You can also run the following command to access command arguments, these can be used to modify your testing parameters.
-```
-    ./tester -h
-```
-
-It is possible to run several tests simultaneously using the following script, and as for the tester it is possible to modify learning settings.
+Run a python script testing the learning algorithm. It is possible to run several tests simultaneously using the following script, and it is possible to modify learning settings. The first command displays the help.
 ```
     ./multitester -h
     ./multitester
 ```
 
-Finally, you can extract results and compare al your learnings. By default, test files are created and saved at files/learnSaves/testers/.
+The following example creates a 3D arm with a first chain composed of a z axis motor and a rigit part of length 125, a second part composed of a x axis motor and a rigid part of length 142, ... The learning is done on the following set of taregt coordinates [[50, 25, 50], [200, 60, 200], [100, 0, 300], [75, 215, 125], [300, 300, 15]]. The hyperparamters for the learning are contained in the file ddpgstandardhyperparamranges.json, the path to the file explicited. Each model will trained 5 times. The mode of environment update is set to scaledSet.
+```
+    ./multitester.py --arms3D z125 x142 x142 x74 z41 z40 --coordinates  50 25 50 200 60 200 100 0 300 75 215 125 300 300 15 --hyperparameters ../files/learnSettings/ddpgstandardhyperparamranges.json --nbrepeat 5 --mode scaledSet
+```
+
+You can extract results and compare al your learnings. By default, test files are created and saved at files/learnSaves/testers/.
 Run the following to visualize evolution of reward for your tests. Once again, command arguments are provided to change visualization parameters.
 ```
-    ./multitester -h
+    ./multitester
     ./resultextractor
 ```
 
