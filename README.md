@@ -69,6 +69,12 @@ Can be found here : <https://matplotlib.org/> and installed by executing the fol
 pip install matplotlib
 ```
 
+*tinyik* library v1.2.0.
+Can be found here : <https://pypi.org/project/tinyik/> and installed by executing the following line on a terminal:
+```
+pip install tinyik
+```
+
 
 ### Install
 
