@@ -16,6 +16,8 @@
 
 #include "iovector.h"
 
+namespace armlearn {
+
 /**
  * @class Input
  * @brief Input of learning algorithms, inherited from IOVector
@@ -40,6 +42,6 @@ template<class T> class Input : public IOVector<T>{
         }
 };
 
-
+}
 
 #endif

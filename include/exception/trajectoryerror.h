@@ -14,11 +14,15 @@
 
 #include <stdexcept>
 
+namespace armlearn {
+
 class TrajectoryError : public std::runtime_error{
     public:
         TrajectoryError();
         TrajectoryError(const std::string& what_arg);
         TrajectoryError(const char* what_arg);
 };
+
+}
 
 #endif

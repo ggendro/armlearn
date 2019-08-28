@@ -3,20 +3,22 @@
 #include "serialcontroller.h"
 #include "trajectory.h"
 
+using namespace armlearn;
+
 int main(int argc, char *argv[]) {
 
     /******************************************/
     /****     Common base for examples     ****/
     /******************************************/
 
-    SerialController arbotix("/dev/ttyUSB0");
+    communication::SerialController arbotix("/dev/ttyUSB0");
 
-	arbotix.addMotor(1, "base ", base);
-	arbotix.addMotor(2, "shoulder", shoulder);
-	arbotix.addMotor(3, "elbow", elbow);
-	arbotix.addMotor(4, "wristAngle", wristAngle);
-	arbotix.addMotor(5, "wristRotate", wristRotate);
-	arbotix.addMotor(6, "gripper", gripper);
+	arbotix.addMotor(1, "base ", communication::base);
+	arbotix.addMotor(2, "shoulder", communication::shoulder);
+	arbotix.addMotor(3, "elbow", communication::elbow);
+	arbotix.addMotor(4, "wristAngle", communication::wristAngle);
+	arbotix.addMotor(5, "wristRotate", communication::wristRotate);
+	arbotix.addMotor(6, "gripper", communication::gripper);
 	
 	arbotix.connect();
 	std::cout << arbotix.servosToString();

@@ -5,8 +5,11 @@
 
 #include "devicelearner.h"
 
+using namespace armlearn;
+using namespace learning;
 
-DeviceLearner::DeviceLearner(AbstractController* controller, double testProp):Learner(testProp){
+
+DeviceLearner::DeviceLearner(communication::AbstractController* controller, double testProp):Learner(testProp){
     device = controller;
 }
 

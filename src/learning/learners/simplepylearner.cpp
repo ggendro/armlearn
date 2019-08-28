@@ -5,8 +5,11 @@
 
 #include "simplepylearner.h"
 
+using namespace armlearn;
+using namespace learning;
 
-SimplePyLearner::SimplePyLearner(AbstractController* controller, Converter* converter, std::string learningScriptSettings, double testProp):PyLearner(controller, learningScriptSettings, testProp){
+
+SimplePyLearner::SimplePyLearner(communication::AbstractController* controller, kinematics::Converter* converter, std::string learningScriptSettings, double testProp):PyLearner(controller, learningScriptSettings, testProp){
     verifier = converter;
 }
 

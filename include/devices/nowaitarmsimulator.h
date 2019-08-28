@@ -16,6 +16,9 @@
 
 #include "armsimulator.h"
 
+namespace armlearn {
+    namespace communication{
+
 class NoWaitArmSimulator : public ArmSimulator{
 
     public:
@@ -48,5 +51,8 @@ class NoWaitArmSimulator : public ArmSimulator{
 
 
 };
+
+    }
+}
 
 #endif

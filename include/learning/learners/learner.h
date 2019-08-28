@@ -22,6 +22,9 @@
 #include "input.h"
 #include "output.h"
 
+namespace armlearn {
+    namespace learning {
+
 
 #define DEFAULT_TEST_PROPORTION 0.33
 #define ERROR_MARGIN_PROPORTION 0.025
@@ -314,6 +317,9 @@ template<class U, class V> class Learner{ // TODO: Adapt for obstacles, disabled
         virtual Output<V>* produce(const Input<U>& input) = 0;
 
 };
+
+    }
+}
 
 
 #endif

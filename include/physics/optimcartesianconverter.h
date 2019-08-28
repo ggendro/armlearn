@@ -15,6 +15,8 @@
 #include "cartesianconverter.h"
 #include "cylindricalconverter.h"
 
+namespace armlearn {
+    namespace kinematics {
 
 /**
  * @class OptimCartesianConverter
@@ -105,6 +107,9 @@ class OptimCartesianConverter : public CartesianConverter{
         virtual Converter* computeCoordToServo(const std::vector<double>& coordinates) override;
 
 };
+
+    }
+}
 
 
 #endif

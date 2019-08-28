@@ -4,6 +4,10 @@
 
 #include "serialcontroller.h"
 
+using namespace armlearn;
+using namespace communication;
+
+
 SerialController::SerialController(const std::string& port, int baudrate, DisplayMode displayMode, std::ostream& out):AbstractController(displayMode, out) {
     serialPort = new serial::Serial(port, baudrate);
 }

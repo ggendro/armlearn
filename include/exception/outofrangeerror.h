@@ -14,11 +14,15 @@
 
 #include <stdexcept>
 
+namespace armlearn {
+
 class OutOfRangeError : public std::range_error{
     public:
         OutOfRangeError();
         OutOfRangeError(const std::string& what_arg);
         OutOfRangeError(const char* what_arg);
 };
+
+}
 
 #endif

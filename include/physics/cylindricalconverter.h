@@ -18,6 +18,8 @@
 #include "basiccartesianconverter.h"
 #include "convertererror.h"
 
+namespace armlearn {
+    namespace kinematics {
 
 /**
  * @class CylindricalConverter
@@ -95,5 +97,7 @@ class CylindricalConverter : public Converter{
 
 };
 
+    }
+}
 
 #endif

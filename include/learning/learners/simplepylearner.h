@@ -20,6 +20,9 @@
 #include "converter.h"
 #include "learnsettings.h"
 
+namespace armlearn {
+    namespace learning {
+
 /**
  * @class SimplePyLearner
  * @brief Class containing the basics methods for a simple learner based on a verifier, that learns how to compute servomotor positions from coordinates, via python script
@@ -28,7 +31,7 @@
 class SimplePyLearner : public PyLearner{
 
     protected:
-        Converter* verifier;
+        kinematics::Converter* verifier;
 
         /**
          * @brief Computes resulting reward of the output for the corresponding input and servomotor states, based on the converter
@@ -82,7 +85,7 @@ class SimplePyLearner : public PyLearner{
          * @param learningScriptSettings the name of the json file containing the required settings of the python modules to use  
          * @param testProp the proportion of test couples compared to learning couples
          */
-        SimplePyLearner(AbstractController* controller, Converter* converter, std::string learningScriptSettings = PY_LEARN_FILE, double testProp = DEFAULT_TEST_PROPORTION);
+        SimplePyLearner(communication::AbstractController* controller, kinematics::Converter* converter, std::string learningScriptSettings = PY_LEARN_FILE, double testProp = DEFAULT_TEST_PROPORTION);
 
         /**
          * @brief Destroys the SimplePyLearner object
@@ -111,7 +114,8 @@ class SimplePyLearner : public PyLearner{
 };
 
 
-
+    }
+}
 
 
 #endif

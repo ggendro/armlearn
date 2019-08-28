@@ -14,11 +14,15 @@
 
 #include <stdexcept>
 
+namespace armlearn {
+
 class ConverterError : public std::runtime_error{
     public:
         ConverterError();
         ConverterError(const std::string& what_arg);
         ConverterError(const char* what_arg);
 };
+
+}
 
 #endif

@@ -16,6 +16,8 @@
 
 #include "iovector.h"
 
+namespace armlearn {
+
 /**
  * @class Output
  * @brief Output of learning algorithms, inherited from IOvector
@@ -40,5 +42,7 @@ template<class T> class Output : public IOVector<T>{
             return IOVector<T>::vector;
         }
 };
+
+}
 
 #endif

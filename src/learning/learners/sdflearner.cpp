@@ -6,10 +6,11 @@
 #include "sdflearner.h"
 
 
+using namespace armlearn;
+using namespace learning;
 
 
-
-SdfLearner::SdfLearner(AbstractController* controller, Converter* converter):DeviceLearner(controller), rewards(LEARN_NB_MOVEMENTS), nbMoves(0){
+SdfLearner::SdfLearner(communication::AbstractController* controller, kinematics::Converter* converter):DeviceLearner(controller), rewards(LEARN_NB_MOVEMENTS), nbMoves(0){
     verifier = converter;
 }
 
@@ -39,11 +40,11 @@ double SdfLearner::computeReward(const std::vector<float> target, const std::vec
 }
 
 
-Converter* SdfLearner::getVerifier() const{
+kinematics::Converter* SdfLearner::getVerifier() const{
     return verifier;
 }
 
-AbstractController* SdfLearner::getDevice() const{
+communication::AbstractController* SdfLearner::getDevice() const{
     return device;
 }
 
@@ -152,8 +153,8 @@ std::string SdfLearner::toString() const{
 
 
 extern "C" SdfLearner* initWrapper(float *state_observation, int state_space_size, float x_target, float y_target, float z_target) {
-	Converter* conv = new OptimCartesianConverter();
-	AbstractController* arbotix = new NoWaitArmSimulator((DisplayMode) 0);
+	kinematics::Converter* conv = new kinematics::OptimCartesianConverter();
+	communication::AbstractController* arbotix = new communication::NoWaitArmSimulator((communication::DisplayMode) 0);
 	//AbstractController* arbotix = new SerialController("/dev/ttyUSB0");
 
 	WidowXBuilder builder;
@@ -178,8 +179,8 @@ extern "C" void stepWrapper(SdfLearner* env,
 }
 
 extern "C" void endWrapper(SdfLearner* env) { // TODO: add call to this function in step when necessary
-    Converter* conv = env->getVerifier();
-    AbstractController* arbotix = env->getDevice();
+    kinematics::Converter* conv = env->getVerifier();
+    communication::AbstractController* arbotix = env->getDevice();
 
     delete env;
     delete arbotix;

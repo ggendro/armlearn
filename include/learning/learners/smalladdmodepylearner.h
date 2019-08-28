@@ -16,6 +16,9 @@
 #include "abstractcontroller.h"
 #include "converter.h"
 
+namespace armlearn {
+    namespace learning {
+
 /**
  * @class SmallAddModePyLearner
  * @brief Class executing learning algorithm with add position mode for the device with restricted steps
@@ -33,7 +36,7 @@ class SmallAddModePyLearner : public BufferBasedPyLearner{
          * @param learningScriptsettings the name of the json file containing the required settings of the python modules to use  
          * @param testProp the proportion of test couples compared to learning couples
          */
-        SmallAddModePyLearner(AbstractController* controller, Converter* converter, std::string learningScriptSettings = PY_LEARN_FILE, double testProp = DEFAULT_TEST_PROPORTION);
+        SmallAddModePyLearner(communication::AbstractController* controller, kinematics::Converter* converter, std::string learningScriptSettings = PY_LEARN_FILE, double testProp = DEFAULT_TEST_PROPORTION);
 
         /**
          * @brief Destroys the PyLearner object
@@ -62,5 +65,8 @@ class SmallAddModePyLearner : public BufferBasedPyLearner{
         virtual std::string toString() const override;
 
 };
+
+    }
+}
 
 #endif

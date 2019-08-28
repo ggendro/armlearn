@@ -1,6 +1,8 @@
 
 #include "typeerror.h"
 
+using namespace armlearn;
+
 TypeError::TypeError():TypeError("Invalid type"){
 
 }

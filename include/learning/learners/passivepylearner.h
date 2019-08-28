@@ -16,6 +16,8 @@
 
 #include "simplepylearner.h"
 
+namespace armlearn {
+    namespace learning {
 
 /**
  * @class PassivePyLearner
@@ -36,7 +38,7 @@ class PassivePyLearner : public SimplePyLearner{
          * @param learningScriptSettings the name of the json file containing the required settings of the python modules to use  
          * @param testProp the proportion of test couples compared to learning couples
          */
-        PassivePyLearner(AbstractController* controller, Converter* converter, std::string learningScriptSettings = PY_LEARN_FILE, double testProp = DEFAULT_TEST_PROPORTION);
+        PassivePyLearner(communication::AbstractController* controller, kinematics::Converter* converter, std::string learningScriptSettings = PY_LEARN_FILE, double testProp = DEFAULT_TEST_PROPORTION);
 
         /**
          * @brief Destroys the PyLearner object
@@ -70,7 +72,8 @@ class PassivePyLearner : public SimplePyLearner{
 
 };
 
-
+    }
+}
 
 
 

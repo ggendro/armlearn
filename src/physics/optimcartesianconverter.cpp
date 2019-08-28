@@ -5,6 +5,9 @@
 
 #include "optimcartesianconverter.h"
 
+using namespace armlearn;
+using namespace kinematics;
+
 
 OptimCartesianConverter::OptimCartesianConverter():CartesianConverter(), rotatingBase(false), baseDefined(false){
     converters[0] = new BasicCartesianConverter();

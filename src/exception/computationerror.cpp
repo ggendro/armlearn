@@ -1,6 +1,8 @@
 
 #include "computationerror.h"
 
+using namespace armlearn;
+
 ComputationError::ComputationError():ComputationError("Error during calculation"){
 
 }

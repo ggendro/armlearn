@@ -16,6 +16,8 @@
 
 #include <math.h>
 
+namespace armlearn {
+    namespace communication{
 
 // Ranges of values for servomotor position with base type
 #define BASE_MIN 0
@@ -60,6 +62,9 @@
 
 // Unit of servomotor distances (0.088°)
 #define MOVE_UNIT 0.088
+
+    }
+}
 
 
 #endif

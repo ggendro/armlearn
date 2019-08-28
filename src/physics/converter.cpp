@@ -5,6 +5,9 @@
 
 #include "converter.h"
 
+using namespace armlearn;
+using namespace kinematics;
+
 
 Converter::Converter():lastCoord(), lastServo(), nbServos(0){
     device = new KDL::Chain();

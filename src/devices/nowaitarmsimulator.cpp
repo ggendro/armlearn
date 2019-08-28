@@ -5,6 +5,9 @@
 
 #include "nowaitarmsimulator.h"
 
+using namespace armlearn;
+using namespace communication;
+
 NoWaitArmSimulator::NoWaitArmSimulator(DisplayMode displayMode, std::ostream& out):ArmSimulator(displayMode, out){
 
 }

@@ -14,11 +14,15 @@
 
 #include <stdexcept>
 
+namespace armlearn {
+
 class TypeError : public std::runtime_error{
     public:
         TypeError();
         TypeError(const std::string& what_arg);
         TypeError(const char* what_arg);
 };
+
+}
 
 #endif

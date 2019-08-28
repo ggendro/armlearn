@@ -28,6 +28,8 @@
 #include "iderror.h"
 #include "outofrangeerror.h"
 
+namespace armlearn {
+    namespace communication{
 
 // Default baudrate for the serial port
 #define DEFAULT_BAUDRATE 115200
@@ -309,5 +311,8 @@ class SerialController : public AbstractController{
         virtual bool updateInfos(uint8_t id) override;
     
 };
+
+    }
+}
 
 #endif

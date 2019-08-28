@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.3)
-project(Communication)
+project(armlearn VERSION 1.0.1 DESCRIPTION "Library for communication and serial control with a robotic arm using Reinforcement Learning.")
 
 # control where the static and shared libraries are built so that on windows
 # we don't need to tinker with the path to run the executable
@@ -58,3 +58,12 @@ add_subdirectory(preesm/org.ietr.preesm.reinforcement_learning/Spider)
 
 include(InstallRequiredSystemLibraries)
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/License.txt")
+
+# create library
+add_library(armlearn SHARED
+    ${HEADERS}
+    ${SOURCES}
+)
+target_include_directories(armlearn PUBLIC include)
+target_include_directories(armlearn PRIVATE src)
+install(TARGETS armlearn DESTINATION lib)

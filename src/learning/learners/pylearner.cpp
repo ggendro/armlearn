@@ -5,8 +5,11 @@
 
 #include "pylearner.h"
 
+using namespace armlearn;
+using namespace learning;
 
-PyLearner::PyLearner(AbstractController* controller, std::string learningScriptSettings, double testProp):DeviceLearner(controller, testProp){
+
+PyLearner::PyLearner(communication::AbstractController* controller, std::string learningScriptSettings, double testProp):DeviceLearner(controller, testProp){
     std::ifstream f(learningScriptSettings);
     nlohmann::json fileReader;
     f >> fileReader;

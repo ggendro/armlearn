@@ -14,11 +14,16 @@
 
 #include <stdexcept>
 
+namespace armlearn {
+
 class ComputationError : public std::runtime_error{
     public:
         ComputationError();
         ComputationError(const std::string& what_arg);
         ComputationError(const char* what_arg);
 };
+
+
+}
 
 #endif

@@ -5,6 +5,9 @@
 
 #include "basiccartesianconverter.h"
 
+using namespace armlearn;
+using namespace kinematics;
+
 
 BasicCartesianConverter::BasicCartesianConverter():CartesianConverter(){
     cartesianConverter = new KDL::ChainFkSolverPos_recursive(*device);

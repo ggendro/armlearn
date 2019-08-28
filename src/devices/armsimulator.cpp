@@ -5,6 +5,9 @@
 
 #include "armsimulator.h"
 
+using namespace armlearn;
+using namespace communication;
+
 ArmSimulator::ArmSimulator(DisplayMode displayMode, std::ostream& out):AbstractController(displayMode, out){
 
 }

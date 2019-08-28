@@ -24,6 +24,8 @@
 #include "nowaitarmsimulator.h"
 #include "widowxbuilder.h"
 
+namespace armlearn {
+    namespace learning {
 
 /**
  * @class SdfLearner
@@ -33,7 +35,7 @@
 class SdfLearner : public DeviceLearner{
 
     protected:
-        Converter* verifier;
+        kinematics::Converter* verifier;
         std::vector<float> rewards;
         int nbMoves;
 
@@ -42,11 +44,11 @@ class SdfLearner : public DeviceLearner{
     
     public:
 
-        SdfLearner(AbstractController* controller, Converter* converter);
+        SdfLearner(communication::AbstractController* controller, kinematics::Converter* converter);
         ~SdfLearner();
         
-        Converter* getVerifier() const;
-        AbstractController* getDevice() const;
+        kinematics::Converter* getVerifier() const;
+        communication::AbstractController* getDevice() const;
 
 
         void init(float *state_observation, int state_space_size, float x_target, float y_target, float z_target);
@@ -92,5 +94,8 @@ extern "C" void stepWrapper(SdfLearner* env,
                         float *input_actions, float *state_observation, float *reward);
 extern "C" void endWrapper(SdfLearner* env);
 
+
+    }
+}
 
 #endif

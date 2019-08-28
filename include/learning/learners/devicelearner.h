@@ -16,6 +16,9 @@
 #include "abstractcontroller.h"
 #include "learner.h"
 
+namespace armlearn {
+    namespace learning {
+
 // Min distance to the range limits of servomotors
 #define RANGE_DISTANCE_SECURITY 10
 
@@ -29,7 +32,7 @@
 class DeviceLearner : public Learner<uint16_t, std::vector<uint16_t>>{
 
     protected:
-        AbstractController* device;
+        communication::AbstractController* device;
 
         /**
          * @brief Returns the current state of each servomotor
@@ -56,7 +59,7 @@ class DeviceLearner : public Learner<uint16_t, std::vector<uint16_t>>{
          * @param controller the controller to link the learner to
          * @param testProp the proportion of test couples compared to learning couples
          */
-        DeviceLearner(AbstractController* controller, double testProp = DEFAULT_TEST_PROPORTION);
+        DeviceLearner(communication::AbstractController* controller, double testProp = DEFAULT_TEST_PROPORTION);
 
         /**
          * @brief Returns the state of the learner under string format
@@ -67,6 +70,9 @@ class DeviceLearner : public Learner<uint16_t, std::vector<uint16_t>>{
     
 
 };
+
+    }
+}
 
 
 #endif

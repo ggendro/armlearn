@@ -5,6 +5,9 @@
 
 #include "cylindricalconverter.h"
 
+using namespace armlearn;
+using namespace kinematics;
+
 
 CylindricalConverter::CylindricalConverter():Converter(), baseDefined(false){
     movingPart = new BasicCartesianConverter();

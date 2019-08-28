@@ -19,6 +19,9 @@
 
 #include "cartesianconverter.h"
 
+namespace armlearn {
+    namespace kinematics {
+
 
 /**
  * @class BasicCartesianConverter
@@ -69,5 +72,7 @@ class BasicCartesianConverter : public CartesianConverter{
 
 };
 
+    }
+}
 
 #endif

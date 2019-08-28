@@ -1,6 +1,8 @@
 
 #include "connectionerror.h"
 
+using namespace armlearn;
+
 ConnectionError::ConnectionError():ConnectionError("Unable to establish connection"){
 
 }

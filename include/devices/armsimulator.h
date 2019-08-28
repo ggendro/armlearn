@@ -20,6 +20,10 @@
 #include "servomotor.h"
 #include "converter.h"
 
+namespace armlearn {
+    namespace communication{
+        
+
 // Constant values for physical measures from device (waiting for a real simulation)
 #define CURRENT_TEMP 37
 #define CURRENT_LOAD 1000
@@ -30,7 +34,6 @@
 #define TIME_MUL 1000
 
 
-
 /**
  * @class ArmSimulator
  * @brief Provides an interface to link servomotor classes with simulated servomotors
@@ -39,7 +42,7 @@
 class ArmSimulator : public AbstractController{
 
     protected:
-        Converter* physicalSolver;
+        kinematics::Converter* physicalSolver;
 
         /**
          * @brief Gets a pointer to the wanted servomotor
@@ -200,5 +203,8 @@ class ArmSimulator : public AbstractController{
         virtual bool updateInfos(uint8_t id) override;
     
 };
+
+    }
+}
 
 #endif

@@ -28,6 +28,15 @@
 #include "range.h"
 
 
+namespace armlearn {
+
+    namespace learning {
+        class DeviceLearner;
+    }
+
+    namespace communication{
+
+
 // Starting address of the register containing the model number
 #define MODEL_REGISTER 0x00
 // Number of successive registers containging information about model number, firmware version and ID
@@ -349,9 +358,11 @@ class Servomotor{
         int targetPositionReached() const;
 
 
-    friend class DeviceLearner;
+    friend class learning::DeviceLearner;
 };
 
+    }
+}
 
 
 #endif

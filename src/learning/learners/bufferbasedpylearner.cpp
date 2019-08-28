@@ -5,8 +5,11 @@
 
 #include "bufferbasedpylearner.h"
 
+using namespace armlearn;
+using namespace learning;
 
-BufferBasedPyLearner::BufferBasedPyLearner(AbstractController* controller, Converter* converter, std::string learningScriptSettings, double testProp):SimplePyLearner(controller, converter, learningScriptSettings, testProp){
+
+BufferBasedPyLearner::BufferBasedPyLearner(communication::AbstractController* controller, kinematics::Converter* converter, std::string learningScriptSettings, double testProp):SimplePyLearner(controller, converter, learningScriptSettings, testProp){
     
 }
 

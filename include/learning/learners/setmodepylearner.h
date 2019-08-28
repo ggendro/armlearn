@@ -16,6 +16,9 @@
 #include "abstractcontroller.h"
 #include "converter.h"
 
+namespace armlearn {
+    namespace learning {
+
 /**
  * @class SetModePyLearner
  * @brief Class executing learning algorithm with set position mode for the device
@@ -33,7 +36,7 @@ class SetModePyLearner : public BufferBasedPyLearner{
          * @param learningScriptSettings the name of the json file containing the required settings of the python modules to use  
          * @param testProp the proportion of test couples compared to learning couples
          */
-        SetModePyLearner(AbstractController* controller, Converter* converter, std::string learningScriptSettings = PY_LEARN_FILE, double testProp = DEFAULT_TEST_PROPORTION);
+        SetModePyLearner(communication::AbstractController* controller, kinematics::Converter* converter, std::string learningScriptSettings = PY_LEARN_FILE, double testProp = DEFAULT_TEST_PROPORTION);
 
         /**
          * @brief Destroys the PyLearner object
@@ -62,5 +65,9 @@ class SetModePyLearner : public BufferBasedPyLearner{
         virtual std::string toString() const override;
 
 };
+
+
+    }
+}
 
 #endif

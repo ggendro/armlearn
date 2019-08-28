@@ -1,6 +1,8 @@
 
 #include "iderror.h"
 
+using namespace armlearn;
+
 IdError::IdError():IdError("Invalid ID"){
 
 }

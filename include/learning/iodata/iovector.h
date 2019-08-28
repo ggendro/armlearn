@@ -18,6 +18,8 @@
 #include <iostream>
 #include <sstream>
 
+namespace armlearn {
+
 /**
  * @class IOVector
  * @brief Input or Output of learning algorithms
@@ -122,6 +124,8 @@ template <typename U> std::ostream& operator<<(std::ostream& os, const std::vect
     for(auto&& v : vect) os << v << " ";
     os << "}"; 
     return os; 
+}
+
 }
 
 #endif

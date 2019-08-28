@@ -1,6 +1,8 @@
 
 #include "fileerror.h"
 
+using namespace armlearn;
+
 FileError::FileError():FileError("Error while managing file"){
 
 }

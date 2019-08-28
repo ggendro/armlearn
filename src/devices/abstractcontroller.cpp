@@ -4,6 +4,11 @@
 
 #include "abstractcontroller.h"
 
+
+using namespace armlearn;
+using namespace communication;
+
+
 AbstractController::AbstractController(DisplayMode displayMode, std::ostream& out):mode(displayMode), output(out) {
     motors = new std::map<uint8_t, Servomotor*>();
 }

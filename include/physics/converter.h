@@ -22,6 +22,9 @@
 #include "range.h"
 #include "computationerror.h"
 
+namespace armlearn {
+    namespace kinematics {
+
 
 /**
  * @brief Enumeration listing the axis possibilities of each servomotor
@@ -135,5 +138,7 @@ class Converter{
 
 };
 
+    }
+}
 
 #endif

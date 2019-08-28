@@ -14,11 +14,15 @@
 
 #include <stdexcept>
 
+namespace armlearn {
+
 class ConnectionError : public std::runtime_error{
     public:
         ConnectionError();
         ConnectionError(const std::string& what_arg);
         ConnectionError(const char* what_arg);
 };
+
+}
 
 #endif

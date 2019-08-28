@@ -23,6 +23,14 @@
 #include "connectionerror.h"
 #include "outofrangeerror.h"
 
+namespace armlearn {
+
+    namespace learning {
+        class DeviceLearner;
+    }
+
+    namespace communication{
+
 
 // Position of the servomotors to put the arm in backhoe position // TODO: to correct, to have generic positions
 #define BACKHOE_POSITION {2048, 2048, 2048, 2048, 512, 256}
@@ -354,7 +362,10 @@ class AbstractController{
         std::string servosToString() const;
 
 
-    friend class DeviceLearner;  
+    friend class learning::DeviceLearner;  
 };
+
+    }
+}
 
 #endif

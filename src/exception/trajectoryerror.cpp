@@ -1,6 +1,8 @@
 
 #include "trajectoryerror.h"
 
+using namespace armlearn;
+
 TrajectoryError::TrajectoryError():TrajectoryError("Error during the execution of a trajectory"){
 
 }

@@ -8,6 +8,7 @@
 #include "widowxbuilder.h"
 #include "optimcartesianconverter.h"
 
+using namespace armlearn;
 
 int main(int argc, char *argv[]) {
 
@@ -26,8 +27,8 @@ int main(int argc, char *argv[]) {
     /**** Creation and connection of device instances  ****/
     /******************************************************/
 
-	OptimCartesianConverter conv; // Create kinematics calculator
-	NoWaitArmSimulator arbotix_sim((DisplayMode) 0); // Create robot simulator 
+	kinematics::OptimCartesianConverter conv; // Create kinematics calculator
+	communication::NoWaitArmSimulator arbotix_sim((communication::DisplayMode) 0); // Create robot simulator 
 
 	WidowXBuilder builder;
 	builder.buildConverter(conv);
@@ -44,7 +45,7 @@ int main(int argc, char *argv[]) {
     /****        Creation or learning system           ****/
     /******************************************************/
 
-	SetModePyLearner learner(&arbotix_sim, &conv, "../../files/learnSettings/ddpglearnersettings.json"); // Create learner
+	learning::SetModePyLearner learner(&arbotix_sim, &conv, "../../files/learnSettings/ddpglearnersettings.json"); // Create learner
 
 
     /******************************************************/

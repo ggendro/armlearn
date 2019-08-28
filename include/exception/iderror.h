@@ -15,11 +15,15 @@
 
 #include <stdexcept>
 
+namespace armlearn {
+
 class IdError : public std::runtime_error{
     public:
         IdError();
         IdError(const std::string& what_arg);
         IdError(const char* what_arg);
 };
+
+}
 
 #endif

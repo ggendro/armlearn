@@ -5,8 +5,10 @@
 
 #include "trajectory.h"
 
+using namespace armlearn;
 
-Trajectory::Trajectory(AbstractController* toDevice){
+
+Trajectory::Trajectory(communication::AbstractController* toDevice){
     device = toDevice;
 
     trajectories = new std::vector<std::vector<uint16_t>*>();

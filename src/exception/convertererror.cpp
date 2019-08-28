@@ -1,6 +1,8 @@
 
 #include "convertererror.h"
 
+using namespace armlearn;
+
 ConverterError::ConverterError():ConverterError("Error while setting converter"){
 
 }

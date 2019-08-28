@@ -9,6 +9,8 @@
  * 
  */
 
+namespace armlearn {
+    namespace learning {
 
 #ifndef LEARNSETTINGS_H
 #define LEARNSETTINGS_H
@@ -34,5 +36,9 @@
 
 // Coefficient decreasing the reward for a state as the state is closer to the initial state
 #define DECREASING_REWARD 0.99
+
+
+    }
+}
 
 #endif

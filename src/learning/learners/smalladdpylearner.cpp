@@ -4,7 +4,10 @@
 
 #include "smalladdmodepylearner.h"
 
-SmallAddModePyLearner::SmallAddModePyLearner(AbstractController* controller, Converter* converter, std::string learningScriptSettings, double testProp):BufferBasedPyLearner(controller, converter, learningScriptSettings, testProp){
+using namespace armlearn;
+using namespace learning;
+
+SmallAddModePyLearner::SmallAddModePyLearner(communication::AbstractController* controller, kinematics::Converter* converter, std::string learningScriptSettings, double testProp):BufferBasedPyLearner(controller, converter, learningScriptSettings, testProp){
     
 }
 

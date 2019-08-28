@@ -5,8 +5,11 @@
 
 #include "passivepylearner.h"
 
+using namespace armlearn;
+using namespace learning;
 
-PassivePyLearner::PassivePyLearner(AbstractController* controller, Converter* converter, std::string learningScriptSettings, double testProp):SimplePyLearner(controller, converter, learningScriptSettings, testProp){
+
+PassivePyLearner::PassivePyLearner(communication::AbstractController* controller, kinematics::Converter* converter, std::string learningScriptSettings, double testProp):SimplePyLearner(controller, converter, learningScriptSettings, testProp){
 
 }
 

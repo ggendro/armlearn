@@ -1,6 +1,8 @@
 
 #include "outofrangeerror.h"
 
+using namespace armlearn;
+
 OutOfRangeError::OutOfRangeError():OutOfRangeError("Value out of its range"){
 
 }

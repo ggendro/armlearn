@@ -16,6 +16,8 @@
 
 #include "converter.h"
 
+namespace armlearn {
+    namespace kinematics {
 
 /**
  * @class CartesianConverter
@@ -39,6 +41,9 @@ class CartesianConverter : public Converter{
         virtual ~CartesianConverter();
 
 };
+
+    }
+}
 
 
 #endif

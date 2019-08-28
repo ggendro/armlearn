@@ -17,6 +17,9 @@
 #include "converter.h"
 #include "learner.h"
 
+namespace armlearn {
+ 
+
 /**
  * @class Builder
  * @brief Abstract class for building the main classes of the library (Controller, Converter, ...) for a specific device such as the WidowX arm
@@ -33,7 +36,7 @@ class Builder{
          * 
          * Abstract method, implemented in inherited classes
          */
-        virtual void buildController(AbstractController& controller) = 0;
+        virtual void buildController(communication::AbstractController& controller) = 0;
 
         /**
          * @brief Adds to a converter all the elements relative to the specific device linked to the builder
@@ -42,9 +45,10 @@ class Builder{
          * 
          * Abstract method, implemented in inherited classes 
          */
-        virtual void buildConverter(Converter& converter) = 0;
+        virtual void buildConverter(kinematics::Converter& converter) = 0;
 
 };
 
+}
 
 #endif

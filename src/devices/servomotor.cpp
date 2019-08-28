@@ -4,6 +4,9 @@
 
 #include "servomotor.h"
 
+using namespace armlearn;
+using namespace communication;
+
 Servomotor::Servomotor(uint8_t id, const std::string& name, Type type):status(offline), posMin(0), posMax(0), targetSpeed(0), targetPosition(0), modelNum(0), firmware(0), speed(0), position(0), load(0), voltage(0), temperature(0), activeLED(0), instructionRegistered(0), inMovement(0){
     this->id = id;
     this->name = name;

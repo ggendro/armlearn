@@ -18,6 +18,8 @@
 #include "abstractcontroller.h"
 #include "trajectoryerror.h"
 
+namespace armlearn {
+
 /**
  * @class Trajectory
  * @brief class Trajectory
@@ -26,7 +28,7 @@
 class Trajectory{
 
     private:
-        AbstractController* device;
+        communication::AbstractController* device;
         std::vector<std::vector<uint16_t>*>* trajectories;
         // TODO: add time management (pauses during execution, varying speed of servomotors, ...)
         
@@ -46,7 +48,7 @@ class Trajectory{
          * 
          * @param toDevice pointer to the Controller device to send the trajectories to, does not create it
          */
-        Trajectory(AbstractController* toDevice);
+        Trajectory(communication::AbstractController* toDevice);
 
         /**
          * @brief Destroys the Trajectory:: Trajectory object
@@ -107,5 +109,6 @@ class Trajectory{
         
 };
 
+}
 
 #endif

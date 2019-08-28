@@ -14,11 +14,15 @@
 
 #include <stdexcept>
 
+namespace armlearn {
+
 class FileError : public std::runtime_error{
     public:
         FileError();
         FileError(const std::string& what_arg);
         FileError(const char* what_arg);
 };
+
+}
 
 #endif

@@ -15,6 +15,8 @@
 
 #include "builder.h"
 
+namespace armlearn {
+
 /**
  * @class WidowXBuilder
  * @brief Class for building the main classes of the library (Controller, Converter, ...) for he the WidowX arm device
@@ -41,16 +43,17 @@ class WidowXBuilder : public Builder{
          * 
          * @param controller the controller to build
          */
-        virtual void buildController(AbstractController& controller) override;
+        virtual void buildController(communication::AbstractController& controller) override;
 
         /**
          * @brief Adds to a converter all the elements relative to the WidowX arm device
          * 
          * @param converter the converter to build
          */
-        virtual void buildConverter(Converter& converter) override;
+        virtual void buildConverter(kinematics::Converter& converter) override;
 
 };
 
+}
 
 #endif
