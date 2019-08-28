@@ -81,12 +81,12 @@ pip install tinyik
 You can execute the following lines on a terminal to download and install the project and the library:
 
 Get the code:
-```
+```bash
     git clone https://gitlab.insa-rennes.fr/Gael.Gendron/WidowXArmLearning.git
 ```
 
 Install:
-```
+```bash
     cd build/
     cmake ..
     make
@@ -97,13 +97,13 @@ Install:
 
 
 To do not install the library and generate only an executable you want, run the following:
-```
+```bash
     cd build/
     cmake ..
 ```
 
 Then go to the next section. Insert the make command between the instructions. Here is how to do for the ID example:
-```
+```bash
     cd examples/device_communication/example_id
     make
     sudo ./example_id
@@ -117,7 +117,7 @@ To better understand how the library works, some examples directly executable ar
 #### Run ID example
 
 Run a code example setting the ID of a servomotor. 
-```
+```bash
     cd examples/device_communication/example_id
     sudo ./example_id
 ```
@@ -125,7 +125,7 @@ Run a code example setting the ID of a servomotor.
 #### Run LED example
 
 Run a code example turning ON and OFF the LED of a servomotor. 
-```
+```bash
     cd examples/device_communication/example_led
     sudo ./example_led
 ```
@@ -133,7 +133,7 @@ Run a code example turning ON and OFF the LED of a servomotor.
 #### Run movement example
 
 Run a code example executing several movements to the arm. 
-```
+```bash
     cd examples/device_communication/example_movement
     sudo ./example_movement
 ```
@@ -141,7 +141,7 @@ Run a code example executing several movements to the arm.
 #### Run grab example
 
 Run a code example executing a specific trajectory to the arm, grab and drop an object.
-```
+```bash
     cd examples/trajectories/example_grab
     sudo ./example_grab
 ```
@@ -149,7 +149,7 @@ Run a code example executing a specific trajectory to the arm, grab and drop an 
 #### Run coordinates example
 
 Run a code example computing what coordinates are valid for the arm. Requires OpenMP.
-```
+```bash
     cd examples/computations/example_coordinates
     ./example_coordinates
 ```
@@ -157,7 +157,7 @@ Run a code example computing what coordinates are valid for the arm. Requires Op
 #### Run converters example
 
 Run a code example where positions are given and converted to cartesian and cylindrical coordinates.
-```
+```bash
     cd examples/computations/example_converters
     ./example_converters
 ```
@@ -165,7 +165,7 @@ Run a code example where positions are given and converted to cartesian and cyli
 #### Run cartesian mode example
 
 Run a code example giving a (very) simple interface to control the arm by giving it cartesian oordinates.
-```
+```bash
     cd examples/computations/example_cartesianMode
     sudo ./example_cartesianMode
 ```
@@ -173,7 +173,7 @@ Run a code example giving a (very) simple interface to control the arm by giving
 #### Run learn example
 
 Run a code example executing a Reinforcement Learning algorithm to control a simulation of the arm.
-```
+```bash
     cd examples/learning/example_learn
     ./example_learn
 ```
@@ -181,7 +181,7 @@ Run a code example executing a Reinforcement Learning algorithm to control a sim
 #### Run learn device example
 
 Run a code example executing a Reinforcement Learning algorithm to control a simulation of the arm and testing it on a real arm.
-```
+```bash
     cd examples/learning/example_learn_device
     sudo ./example_learn_device
 ```
@@ -189,20 +189,20 @@ Run a code example executing a Reinforcement Learning algorithm to control a sim
 #### Run python learning tests
 
 Run a python script testing the learning algorithm. It is possible to run several tests simultaneously using the following script, and it is possible to modify learning settings. The second command displays the help.
-```
+```bash
     cd ../python/
     ./multitester -h
     ./multitester
 ```
 
 The following example creates a 3D arm with a first chain composed of a z axis motor and a rigit part of length 125, a second part composed of a x axis motor and a rigid part of length 142, ... The learning is done on the following set of taregt coordinates [[50, 25, 50], [200, 60, 200], [100, 0, 300], [75, 215, 125], [300, 300, 15]]. The hyperparamters for the learning are contained in the file ddpgstandardhyperparamranges.json, the path to the file explicited. Each model will trained 5 times. The mode of environment update is set to scaledSet.
-```
+```bash
     ./multitester.py --arms3D z125 x142 x142 x74 z41 z40 --coordinates  50 25 50 200 60 200 100 0 300 75 215 125 300 300 15 --hyperparameters ../files/learnSettings/ddpgstandardhyperparamranges.json --nbrepeat 5 --mode scaledSet
 ```
 
 You can extract results and compare al your learnings. By default, test files are created and saved at files/learnSaves/testers/.
 Run the following to visualize evolution of reward for your tests. Once again, command arguments are provided to change visualization parameters.
-```
+```bash
     ./multitester
     ./resultextractor
 ```
@@ -211,7 +211,7 @@ Run the following to visualize evolution of reward for your tests. Once again, c
 
 Run the learning algorithm implemented with Dataflow graphs. To correct the code generation done by Preesm, a prior script has to be run.
 
-```
+```bash
     ../preesm/org.ietr.preesm.reinforcement_learning/Spider/correctCodegen.py ../preesm/org.ietr.preesm.reinforcement_learning/Spider/generated/pi_ddpg.cpp
     cd Debug/
     ./reinforcement-learning
@@ -220,30 +220,18 @@ Run the learning algorithm implemented with Dataflow graphs. To correct the code
 **Note:** *The Makefile is not located in the same folder than the executable. Running the following commands will compile the Preesm application. Compilation must be done after correction using python script.*
 
 
-```
+```bash
     cd preesm/org.ietr.preesm.reinforcement_learning/Spider/
     make
 ```
 
-<div class="panel panel-warning">
-**Warning**
-{: .panel-heading}
-<div class="panel-body">
-
+:::warning
 The Preesm application is not currently working (v3.41.1 of Preesm). Wait for a new version of the Preesm tool.
+:::
 
-</div>
-</div>
-
-<div class="panel panel-danger">
-**Danger**
-{: .panel-heading}
-<div class="panel-body">
-
-The current Preesm application generates a huge number of actors when parameters values are great. Memory may be entirely filled.
-
-</div>
-</div>
+:::danger
+The current Preesm application generates a huge number of actors when parameters values are great. Memory may entirely be filled.
+:::
 
 
 ## C++ Version
