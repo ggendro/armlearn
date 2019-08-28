@@ -46,6 +46,16 @@ include_directories(${INCLUDE_DIRS})
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 
 
+# create library
+set(ARM_LIB armlearn)
+add_library(${ARM_LIB} SHARED
+    ${HEADERS}
+    ${SOURCES}
+)
+target_include_directories(armlearn PUBLIC include)
+target_include_directories(armlearn PRIVATE src)
+install(TARGETS armlearn DESTINATION lib)
+
 # create examples
 add_subdirectory(examples)
 
@@ -59,11 +69,3 @@ add_subdirectory(preesm/org.ietr.preesm.reinforcement_learning/Spider)
 include(InstallRequiredSystemLibraries)
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/License.txt")
 
-# create library
-add_library(armlearn SHARED
-    ${HEADERS}
-    ${SOURCES}
-)
-target_include_directories(armlearn PUBLIC include)
-target_include_directories(armlearn PRIVATE src)
-install(TARGETS armlearn DESTINATION lib)

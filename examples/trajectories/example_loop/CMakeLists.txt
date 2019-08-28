@@ -6,4 +6,5 @@
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "./")
 
 # add executable
-add_executable(example_loop example_loop.cpp ${SOURCES})
+add_executable(example_loop example_loop.cpp)
+target_link_libraries(example_loop ${ARM_LIB})

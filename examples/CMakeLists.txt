@@ -17,7 +17,8 @@ foreach(example ${EXAMPLES_TO_BUILD})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY \"./\")
 
 # add executable
-add_executable(" ${ex_name} " " ${ex_name} ".cpp \${SOURCES})
+add_executable(" ${ex_name} " " ${ex_name} ".cpp)
+target_link_libraries(" ${ex_name} " \${ARM_LIB})
 "   )
 
     message(STATUS "Added CMakeLists.txt in " ${ex_path} " for generation of executable " ${ex_name})
