@@ -2,6 +2,7 @@
 #include <armlearn/serialcontroller.h>
 #include <armlearn/trajectory.h>
 #include <armlearn/optimcartesianconverter.h>
+#include <armlearn/widowxbuilder.h>
 
 
 int main(int argc, char *argv[]) {
@@ -12,12 +13,8 @@ int main(int argc, char *argv[]) {
 
     armlearn::communication::SerialController arbotix("/dev/ttyUSB0");
 
-	arbotix.addMotor(1, "base ", armlearn::communication::base);
-	arbotix.addMotor(2, "shoulder", armlearn::communication::shoulder);
-	arbotix.addMotor(3, "elbow", armlearn::communication::elbow);
-	arbotix.addMotor(4, "wristAngle", armlearn::communication::wristAngle);
-	arbotix.addMotor(5, "wristRotate", armlearn::communication::wristRotate);
-	arbotix.addMotor(6, "gripper", armlearn::communication::gripper);
+	armlearn::WidowXBuilder builder;
+	builder.buildController(arbotix);
 	
 	arbotix.connect();
 	std::cout << arbotix.servosToString();
