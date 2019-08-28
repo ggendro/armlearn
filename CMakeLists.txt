@@ -48,13 +48,15 @@ file(GLOB_RECURSE SOURCES "src/*.cpp")
 
 # create library
 set(ARM_LIB armlearn)
+include(GNUInstallDirs)
 add_library(${ARM_LIB} SHARED
     ${HEADERS}
     ${SOURCES}
 )
-target_include_directories(armlearn PUBLIC include)
+set_target_properties(armlearn PROPERTIES PUBLIC_HEADER "${HEADERS}")
+target_include_directories(armlearn PRIVATE include)
 target_include_directories(armlearn PRIVATE src)
-install(TARGETS armlearn DESTINATION lib)
+install(TARGETS ${ARM_LIB} LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${ARM_LIB})
 
 # create examples
 add_subdirectory(examples)

@@ -3,9 +3,8 @@
 #include <omp.h>
 #include <chrono>
 
-#include "basiccartesianconverter.h"
+#include <armlearn/basiccartesianconverter.h>
 
-using namespace armlearn;
 
 int main(int argc, char *argv[]) {
 
@@ -67,11 +66,11 @@ int main(int argc, char *argv[]) {
 
                 // Servo positions to cartesian coordinate system computation (created here to avoid segmentation errors due to parallelism)
                 
-                kinematics::BasicCartesianConverter conv;
-                conv.addServo("base", kinematics::fixed, 0, 0, 1, 0, 0, M_PI); // To simplify computation, only the part of the arm moving along the y axis is represented, fixed implies that it does not count as a servomotor
-                conv.addServo("shoulder", kinematics::rotX, 0, -2, 5, M_PI/2, 0, M_PI); // Add 90° because of the orientation of the elbow servomotor
-                conv.addServo("elbow", kinematics::rotX, 0, 0, 5);
-                conv.addServo("wristAngle", kinematics::rotX, 0, 0, 3);
+                armlearn::kinematics::BasicCartesianConverter conv;
+                conv.addServo("base", armlearn::kinematics::fixed, 0, 0, 1, 0, 0, M_PI); // To simplify computation, only the part of the arm moving along the y axis is represented, fixed implies that it does not count as a servomotor
+                conv.addServo("shoulder", armlearn::kinematics::rotX, 0, -2, 5, M_PI/2, 0, M_PI); // Add 90° because of the orientation of the elbow servomotor
+                conv.addServo("elbow", armlearn::kinematics::rotX, 0, 0, 5);
+                conv.addServo("wristAngle", armlearn::kinematics::rotX, 0, 0, 3);
                 // Useless to add wristRotate and gripper
 
                 std::vector<uint16_t> servoPositions = {shPos, elPos, wrPos};
@@ -86,7 +85,7 @@ int main(int argc, char *argv[]) {
                              #pragma omp atomic
                              nbInvalidCoord++;
 
-                             throw ComputationError("Error : Invalid coordinates");
+                             throw armlearn::ComputationError("Error : Invalid coordinates");
                              break;
                         }
                     }
@@ -109,7 +108,7 @@ int main(int argc, char *argv[]) {
                         std::cout << std::endl;
                     }
 
-                }catch(ComputationError e){
+                }catch(armlearn::ComputationError e){
                     #pragma omp atomic
                     nbErr++;
                     

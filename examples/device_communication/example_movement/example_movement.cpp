@@ -1,8 +1,7 @@
 
 
-#include "serialcontroller.h"
+#include <armlearn/serialcontroller.h>
 
-using namespace armlearn;
 
 int main(int argc, char *argv[]) {
 
@@ -10,14 +9,14 @@ int main(int argc, char *argv[]) {
     /****     Common base for examples     ****/
     /******************************************/
 
-    communication::SerialController arbotix("/dev/ttyUSB0");
+    armlearn::communication::SerialController arbotix("/dev/ttyUSB0");
 
-	arbotix.addMotor(1, "base ", communication::base);
-	arbotix.addMotor(2, "shoulder", communication::shoulder);
-	arbotix.addMotor(3, "elbow", communication::elbow);
-	arbotix.addMotor(4, "wristAngle", communication::wristAngle);
-	arbotix.addMotor(5, "wristRotate", communication::wristRotate);
-	arbotix.addMotor(6, "gripper", communication::gripper);
+	arbotix.addMotor(1, "base ", armlearn::communication::base);
+	arbotix.addMotor(2, "shoulder", armlearn::communication::shoulder);
+	arbotix.addMotor(3, "elbow", armlearn::communication::elbow);
+	arbotix.addMotor(4, "wristAngle", armlearn::communication::wristAngle);
+	arbotix.addMotor(5, "wristRotate", armlearn::communication::wristRotate);
+	arbotix.addMotor(6, "gripper", armlearn::communication::gripper);
 	
 	arbotix.connect();
 	std::cout << arbotix.servosToString();

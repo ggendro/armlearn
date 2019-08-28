@@ -1,21 +1,20 @@
 
-#include "nowaitarmsimulator.h"
-#include "serialcontroller.h"
-#include "trajectory.h"
+#include <armlearn/nowaitarmsimulator.h>
+#include <armlearn/serialcontroller.h>
+#include <armlearn/trajectory.h>
 
-#include "setmodepylearner.h"
-#include "widowxbuilder.h"
-#include "optimcartesianconverter.h"
+#include <armlearn/setmodepylearner.h>
+#include <armlearn/widowxbuilder.h>
+#include <armlearn/optimcartesianconverter.h>
 
-using namespace armlearn;
 
 int main(int argc, char *argv[]) {
 
-	kinematics::OptimCartesianConverter conv; // Create kinematics calculator
-	communication::NoWaitArmSimulator arbotix_sim((communication::DisplayMode) 0); // Create robot simulator 
-	communication::SerialController arbotix("/dev/ttyUSB0"); // Create device connection
+	armlearn::kinematics::OptimCartesianConverter conv; // Create kinematics calculator
+	armlearn::communication::NoWaitArmSimulator arbotix_sim((armlearn::communication::DisplayMode) 0); // Create robot simulator 
+	armlearn::communication::SerialController arbotix("/dev/ttyUSB0"); // Create device connection
 
-	WidowXBuilder builder;
+	armlearn::WidowXBuilder builder;
 	builder.buildConverter(conv);
 	builder.buildController(arbotix);
 	builder.buildController(arbotix_sim);
@@ -33,12 +32,12 @@ int main(int argc, char *argv[]) {
 	arbotix_sim.updateInfos();
 	arbotix.updateInfos();
 
-	learning::SetModePyLearner learner(&arbotix_sim, &conv, "../../files/learnSettings/ddpglearnersettings.json"); // Create learner
+	armlearn::learning::SetModePyLearner learner(&arbotix_sim, &conv, "../../files/learnSettings/ddpglearnersettings.json"); // Create learner
 
 	auto targets = { // Inputs of learning, positions to ask to the robot
-		new Input<uint16_t>({5, 50, 300})
+		new armlearn::Input<uint16_t>({5, 50, 300})
 	};
-	for(auto& dest : targets) learner.addToLearningSet(dest, new Output<std::vector<uint16_t>>()); // Empty label for learning
+	for(auto& dest : targets) learner.addToLearningSet(dest, new armlearn::Output<std::vector<uint16_t>>()); // Empty label for learning
 
 
 	learner.learn(); // Execute learning

@@ -78,24 +78,25 @@ pip install tinyik
 
 ### Install
 
-Not done yet. For now you can execute the following lines on a terminal to download and compile:
+You can execute the following lines on a terminal to download and install the project and the library:
 
 Get the code:
 ```
     git clone https://gitlab.insa-rennes.fr/Gael.Gendron/WidowXArmLearning.git
 ```
 
-Build:
+Install:
 ```
     cd build/
     cmake ..
     make
+    make install
 ```
 
-**Note:** The previous command will generate all possible executable files.
-{: .note}
+**Note:** *The make command will also generate all possible executable files.*
 
-To generate only the executable you want, run the following:
+
+To do not install the library and generate only an executable you want, run the following:
 ```
     cd build/
     cmake ..
@@ -111,7 +112,7 @@ Then go to the next section. Insert the make command between the instructions. H
 
 ### Run tests and examples
 
-After installation, you will find in the the build folder the project executables. For most of them, `sudo` authorization is required to access serial ports:
+To better understand how the library works, some examples directly executable are provided. You will find in the the build folder the project executables. For most of them, `sudo` authorization is required to access serial ports:
 
 #### Run ID example
 
@@ -208,14 +209,16 @@ Run the following to visualize evolution of reward for your tests. Once again, c
 
 #### Run preesm
 
+Run the learning algorithm implemented with Dataflow graphs. To correct the code generation done by Preesm, a prior script has to be run.
+
 ```
     ../preesm/org.ietr.preesm.reinforcement_learning/Spider/correctCodegen.py ../preesm/org.ietr.preesm.reinforcement_learning/Spider/generated/pi_ddpg.cpp
     cd Debug/
     ./reinforcement-learning
 ```
 
-**Note:** The Makefile is not located in the same folder than the executable. Running the following commands will compile only the Preesm application.
-{: .note}
+**Note:** *The Makefile is not located in the same folder than the executable. Running the following commands will compile the Preesm application. Compilation must be done after correction using python script.*
+
 
 ```
     cd preesm/org.ietr.preesm.reinforcement_learning/Spider/

@@ -1,9 +1,8 @@
 
-#include "serialcontroller.h"
-#include "trajectory.h"
-#include "optimcartesianconverter.h"
+#include <armlearn/serialcontroller.h>
+#include <armlearn/trajectory.h>
+#include <armlearn/optimcartesianconverter.h>
 
-using namespace armlearn;
 
 int main(int argc, char *argv[]) {
 
@@ -11,14 +10,14 @@ int main(int argc, char *argv[]) {
     /****     Common base for examples     ****/
     /******************************************/
 
-    communication::SerialController arbotix("/dev/ttyUSB0");
+    armlearn::communication::SerialController arbotix("/dev/ttyUSB0");
 
-	arbotix.addMotor(1, "base ", communication::base);
-	arbotix.addMotor(2, "shoulder", communication::shoulder);
-	arbotix.addMotor(3, "elbow", communication::elbow);
-	arbotix.addMotor(4, "wristAngle", communication::wristAngle);
-	arbotix.addMotor(5, "wristRotate", communication::wristRotate);
-	arbotix.addMotor(6, "gripper", communication::gripper);
+	arbotix.addMotor(1, "base ", armlearn::communication::base);
+	arbotix.addMotor(2, "shoulder", armlearn::communication::shoulder);
+	arbotix.addMotor(3, "elbow", armlearn::communication::elbow);
+	arbotix.addMotor(4, "wristAngle", armlearn::communication::wristAngle);
+	arbotix.addMotor(5, "wristRotate", armlearn::communication::wristRotate);
+	arbotix.addMotor(6, "gripper", armlearn::communication::gripper);
 	
 	arbotix.connect();
 	std::cout << arbotix.servosToString();
@@ -59,11 +58,11 @@ int main(int argc, char *argv[]) {
 
 
 	// Servo positions to cartesian coordinate system computation
-	kinematics::OptimCartesianConverter conv;
-	conv.addServo("base", kinematics::rotZ, 0, 0, 1, 0, 0, M_PI);
-	conv.addServo("shoulder", kinematics::rotX, 0, -2, 5, M_PI/2, 0, M_PI); // Add 90° because of the orientation of the elbow servomotor
-	conv.addServo("elbow", kinematics::rotX, 0, 0, 5);
-	conv.addServo("wristAngle", kinematics::rotX, 0, 0, 3);
+	armlearn::kinematics::OptimCartesianConverter conv;
+	conv.addServo("base", armlearn::kinematics::rotZ, 0, 0, 1, 0, 0, M_PI);
+	conv.addServo("shoulder", armlearn::kinematics::rotX, 0, -2, 5, M_PI/2, 0, M_PI); // Add 90° because of the orientation of the elbow servomotor
+	conv.addServo("elbow", armlearn::kinematics::rotX, 0, 0, 5);
+	conv.addServo("wristAngle", armlearn::kinematics::rotX, 0, 0, 3);
 
 	bool quit = false;
 	double x;
@@ -95,12 +94,12 @@ int main(int argc, char *argv[]) {
 
 				arbotix.setPosition(newPositions);
 
-			}catch(OutOfRangeError& e){
+			}catch(armlearn::OutOfRangeError& e){
 				std::cin.clear();
 				std::string temp;
 				std::cin >> temp;
 				std::cout << "Error, incorrect values : " << temp << ". Try again..." << std::endl;
-			}catch(ComputationError& e){
+			}catch(armlearn::ComputationError& e){
 				std::cout << "Error during computation : " << e.what() << std::endl;
 			}
 
