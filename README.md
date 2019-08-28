@@ -246,16 +246,6 @@ The current Preesm application generates a huge number of actors when parameters
 </div>
 
 
-
-#### Run main
-
-Run the main file. 
-```
-    cd tests/
-    sudo ./main
-```
-
-
 ## C++ Version
 
 C++11 required for compilation of the project

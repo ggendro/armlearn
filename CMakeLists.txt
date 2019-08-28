@@ -61,9 +61,6 @@ install(TARGETS ${ARM_LIB} LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} PUBLIC_HE
 # create examples
 add_subdirectory(examples)
 
-# create test
-add_subdirectory(tests)
-
 # create preesm target
 add_subdirectory(preesm/org.ietr.preesm.reinforcement_learning/Spider)
 
