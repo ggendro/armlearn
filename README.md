@@ -225,13 +225,14 @@ Run the learning algorithm implemented with Dataflow graphs. To correct the code
     make
 ```
 
-:::warning
-The Preesm application is not currently working (v3.41.1 of Preesm). Wait for a new version of the Preesm tool.
-:::
 
-:::danger
-The current Preesm application generates a huge number of actors when parameters values are great. Memory may entirely be filled.
-:::
+<div style="padding: 20px; background-color: #ffcc80; color: white;">
+  <strong> Warning! </strong> The Preesm application is not currently working (v3.41.1 of Preesm). Wait for a new version of the Preesm tool.
+</div>
+
+<div style="padding: 20px; background-color: #ff9980; color: white;">
+  <strong> Danger! </strong> The current Preesm application generates a huge number of actors when parameters values are great. Memory may entirely be filled.
+</div>
 
 
 ## C++ Version
