@@ -100,4 +100,8 @@ Converter* OptimCartesianConverter::computeCoordToServo(const std::vector<double
     return this;
 }
 
+int OptimCartesianConverter::getNbServos() const{
+    return converters[rotatingBase]->getNbServos();
+}
+
 

@@ -35,6 +35,7 @@ Converter* CylindricalConverter::addServo(const std::string& name, Axis axis, do
         baseAxis = axis;
         baseDefined = true;
     }
+    if(axis != fixed) nbServos++;
     
     return this;
 }

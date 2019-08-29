@@ -11,9 +11,9 @@
 
 #include <gtest/gtest.h>
 
-#include <armlearn/widowxbuilder.h>
-#include <armlearn/nowaitarmsimulator.h>
-#include <armlearn/cylindricalconverter.h>
+#include "widowxbuilder.h"
+#include "nowaitarmsimulator.h"
+#include "cylindricalconverter.h"
 
 
 class WidowXBuilderTest : public ::testing::Test {
@@ -39,27 +39,46 @@ class WidowXBuilderTest : public ::testing::Test {
 };
 
 
-// Tests that the controller contains 6 and only 6 servomotors with IDs fom 1 to 6
-TEST_F(WidowXBuilderTest, verifyController) {
-    ASSERT_TRUE(controller.changeId(1, 1));
-    ASSERT_TRUE(controller.changeId(2, 2));
-    ASSERT_TRUE(controller.changeId(3, 3));
-    ASSERT_TRUE(controller.changeId(4, 4));
-    ASSERT_TRUE(controller.changeId(5, 5));
-    ASSERT_TRUE(controller.changeId(6, 6));
-    ASSERT_FALSE(controller.changeId(7, 7));
+// Tests that the controller contains ID 1
+TEST_F(WidowXBuilderTest, verifyID1) {
+    ASSERT_TRUE(controller.changeId(1, 8));
 }
 
-// Tests that the onverter contains 6 servomotors
+// Tests that the controller contains ID 2
+TEST_F(WidowXBuilderTest, verifyID2) {
+    ASSERT_TRUE(controller.changeId(2, 8));
+}
+
+// Tests that the controller contains ID 3
+TEST_F(WidowXBuilderTest, verifyID3) {
+    ASSERT_TRUE(controller.changeId(3, 8));
+}
+
+// Tests that the controller contains ID 4
+TEST_F(WidowXBuilderTest, verifyID4) {
+    ASSERT_TRUE(controller.changeId(4, 8));
+}
+
+// Tests that the controller contains ID 5
+TEST_F(WidowXBuilderTest, verifyID5) {
+    ASSERT_TRUE(controller.changeId(5, 8));
+}
+
+// Tests that the controller contains ID 6
+TEST_F(WidowXBuilderTest, verifyID16) {
+    ASSERT_TRUE(controller.changeId(6, 8));
+}
+
+// Tests that the controller does not contain ID 7
+TEST_F(WidowXBuilderTest, verifyID7) {
+    ASSERT_FALSE(controller.changeId(7, 8));
+}
+
+// Tests that the converter contains 6 servomotors
 TEST_F(WidowXBuilderTest, verifyConverter) {
     ASSERT_EQ(converter.getNbServos(), 6);
 }
 
 
-int main(int argc, char** argv) {
-    ::testing::InitGoogleTest(&argc, argv);
 
-    return RUN_ALL_TESTS();
-
-}// Build command: g++ xxx.cpp -lgtest -lpthread
 

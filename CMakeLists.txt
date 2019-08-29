@@ -64,6 +64,9 @@ add_subdirectory(examples)
 # create preesm target
 add_subdirectory(preesm/org.ietr.preesm.reinforcement_learning/Spider)
 
+# create tests
+add_subdirectory(tests/gtests)
+
 
 include(InstallRequiredSystemLibraries)
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/License.txt")

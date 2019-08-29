@@ -134,7 +134,7 @@ class Converter{
          * 
          * @return int the number of servomotors
          */
-        int getNbServos() const;
+        virtual int getNbServos() const;
 
 };
 

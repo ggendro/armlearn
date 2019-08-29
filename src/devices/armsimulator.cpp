@@ -51,7 +51,17 @@ bool ArmSimulator::changeId(uint8_t oldId, uint8_t newId){
     Servomotor* oldPtr;
     Servomotor* newPtr;
 
-    bool res = getMotor(oldId, oldPtr) && !getMotor(newId, newPtr);
+    bool res;
+    try{
+        res = getMotor(oldId, oldPtr);
+    }catch(IdError& e){
+        return false;
+    }
+    try{
+        res = res && !getMotor(newId, newPtr);
+    }catch(IdError& e){
+        // continue
+    }
     if(!res) return false;
 
     oldPtr->setId(newId); // Change in the servo class

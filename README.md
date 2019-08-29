@@ -21,8 +21,20 @@ Can be found here : <https://github.com/nlohmann/json>
 
 *OpenMP* library version amd64/bionic 5.0.1-1 used for computation tests.
 Can be found here <https://www.openmp.org/> and installed by executing the following line on a terminal:
-```
+```bash
 sudo apt-get install libomp-dev
+```
+
+*GoogleTest* library v1.8.1 used for unitary tests.
+Can be found here : <https://github.com/google/googletest> and installed by executing the follwing lines on a terminal:
+```
+sudo apt-get install libgtest-dev
+```
+
+*LCOV* library used for unitary tests coverage.
+Can be found here : <http://ltp.sourceforge.net/coverage/lcov.php> and installed by executing the following lines on a terminal:
+```bash
+sudo apt-get install lcov
 ```
 
 *Preesm* tool v3.14.1 is required for in order to build an run learners based on SDF graphs.
@@ -35,43 +47,43 @@ Python3 needs to be installed for the use of the following libraries.
 
 *TensorFlow* library v1.14.0.
 Can be found here : <https://www.tensorflow.org/> and installed by executing the following line on a terminal:
-```
+```bash
 pip install tensorflow
 ```
 
 *Keras* library v2.2.4.
 Can be found here : <https://keras.io> and installed by executing the following line on a terminal:
-```
+```bash
 pip install keras
 ```
 
 *ScikitLearn* library v0.21.2.
 Can be found here : <https://scikit-learn.org/> and installed by executing the following line on a terminal:
-```
+```bash
 pip install scikit-learn
 ```
 
 *GraphViz* library v0.11.
 Can be found here : <https://www.graphviz.org/> and installed by executing the following line on a terminal:
-```
+```bash
 pip install graphviz
 ```
 
 *AnnVisualizer* library v2.5.
 Can be found here : <https://pypi.org/project/ann_visualizer/> and installed by executing the following line on a terminal:
-```
+```bash
 pip install ann_visualizer
 ```
 
 *matplotlib* library v3.0.3.
 Can be found here : <https://matplotlib.org/> and installed by executing the following line on a terminal:
-```
+```bash
 pip install matplotlib
 ```
 
 *tinyik* library v1.2.0.
 Can be found here : <https://pypi.org/project/tinyik/> and installed by executing the following line on a terminal:
-```
+```bash
 pip install tinyik
 ```
 
@@ -185,6 +197,22 @@ Run a code example executing a Reinforcement Learning algorithm to control a sim
     cd examples/learning/example_learn_device
     sudo ./example_learn_device
 ```
+
+
+#### Run unitary tests
+
+Run the unitary Google Tests for the C++ library.
+```bash
+    cd tests/gtests
+    ./test-main
+```
+
+To generate the coverage, you can execute the following lines afterwards. Open the index.html file to see the coverage.
+```bash
+    lcov --capture --directory ./ --output-file coverage.info
+    genhtml coverage.info --output-directory coverage
+```
+
 
 #### Run python learning tests
 

@@ -106,6 +106,13 @@ class OptimCartesianConverter : public CartesianConverter{
          */
         virtual Converter* computeCoordToServo(const std::vector<double>& coordinates) override;
 
+        /**
+         * @brief Gets the number of moveable servomotors used in the computation (i.e: size of the getServo() output)
+         * 
+         * @return int the number of servomotors
+         */
+        virtual int getNbServos() const override;
+
 };
 
     }
