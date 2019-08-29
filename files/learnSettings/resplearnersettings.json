@@ -1,6 +1,0 @@
-{
-    "fileName" : "resplearner",
-    "className" : "RespLearner",
-    "learnMethod" : "train",
-    "computeMethod" : "compute"
-}

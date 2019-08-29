@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
 	arbotix_sim.updateInfos();
 	arbotix.updateInfos();
 
-	armlearn::learning::SetModePyLearner learner(&arbotix_sim, &conv, "../../files/learnSettings/ddpglearnersettings.json"); // Create learner
+	armlearn::learning::SetModePyLearner learner(&arbotix_sim, &conv, "../../../files/learnSettings/ddpglearnersettings.json"); // Create learner
 
 	auto targets = { // Inputs of learning, positions to ask to the robot
 		new armlearn::Input<uint16_t>({5, 50, 300})

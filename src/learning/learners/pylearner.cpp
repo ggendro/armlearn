@@ -14,6 +14,7 @@ PyLearner::PyLearner(communication::AbstractController* controller, std::string 
     nlohmann::json fileReader;
     f >> fileReader;
 
+    // Required arguments
     int nbArgs = 0;
     try{
         learnerFile = fileReader["fileName"];
@@ -51,6 +52,14 @@ PyLearner::PyLearner(communication::AbstractController* controller, std::string 
 
     }
 
+    //Optional arguments
+    auto path = fileReader.find("filePath");
+    if (path != fileReader.end()){
+        learnerPath = fileReader["filePath"];
+    }else{
+        learnerPath = PY_LEARN_DIR;
+    }
+
     auto settings = fileReader.find("settings");
     if (settings != fileReader.end()){
         pyInit(*settings);
@@ -70,7 +79,7 @@ void PyLearner::pyInit(nlohmann::json settings){
     Py_Initialize();
 
     std::stringstream addInludePath; // Append the directory containing python scripts to the path
-    addInludePath << "import sys\n" << "sys.path.insert(0,'" << PY_LEARN_DIR << "')\n";
+    addInludePath << "import sys\n" << "sys.path.insert(0,'" << learnerPath << "')\n";
     PyRun_SimpleString(addInludePath.str().c_str());
 
     pName = PyUnicode_FromString(learnerFile.c_str()); // Get name of the script as a py object

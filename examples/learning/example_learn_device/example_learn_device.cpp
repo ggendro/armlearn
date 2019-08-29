@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
     /****        Creation or learning system           ****/
     /******************************************************/
 
-	armlearn::learning::SetModePyLearner learner(&arbotix_sim, &conv, "../../files/learnSettings/ddpglearnersettings.json"); // Create learner
+	armlearn::learning::SetModePyLearner learner(&arbotix_sim, &conv, "../../../../files/learnSettings/ddpglearnersettings_ex.json"); // Create learner
 
 
     /******************************************************/

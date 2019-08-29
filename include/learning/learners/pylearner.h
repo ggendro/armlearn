@@ -28,8 +28,8 @@
 namespace armlearn {
     namespace learning {
 
-// Directory containging the python scripts
-#define PY_LEARN_DIR "../../python/"
+// Directory containing the python scripts
+#define PY_LEARN_DIR "../../../python/"
 // Name of the python script containing the learning algorithm
 #define PY_LEARN_FILE "../../files/learnSettings/ddpglearnersettings.json"
 
@@ -54,6 +54,7 @@ namespace armlearn {
 class PyLearner : public DeviceLearner{
 
     protected:
+        std::string learnerPath;
         std::string learnerFile;
         std::string learnerClass;
         std::string learnMethod;

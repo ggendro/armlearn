@@ -42,6 +42,7 @@ Converter* CylindricalConverter::addServo(const std::string& name, Axis axis, do
 
 Converter* CylindricalConverter::removeAllServos(){
     baseDefined = false;
+    nbServos = 0;
     movingPart->removeAllServos();
 
     return this;
