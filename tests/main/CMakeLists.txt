@@ -17,4 +17,3 @@ link_libraries(${PYTHON_LIBRARIES})
 
 # Create executable
 add_executable(main main.cpp)
-target_link_libraries(main)

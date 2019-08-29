@@ -42,7 +42,6 @@ namespace armlearn {
 class ArmSimulator : public AbstractController{
 
     protected:
-        kinematics::Converter* physicalSolver;
 
         /**
          * @brief Gets a pointer to the wanted servomotor
