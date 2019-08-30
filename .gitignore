@@ -6,4 +6,5 @@ lib/
 **/__pycache__/
 .vscode/
 .metadata/
-preesm/org.ietr.preesm.reinforcement_learning/.project
+preesm/
+python/
