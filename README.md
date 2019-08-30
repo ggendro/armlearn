@@ -274,7 +274,7 @@ Python3 required for executing learning scripts
 
 ## License
 
-Not yet
+CeCILL-C
 
 
 ## Author
