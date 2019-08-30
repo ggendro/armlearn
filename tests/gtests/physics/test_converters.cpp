@@ -15,6 +15,7 @@
 #include "optimcartesianconverter.h"
 #include "basiccartesianconverter.h"
 #include "cylindricalconverter.h"
+#include "convertererror.h"
 
 class OptimCartesianConverterTest : public ::testing::Test {
     protected:
@@ -162,6 +163,7 @@ class CylindricalConverterTest : public ::testing::Test {
     }
 
     armlearn::kinematics::CylindricalConverter converterFilled;
+    armlearn::kinematics::CylindricalConverter converterEmpty;
 };
 
 // Tests that the converter contains 3 servomotors
@@ -201,6 +203,11 @@ TEST_F(CylindricalConverterTest, inverseKinematics) { // TODO: IK cannot be comp
         ASSERT_NEAR(v, *verifPtr, 1);
         verifPtr++;
     }
+}
+
+// Tests exception throw when arm does not have a cylindrical base
+TEST_F(CylindricalConverterTest, noBaseExcept) {
+    ASSERT_THROW(converterEmpty.addServo("notPossibleMotor", armlearn::kinematics::transX, 0, 0, 71), armlearn::ConverterError);
 }
 
 

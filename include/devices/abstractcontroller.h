@@ -48,12 +48,14 @@ namespace armlearn {
  * 
  *  - none : No information display
  *  - print : Print when sending and receiving packet and when handling errors
- *  - except : Print and throw exceptions when errors occur
+ *  - except : Throw exceptions when errors occur
+ *  - all : Print and throw exceptions
  */
 enum DisplayMode{
     none,
     print,
-    except
+    except, 
+    all
 };
 
 
@@ -80,7 +82,7 @@ class AbstractController{
          * @param displayMode mode of display (see DisplayMode enum for more details)
          * @param out the output stream to display the results, standard std output by default
          */
-        AbstractController(DisplayMode displayMode = except, std::ostream& out = std::cout);
+        AbstractController(DisplayMode displayMode = all, std::ostream& out = std::cout);
 
         /**
          * @brief Destroys the Controller:: Controller object
@@ -360,6 +362,15 @@ class AbstractController{
          * @return std::string informations contained by servomotors
          */
         std::string servosToString() const;
+
+
+        /**
+         * @brief Returns a pointer to const reference to servomotor with given id
+         * 
+         * @param id the id of the servomotor to show
+         * @return const Servomotor* constant reference to a servomotor 
+         */
+        const Servomotor* showServomotor(uint8_t id) const;
 
 
     friend class learning::DeviceLearner;  

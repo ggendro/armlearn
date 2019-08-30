@@ -32,7 +32,7 @@ void AbstractController::setDisplayMode(DisplayMode newMode){
 
 bool AbstractController::addMotor(uint8_t id, const std::string& name, Type type){
     if(motors->find(id) != motors->end()){
-        if(mode >= except) throw IdError("ID already taken.");
+        if(mode & except) throw IdError("ID already taken.");
         return false;
     } 
 
@@ -45,7 +45,7 @@ bool AbstractController::addMotor(uint8_t id, const std::string& name, Type type
 bool AbstractController::removeMotor(uint8_t id){
     auto ptr = motors->find(id);
     if(ptr == motors->end()){
-        if(mode >= except) throw IdError("ID not found.");
+        if(mode & except) throw IdError("ID not found.");
         return false;
     } 
 
@@ -164,7 +164,7 @@ bool AbstractController::waitFeedback(int sleepTime, int allowedTime){
     bool response = goalReached();
 
     while(!response && std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startTime).count() < allowedTime){ // TODO: implement without active waiting
-        if(mode >= print) output << "Movement not entirely executed at " << std::chrono::duration<double, std::ratio<1, 1>>(currentTime - startTime).count() << " s" << std::endl;
+        if(mode & print) output << "Movement not entirely executed at " << std::chrono::duration<double, std::ratio<1, 1>>(currentTime - startTime).count() << " s" << std::endl;
         std::this_thread::sleep_for((std::chrono::milliseconds) sleepTime);
 
         updateInfos();
@@ -172,13 +172,13 @@ bool AbstractController::waitFeedback(int sleepTime, int allowedTime){
 
         if(!response){
             double sse = positionSumSquaredError();
-            if(mode >= print) output << "Sum of squared errors : " << sse << std::endl;
+            if(mode & print) output << "Sum of squared errors : " << sse << std::endl;
 
             if(sse < POSITION_ERROR_MARGIN) response = true;
         }
         
         currentTime = std::chrono::system_clock::now();
-        if(mode >= print) output <<"Goal reached : " << response << " - New try at " << std::chrono::duration<double, std::ratio<1, 1>>(currentTime - startTime).count() << " s" << std::endl;
+        if(mode & print) output <<"Goal reached : " << response << " - New try at " << std::chrono::duration<double, std::ratio<1, 1>>(currentTime - startTime).count() << " s" << std::endl;
 	}
 
    return response;
@@ -189,7 +189,7 @@ void AbstractController::updateInfos(){
     for(auto ptr=motors->begin(); ptr != motors->end(); ptr++){
         updateInfos(ptr->first);
     }
-    if(mode >= print) output << servosToString();
+    if(mode & print) output << servosToString();
 }
 
 
@@ -199,4 +199,10 @@ std::string AbstractController::servosToString() const {
     for(auto ptr = motors->cbegin(); ptr != motors->cend(); ptr++) streamRep << ptr->second->toString() << std::endl;
 
     return streamRep.str();
+}
+
+
+
+const Servomotor* AbstractController::showServomotor(uint8_t id) const {
+    return motors->find(id)->second;
 }

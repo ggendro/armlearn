@@ -35,7 +35,7 @@ namespace armlearn {
  * @brief Abstract class containing a learner that learns how to compute servomotor positions from coordinates
  * 
  */
-template<class U, class V> class Learner{ // TODO: Adapt for obstacles, disabled servo...
+template<class U, class V> class Learner{
 
     protected:
         std::map<Input<U>*, Output<V>*>* learningSet;

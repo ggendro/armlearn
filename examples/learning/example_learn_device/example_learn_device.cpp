@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
     /******************************************************/
 
 	armlearn::kinematics::OptimCartesianConverter conv; // Create kinematics calculator
-	armlearn::communication::NoWaitArmSimulator arbotix_sim((armlearn::communication::DisplayMode) 0); // Create robot simulator 
+	armlearn::communication::NoWaitArmSimulator arbotix_sim(armlearn::communication::none); // Create robot simulator 
 	armlearn::communication::SerialController arbotix("/dev/ttyUSB0"); // Create device connection
 
 	armlearn::WidowXBuilder builder;

@@ -67,7 +67,7 @@ int SerialController::send(const std::vector<uint8_t>& buffer){
 
     int res = this->serialPort->write(sendBuf);
 
-    if(mode > none){
+    if(mode & print){
         output << "Packet sent : ";
         for (auto&& x : sendBuf)
             output << (int) x << " ";
@@ -96,7 +96,7 @@ int SerialController::receive(std::vector<uint8_t>& buffer, bool readAll, bool w
     
     int res = serialPort->read(buffer, nbChar);
 
-    if(mode > none){
+    if(mode & print){
         output << "Message received : ";
         for(auto&& v : buffer)
             output << (int) v << " ";
@@ -141,8 +141,8 @@ bool SerialController::executionPattern(uint16_t id, const std::function< int(st
         std::stringstream disp;
         disp << "ID " << (int) id << " not found.";
 
-        if(mode >= print) output << disp.str() << std::endl;
-        if(mode >= except) throw IdError(disp.str());
+        if(mode & print) output << disp.str() << std::endl;
+        if(mode & except) throw IdError(disp.str());
         return false;
     }
 
@@ -150,8 +150,8 @@ bool SerialController::executionPattern(uint16_t id, const std::function< int(st
         std::stringstream disp;
         disp << "Device " << (int) id <<" not connected.";
 
-        if(mode >= print) output << disp.str() << std::endl;
-        if(mode >= except) throw ConnectionError(disp.str());
+        if(mode & print) output << disp.str() << std::endl;
+        if(mode & except) throw ConnectionError(disp.str());
         return false;
     }
 
@@ -173,8 +173,8 @@ bool SerialController::executionPattern(uint16_t id, const std::function< int(st
     for(auto&& v : rep) disp << v << " ";
     disp << "(" << res << ")";
 
-    if(mode >= print) output << disp.str() << std::endl;
-    if(mode >= except) throw ConnectionError(disp.str());
+    if(mode & print) output << disp.str() << std::endl;
+    if(mode & except) throw ConnectionError(disp.str());
     return false;
     
 }
@@ -228,8 +228,8 @@ bool SerialController::changeId(uint8_t oldId, uint8_t newId){
                 std::stringstream disp;
                 disp << "New ID " << newId << " already existing.";
 
-                if(mode >= print) output << disp.str() << std::endl;
-                if(mode >= except) throw IdError(disp.str());
+                if(mode & print) output << disp.str() << std::endl;
+                if(mode & except) throw IdError(disp.str());
                 return 0; 
             } 
 
@@ -288,8 +288,8 @@ bool SerialController::changeSpeed(uint8_t id, uint16_t newSpeed){
                 std::stringstream disp;
                 disp << "Speed value " << newSpeed << " is out of the range.";
 
-                if(mode >= print) output << disp.str() << std::endl;
-                if(mode >= except) throw OutOfRangeError(disp.str());
+                if(mode & print) output << disp.str() << std::endl;
+                if(mode & except) throw OutOfRangeError(disp.str());
                 return 0; 
             }
 
@@ -308,8 +308,8 @@ bool SerialController::setPosition(uint8_t id, uint16_t newPosition){
                 std::stringstream disp;
                 disp << "Position " << newPosition <<" is out of the range.";
 
-                if(mode >= print) output << disp.str() << std::endl;
-                if(mode >= except) throw OutOfRangeError(disp.str());
+                if(mode & print) output << disp.str() << std::endl;
+                if(mode & except) throw OutOfRangeError(disp.str());
                 
                 return 0;
             }
@@ -328,8 +328,8 @@ bool SerialController::addPosition(uint8_t id, int dx){
         std::stringstream disp;
         disp << "ID " << id <<" not found.";
 
-        if(mode >= print) output << disp.str() << std::endl;
-        if(mode >= except) throw IdError(disp.str());
+        if(mode & print) output << disp.str() << std::endl;
+        if(mode & except) throw IdError(disp.str());
         return false;
     }
 
@@ -361,8 +361,8 @@ bool SerialController::torqueEnabled(int id){
             std::stringstream disp;
             disp << "Error during execution. Cannot read torque value of device " << id << ".";
 
-            if(mode >= print) output << disp.str() << std::endl;
-            if(mode >= except) throw ConnectionError(disp.str());
+            if(mode & print) output << disp.str() << std::endl;
+            if(mode & except) throw ConnectionError(disp.str());
             return false;
         }
 

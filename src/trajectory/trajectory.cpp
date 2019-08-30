@@ -57,20 +57,19 @@ void Trajectory::addPoint(const std::vector<uint16_t>& point){
 
 
 void Trajectory::removePoint(int pos){
-    if(pos <0 || pos > trajectories->size()) throw std::out_of_range("Error : Value out of vector boundaries");
+    if(pos <0 || pos > trajectories->size()-1) throw std::out_of_range("Error : Value out of vector boundaries");
 
-    std::vector<std::vector<uint16_t>*>::iterator ptrPos = trajectories->begin();
-    ptrPos += pos;
-
-    trajectories->erase(ptrPos);
+    trajectories->erase(trajectories->begin()+pos);
 }
 
 void Trajectory::removePoint(){
-    removePoint(this->trajectories->size());
+    removePoint(this->trajectories->size()-1);
 }
 
 
 void Trajectory::init(bool reverse) const{
+    if(trajectories->size() == 0) return;
+
     if(reverse) 
         move(**trajectories->rbegin());
     else 

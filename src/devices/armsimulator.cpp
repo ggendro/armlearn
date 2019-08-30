@@ -23,8 +23,8 @@ bool ArmSimulator::getMotor(uint8_t id, Servomotor*& ptr){
         std::stringstream disp;
         disp << "ID " << (int) id <<" not found.";
 
-        if(mode >= print) output << disp.str() << std::endl;
-        if(mode >= except) throw IdError(disp.str());
+        if(mode & print) output << disp.str() << std::endl;
+        if(mode & except) throw IdError(disp.str());
         return false;
     }
     ptr = it->second;
@@ -42,7 +42,7 @@ void ArmSimulator::connect(){
 }
 
 void ArmSimulator::ping(uint8_t id){
-    if(mode > none)
+    if(mode & print)
         output << "Ping " << id << std::endl;
 }
 
@@ -97,8 +97,8 @@ bool ArmSimulator::changeSpeed(uint8_t id, uint16_t newSpeed){
         std::stringstream disp;
         disp << "Speed value " << newSpeed << " is out of the range.";
 
-        if(mode >= print) output << disp.str() << std::endl;
-        if(mode >= except) throw OutOfRangeError(disp.str());
+        if(mode & print) output << disp.str() << std::endl;
+        if(mode & except) throw OutOfRangeError(disp.str());
         return 0; 
     }
 
@@ -109,18 +109,26 @@ bool ArmSimulator::changeSpeed(uint8_t id, uint16_t newSpeed){
 
 bool ArmSimulator::setPosition(uint8_t id, uint16_t newPosition){
     Servomotor* ptr;
-    if(!getMotor(id, ptr)) return false;
+    if(!getMotor(id, ptr)){
+        std::stringstream disp;
+        disp << "ID " << (int) id << " not found.";
 
+        if(mode & print) output << disp.str() << std::endl;
+        if(mode & except) throw OutOfRangeError(disp.str());
+        
+        return 0;
+    } 
+    
     if(!ptr->validPosition(newPosition)){
         std::stringstream disp;
         disp << "Position " << newPosition <<" is out of the range.";
 
-        if(mode >= print) output << disp.str() << std::endl;
-        if(mode >= except) throw OutOfRangeError(disp.str());
+        if(mode & print) output << disp.str() << std::endl;
+        if(mode & except) throw OutOfRangeError(disp.str());
         
         return 0;
     }
-
+    
     ptr->setTargetPosition(newPosition);
     return true;
 }
