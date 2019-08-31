@@ -4,7 +4,7 @@ API for a high level communication between an user and an Interbotix WidowX robo
 Includes framework to simulate the arm, compute kinematics and learn IK using Reinforcement Learning. 
 Developed on linux OS but is theoretically cross-platform.
 
- ** Warning! ** python/ and preesm/ folders have been temporary removed from repository. Consequently, the learning part is not currently available. python/ folder will be back soon. To retrieve the content of the preesm/ folder, create a folder named preesm/ and copy-paste the folder org.ietr.preesm.deep_deterministic_policy_gradient from the <https://github.com/preesm/preesm-apps> project (may not be in master branch).
+**Warning!** python/ and preesm/ folders have been temporary removed from repository. Consequently, the learning part is not currently available. python/ folder will be back soon. To retrieve the content of the preesm/ folder, create a folder named preesm/ and copy-paste the folder org.ietr.preesm.deep_deterministic_policy_gradient from the <https://github.com/preesm/preesm-apps> project (may not be in master branch).
 
 
 ## Getting started
