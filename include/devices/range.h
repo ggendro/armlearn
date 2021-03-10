@@ -47,21 +47,21 @@ namespace armlearn {
 #define SPEED_MIN 0
 #define SPEED_MAX 1023
 
-// Convert a position in servomotor unit into degree (unit is 0.088 degrees)
-#define TO_DEGREE(position) ((position) * 0.088 - 180)
-// Convert a position in servomotor unit into radian (unit is 0.088 degrees)
+// Unit of servomotor distances (0.088°)
+#define MOVE_UNIT (360.0 / 4096.0)
+
+// Convert a position in servomotor unit into degree (unit is MOVE_UNIT degrees)
+#define TO_DEGREE(position) ((position) * MOVE_UNIT - 180)
+// Convert a position in servomotor unit into radian (unit is MOVE_UNIT degrees)
 #define TO_RADIAN(position) ((TO_DEGREE(position)) * M_PI / 180)
 
 // Convert a position in degree into servomotor unit
-#define FROM_DEGREE(position) (((position) + 180) / 0.088)
+#define FROM_DEGREE(position) (((position) + 180) / MOVE_UNIT)
 // Convert a position in radian into servomotor unit
 #define FROM_RADIAN(position) (FROM_DEGREE((position) / M_PI * 180))
 
 // Unit of servomotor speed (0.114rpm)
 #define SPEED_UNIT 0.114
-
-// Unit of servomotor distances (0.088°)
-#define MOVE_UNIT 0.088
 
     }
 }
